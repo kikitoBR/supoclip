@@ -35,14 +35,14 @@ export function GenerationCard({ generation, selected, onToggle, selectionDisabl
           {active && (
             <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 bg-stone-950/60 text-white">
               <Loader2 className="size-5 animate-spin" aria-hidden />
-              <span className="text-xs font-medium">{generation.status === "queued" ? "Queued" : "Finding the best moments…"}</span>
+              <span className="text-xs font-medium">{generation.status === "queued" ? "Na fila" : "Buscando os melhores momentos…"}</span>
               <div className="progress-sheen relative mt-1 h-0.5 w-24 overflow-hidden rounded-full bg-white/20" />
             </div>
           )}
           {failed && (
             <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 bg-stone-950/70 text-white">
               <AlertTriangle className="size-5 text-amber-300" aria-hidden />
-              <span className="text-xs font-medium">Needs attention</span>
+              <span className="text-xs font-medium">Requer atenção</span>
             </div>
           )}
           {generation.top_virality_score ? (
@@ -51,8 +51,8 @@ export function GenerationCard({ generation, selected, onToggle, selectionDisabl
             </div>
           ) : null}
           <div className="absolute inset-x-3 bottom-2.5 flex items-center justify-between text-[11px] font-medium text-white/90">
-            <span className="flex items-center gap-1.5"><SourceIcon className="size-3.5" aria-hidden />{generation.source_type === "youtube" ? "YouTube" : "Upload"}</span>
-            {generation.clips_count > 0 && <span className="tabular-nums">{generation.clips_count} {generation.clips_count === 1 ? "clip" : "clips"}</span>}
+            <span className="flex items-center gap-1.5"><SourceIcon className="size-3.5" aria-hidden />{generation.source_type === "youtube" ? "YouTube" : "Envio direto"}</span>
+            {generation.clips_count > 0 && <span className="tabular-nums">{generation.clips_count} {generation.clips_count === 1 ? "clipe" : "clipes"}</span>}
           </div>
         </ClipCover>
         <div className="mt-2.5 space-y-1 px-0.5">
@@ -68,7 +68,7 @@ export function GenerationCard({ generation, selected, onToggle, selectionDisabl
           type="button"
           role="checkbox"
           aria-checked={Boolean(selected)}
-          aria-label={selected ? `Deselect ${generation.source_title}` : `Select ${generation.source_title}`}
+          aria-label={selected ? `Desmarcar ${generation.source_title}` : `Selecionar ${generation.source_title}`}
           disabled={selectionDisabled}
           onClick={onToggle}
           className={cn(

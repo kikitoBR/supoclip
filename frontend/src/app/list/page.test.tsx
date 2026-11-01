@@ -55,7 +55,7 @@ it("groups repeat runs of the same original video", async () => {
   expect(await screen.findByRole("link", { name: /Podcast \(recut\)/ })).toBeInTheDocument();
   expect(screen.queryByRole("heading", { level: 2, name: "Podcast (recut)" })).not.toBeInTheDocument();
 
-  fireEvent.click(screen.getByRole("tab", { name: "By video" }));
+  fireEvent.click(screen.getByRole("tab", { name: "Por vídeo" }));
 
   const headings = screen.getAllByRole("heading", { level: 2 }).map((heading) => heading.textContent);
   expect(headings).toEqual(["Podcast", "Weekly standup"]);
