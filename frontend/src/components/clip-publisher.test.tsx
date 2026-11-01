@@ -51,7 +51,7 @@ it("hides the publish button when no platform is configured", () => {
       onChanged={vi.fn()}
     />,
   );
-  expect(screen.queryByRole("button", { name: /publish/i })).toBeNull();
+  expect(screen.queryByRole("button", { name: /publicar|publish/i })).toBeNull();
 });
 
 it("keeps the form when connections refresh while the sheet is open", async () => {
@@ -65,8 +65,8 @@ it("keeps the form when connections refresh while the sheet is open", async () =
       onChanged={vi.fn()}
     />,
   );
-  fireEvent.click(screen.getByRole("button", { name: /publish/i }));
-  const title = await screen.findByLabelText("Title");
+  fireEvent.click(screen.getByRole("button", { name: /publicar|publish/i }));
+  const title = await screen.findByLabelText("Título");
   expect(title).toHaveValue("Hook title");
   fireEvent.change(title, { target: { value: "My edited title" } });
 
@@ -80,7 +80,7 @@ it("keeps the form when connections refresh while the sheet is open", async () =
       onChanged={vi.fn()}
     />,
   );
-  expect(screen.getByLabelText("Title")).toHaveValue("My edited title");
+  expect(screen.getByLabelText("Título")).toHaveValue("My edited title");
 });
 
 it("starts TikTok posts as private", async () => {
@@ -100,8 +100,8 @@ it("starts TikTok posts as private", async () => {
       onChanged={vi.fn()}
     />,
   );
-  fireEvent.click(screen.getByRole("button", { name: /publish/i }));
-  expect(await screen.findByLabelText("Visibility")).toHaveTextContent("Private (only me)");
+  fireEvent.click(screen.getByRole("button", { name: /publicar|publish/i }));
+  expect(await screen.findByLabelText("Visibilidade")).toHaveTextContent("Privado (somente eu)");
 });
 
 it("reports failed post actions with a toast", async () => {
@@ -122,8 +122,8 @@ it("reports failed post actions with a toast", async () => {
   } as unknown as SocialPost;
   render(<ClipPostList posts={[post]} onChanged={onChanged} />);
   expect(screen.getByText(/check your account before retrying/)).toBeInTheDocument();
-  fireEvent.keyDown(screen.getByRole("button", { name: "Post actions" }), { key: "Enter" });
-  fireEvent.click(await screen.findByRole("menuitem", { name: /try again/i }));
+  fireEvent.keyDown(screen.getByRole("button", { name: "Ações da publicação" }), { key: "Enter" });
+  fireEvent.click(await screen.findByRole("menuitem", { name: /tentar novamente|try again/i }));
   await waitFor(() => expect(toast.error).toHaveBeenCalledWith("This post is already being retried."));
   expect(fetch).toHaveBeenCalledWith("/api/social/posts/post-1/retry", { method: "POST" });
   expect(onChanged).toHaveBeenCalled();
@@ -139,6 +139,6 @@ it("shows a spinner while a post is uploading and offers no actions", () => {
     metrics: null,
   } as unknown as SocialPost;
   render(<ClipPostList posts={[post]} onChanged={vi.fn()} />);
-  expect(screen.getByText("Uploading…")).toBeInTheDocument();
-  expect(screen.queryByRole("button", { name: "Post actions" })).toBeNull();
+  expect(screen.getByText("Enviando…")).toBeInTheDocument();
+  expect(screen.queryByRole("button", { name: "Ações da publicação" })).toBeNull();
 });

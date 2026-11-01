@@ -17,15 +17,15 @@ import { SocialProviderIcon } from "@/components/social-provider-icon";
 import { timeAgo } from "@/lib/generations";
 import { PROVIDER_LABELS, type SocialPost } from "@/lib/social";
 
-const dayFormat = new Intl.DateTimeFormat(undefined, { weekday: "long", month: "short", day: "numeric" });
-const timeFormat = new Intl.DateTimeFormat(undefined, { hour: "numeric", minute: "2-digit" });
+const dayFormat = new Intl.DateTimeFormat("pt-BR", { weekday: "long", month: "short", day: "numeric" });
+const timeFormat = new Intl.DateTimeFormat("pt-BR", { hour: "numeric", minute: "2-digit" });
 
 function dayLabel(date: Date): string {
   const today = new Date();
   const startOf = (value: Date) => new Date(value.getFullYear(), value.getMonth(), value.getDate()).getTime();
   const days = Math.round((startOf(date) - startOf(today)) / 86_400_000);
-  if (days === 0) return "Today";
-  if (days === 1) return "Tomorrow";
+  if (days === 0) return "Hoje";
+  if (days === 1) return "Amanhã";
   return dayFormat.format(date);
 }
 
@@ -77,10 +77,10 @@ export function ScheduledPosts({ sectionHeadingClassName }: { sectionHeadingClas
     try {
       const response = await fetch(`/api/social/posts/${post.id}/cancel`, { method: "POST" });
       if (response.ok) {
-        toast.success("Scheduled post cancelled");
+        toast.success("Post agendado cancelado");
       } else {
         const data = await response.json().catch(() => ({}));
-        toast.error(typeof data?.detail === "string" ? data.detail : "Could not cancel the post");
+        toast.error(typeof data?.detail === "string" ? data.detail : "Não foi possível cancelar o post");
       }
       await load();
     } finally {
@@ -90,12 +90,12 @@ export function ScheduledPosts({ sectionHeadingClassName }: { sectionHeadingClas
 
   return (
     <section className="mb-10">
-      <h2 className={sectionHeadingClassName}>Scheduled</h2>
+      <h2 className={sectionHeadingClassName}>Agendados</h2>
       {posts === null ? (
         <Skeleton className="h-16 w-full" />
       ) : groups.length === 0 ? (
         <p className="text-sm text-muted-foreground">
-          Nothing scheduled. Open a clip, choose Publish and turn on Schedule for later.
+          Nenhum post agendado. Abra um clipe, clique em Publicar e ative Agendar para mais tarde.
         </p>
       ) : (
         <div className="space-y-5">
@@ -105,7 +105,7 @@ export function ScheduledPosts({ sectionHeadingClassName }: { sectionHeadingClas
               <div className="divide-y rounded-xl border bg-background">
                 {dayPosts.map((post) => {
                   const when = new Date(post.scheduled_for!);
-                  const title = post.hook_title || post.title || "Untitled clip";
+                  const title = post.hook_title || post.title || "Clipe sem título";
                   return (
                     <div key={post.id} className="flex items-center gap-3 px-4 py-3 text-sm">
                       <span className="w-16 shrink-0 tabular-nums text-muted-foreground">{timeFormat.format(when)}</span>
@@ -129,7 +129,7 @@ export function ScheduledPosts({ sectionHeadingClassName }: { sectionHeadingClas
                             variant="ghost"
                             className="size-8 text-muted-foreground"
                             disabled={busyPostId === post.id}
-                            aria-label="Scheduled post actions"
+                            aria-label="Ações do post agendado"
                           >
                             {busyPostId === post.id ? <Loader2 className="size-4 animate-spin" /> : <MoreHorizontal className="size-4" />}
                           </Button>
@@ -138,12 +138,12 @@ export function ScheduledPosts({ sectionHeadingClassName }: { sectionHeadingClas
                           {post.task_id && (
                             <DropdownMenuItem asChild>
                               <Link href={`/tasks/${post.task_id}`}>
-                                <ExternalLink /> Open clip
+                                <ExternalLink /> Abrir clipe
                               </Link>
                             </DropdownMenuItem>
                           )}
                           <DropdownMenuItem variant="destructive" onSelect={() => cancel(post)}>
-                            <XCircle /> Cancel post
+                            <XCircle /> Cancelar post
                           </DropdownMenuItem>
                         </DropdownMenuContent>
                       </DropdownMenu>

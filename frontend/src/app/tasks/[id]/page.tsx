@@ -236,7 +236,7 @@ export default function TaskPage() {
         }
 
         if (!taskResponse.ok) {
-          throw new Error(await buildSupportError(taskResponse, `Failed to fetch task: ${taskResponse.status}`));
+          throw new Error(await buildSupportError(taskResponse, `Falha ao buscar tarefa: ${taskResponse.status}`));
         }
 
         const taskData = await taskResponse.json();
@@ -244,15 +244,14 @@ export default function TaskPage() {
         setProgressMessage(taskData.progress_message ?? "");
         setError(null);
         if (!background) {
-        setProjectFontFamily(taskData.font_family ?? null);
-        setProjectFontSize(typeof taskData.font_size === "number" ? taskData.font_size : null);
-        setProjectFontColor(taskData.font_color ?? null);
-        setProjectCaptionTemplate(taskData.caption_template || "default");
-        setProjectCutLongPauses(Boolean(taskData.cut_long_pauses));
-        setProjectPauseThresholdMs(String(taskData.pause_threshold_ms || 700));
-        setProjectRemoveFillerWords(Boolean(taskData.remove_filler_words));
-        setProjectFilteredWords((taskData.filtered_words || []).join(", "));
-
+          setProjectFontFamily(taskData.font_family ?? null);
+          setProjectFontSize(typeof taskData.font_size === "number" ? taskData.font_size : null);
+          setProjectFontColor(taskData.font_color ?? null);
+          setProjectCaptionTemplate(taskData.caption_template || "default");
+          setProjectCutLongPauses(Boolean(taskData.cut_long_pauses));
+          setProjectPauseThresholdMs(String(taskData.pause_threshold_ms || 700));
+          setProjectRemoveFillerWords(Boolean(taskData.remove_filler_words));
+          setProjectFilteredWords((taskData.filtered_words || []).join(", "));
         }
 
         // Fetch clips if task is completed or processing (incremental clips)
@@ -262,7 +261,7 @@ export default function TaskPage() {
           });
 
           if (!clipsResponse.ok) {
-            throw new Error(await buildSupportError(clipsResponse, `Failed to fetch clips: ${clipsResponse.status}`));
+            throw new Error(await buildSupportError(clipsResponse, `Falha ao buscar clipes: ${clipsResponse.status}`));
           }
 
           const clipsData = await clipsResponse.json();
@@ -289,7 +288,7 @@ export default function TaskPage() {
         return true;
       } catch (err) {
         console.error("Error fetching task data:", err);
-        if (!background) setError(err instanceof Error ? err.message : "Failed to load task");
+        if (!background) setError(err instanceof Error ? err.message : "Falha ao carregar tarefa");
         return false;
       }
     },
@@ -358,7 +357,7 @@ export default function TaskPage() {
     if (pendingAction) return;
     setPendingAction(name);
     try { await action(); }
-    catch (err) { toast.error(err instanceof Error ? err.message : "Could not complete the action. Please try again."); }
+    catch (err) { toast.error(err instanceof Error ? err.message : "Não foi possível concluir a ação. Tente novamente."); }
     finally { setPendingAction(null); }
   };
 
@@ -370,14 +369,14 @@ export default function TaskPage() {
 
   const getHookTypeLabel = (hookType: string | null) => {
     const labels: Record<string, string> = {
-      question: "Question Hook",
-      statement: "Bold Statement",
-      statistic: "Data/Stats",
-      story: "Story Hook",
-      contrast: "Contrast Hook",
-      none: "No Hook",
+      question: "Pergunta",
+      statement: "Afirmação forte",
+      statistic: "Dado/Estatística",
+      story: "História/Narrativa",
+      contrast: "Contraste",
+      none: "Sem gancho",
     };
-    return labels[hookType || "none"] || hookType || "None";
+    return labels[hookType || "none"] || hookType || "Nenhum";
   };
 
   const handleEditTitle = async () => {
@@ -396,11 +395,11 @@ export default function TaskPage() {
         setTask(task ? { ...task, source_title: editedTitle } : null);
         setIsEditing(false);
       } else {
-        toast.error(await buildSupportError(response, "Failed to update title"));
+        toast.error(await buildSupportError(response, "Falha ao atualizar título"));
       }
     } catch (err) {
       console.error("Error updating title:", err);
-      toast.error(err instanceof Error ? err.message : "Failed to update title");
+      toast.error(err instanceof Error ? err.message : "Falha ao atualizar título");
     }
   };
 
@@ -416,11 +415,11 @@ export default function TaskPage() {
       if (response.ok) {
         router.push("/list");
       } else {
-        toast.error(await buildSupportError(response, "Failed to delete task"));
+        toast.error(await buildSupportError(response, "Falha ao excluir tarefa"));
       }
     } catch (err) {
       console.error("Error deleting task:", err);
-      toast.error(err instanceof Error ? err.message : "Failed to delete task");
+      toast.error(err instanceof Error ? err.message : "Falha ao excluir tarefa");
     } finally {
       setIsDeleting(false);
       setShowDeleteDialog(false);
@@ -439,11 +438,11 @@ export default function TaskPage() {
         setClips(clips.filter((clip) => clip.id !== clipId));
         setDeletingClipId(null);
       } else {
-        toast.error(await buildSupportError(response, "Failed to delete clip"));
+        toast.error(await buildSupportError(response, "Falha ao excluir clipe"));
       }
     } catch (err) {
       console.error("Error deleting clip:", err);
-      toast.error(err instanceof Error ? err.message : "Failed to delete clip");
+      toast.error(err instanceof Error ? err.message : "Falha ao excluir clipe");
     }
   };
 
@@ -477,14 +476,14 @@ export default function TaskPage() {
         }),
       });
       if (!response.ok) {
-        toast.error(await buildSupportError(response, "Failed to apply settings"));
+        toast.error(await buildSupportError(response, "Falha ao aplicar configurações"));
         return;
       }
       await fetchTaskStatus();
       setSettingsSheetOpen(false);
-      toast.success("Generation settings applied");
+      toast.success("Configurações aplicadas a todos os clipes");
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Failed to apply settings");
+      toast.error(err instanceof Error ? err.message : "Falha ao aplicar configurações");
     } finally {
       setIsApplyingSettings(false);
     }
@@ -493,24 +492,22 @@ export default function TaskPage() {
   const handleDeleteFont = async (font: FontOption) => {
     if (font.scope !== "user" || deletingFontName) return;
 
-
     setDeletingFontName(font.name);
     try {
       const response = await fetch(`/api/fonts/${encodeURIComponent(font.name)}`, {
         method: "DELETE",
       });
       if (!response.ok) {
-        throw new Error(await buildSupportError(response, "Failed to delete font"));
+        throw new Error(await buildSupportError(response, "Falha ao excluir fonte"));
       }
 
       const remainingFonts = availableFonts.filter((item) => item.name !== font.name);
       setAvailableFonts(remainingFonts);
       if (projectFontFamily === font.name) {
-        // The deleted font was in use — fall back to the caption template's own font.
         setProjectFontFamily(null);
       }
     } catch (deleteError) {
-      toast.error(deleteError instanceof Error ? deleteError.message : "Failed to delete font");
+      toast.error(deleteError instanceof Error ? deleteError.message : "Falha ao excluir fonte");
     } finally {
       setDeletingFontName(null);
     }
@@ -524,7 +521,7 @@ export default function TaskPage() {
     });
 
     if (!response.ok) {
-      toast.error(await buildSupportError(response, "Failed to export clip"));
+      toast.error(await buildSupportError(response, "Falha ao exportar clipe"));
       return;
     }
 
@@ -557,7 +554,7 @@ export default function TaskPage() {
         method: "POST",
       });
       if (!response.ok) {
-        throw new Error(await buildSupportError(response, "Failed to create share link"));
+        throw new Error(await buildSupportError(response, "Falha ao criar link de compartilhamento"));
       }
 
       const data = (await response.json()) as { share_path: string };
@@ -581,7 +578,7 @@ export default function TaskPage() {
       window.setTimeout(() => setShareState("idle"), 2500);
     } catch (shareError) {
       setShareState("idle");
-      toast.error(shareError instanceof Error ? shareError.message : "Failed to create share link");
+      toast.error(shareError instanceof Error ? shareError.message : "Falha ao criar link de compartilhamento");
     }
   };
 
@@ -594,13 +591,13 @@ export default function TaskPage() {
         method: "DELETE",
       });
       if (!response.ok) {
-        throw new Error(await buildSupportError(response, "Failed to disable share link"));
+        throw new Error(await buildSupportError(response, "Falha ao desativar link de compartilhamento"));
       }
       setTask((currentTask) =>
         currentTask ? { ...currentTask, share_enabled: false } : currentTask,
       );
     } catch (revokeError) {
-      toast.error(revokeError instanceof Error ? revokeError.message : "Failed to disable share link");
+      toast.error(revokeError instanceof Error ? revokeError.message : "Falha ao desativar link de compartilhamento");
     } finally {
       setIsRevokingShare(false);
     }
@@ -635,7 +632,7 @@ export default function TaskPage() {
   return (
     <main className="mx-auto w-full max-w-7xl px-4 py-6 sm:px-8 md:py-8">
       <Link href="/list" className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground">
-        <ArrowLeft className="size-3.5" />Library
+        <ArrowLeft className="size-3.5" />Biblioteca
       </Link>
 
       {task && (
@@ -648,17 +645,17 @@ export default function TaskPage() {
                   onChange={(e) => setEditedTitle(e.target.value)}
                   onKeyDown={(e) => { if (e.key === "Escape") { setIsEditing(false); setEditedTitle(task.source_title); } }}
                   className="h-auto py-1 font-display text-2xl font-bold md:text-3xl"
-                  aria-label="Generation title"
+                  aria-label="Título da geração"
                   autoFocus
                 />
-                <Button type="submit" aria-label="Save title" size="icon" disabled={!editedTitle.trim()}><Check className="size-4" /></Button>
-                <Button type="button" size="icon" variant="ghost" aria-label="Cancel title edit" onClick={() => { setIsEditing(false); setEditedTitle(task.source_title); }}><X className="size-4" /></Button>
+                <Button type="submit" aria-label="Salvar título" size="icon" disabled={!editedTitle.trim()}><Check className="size-4" /></Button>
+                <Button type="button" size="icon" variant="ghost" aria-label="Cancelar edição do título" onClick={() => { setIsEditing(false); setEditedTitle(task.source_title); }}><X className="size-4" /></Button>
               </form>
             ) : (
               <div className="group flex items-start gap-2">
                 <h1 className={cn("min-w-0 break-words font-display text-2xl font-bold tracking-tight md:text-3xl", isActive && "shimmer")}>{task.source_title}</h1>
                 {!readOnly && (
-                  <Button size="icon-sm" variant="ghost" aria-label="Edit title" className="mt-0.5 shrink-0 text-muted-foreground opacity-100 md:opacity-0 md:group-hover:opacity-100 md:focus-visible:opacity-100"
+                  <Button size="icon-sm" variant="ghost" aria-label="Editar título" className="mt-0.5 shrink-0 text-muted-foreground opacity-100 md:opacity-0 md:group-hover:opacity-100 md:focus-visible:opacity-100"
                     onClick={() => { setIsEditing(true); setEditedTitle(task.source_title); }}>
                     <Edit2 className="size-4" />
                   </Button>
@@ -667,17 +664,17 @@ export default function TaskPage() {
             )}
             <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-2 text-sm text-muted-foreground">
               <StatusBadge status={task.status} />
-              <span className="flex items-center gap-1.5 capitalize">{task.source_type === "youtube" ? <Youtube className="size-3.5" /> : <Upload className="size-3.5" />}{task.source_type}</span>
+              <span className="flex items-center gap-1.5 capitalize">{task.source_type === "youtube" ? <Youtube className="size-3.5" /> : <Upload className="size-3.5" />}{task.source_type === "youtube" ? "YouTube" : "Envio direto"}</span>
               <Tooltip>
                 <TooltipTrigger asChild>
                   <span className="flex cursor-default items-center gap-1.5"><Clock className="size-3.5" />{timeAgo(task.created_at)}</span>
                 </TooltipTrigger>
                 <TooltipContent>
-                  {new Date(task.created_at).toLocaleString(undefined, { year: "numeric", month: "long", day: "numeric", hour: "2-digit", minute: "2-digit", timeZoneName: "short" })}
+                  {new Date(task.created_at).toLocaleString("pt-BR", { year: "numeric", month: "long", day: "numeric", hour: "2-digit", minute: "2-digit", timeZoneName: "short" })}
                 </TooltipContent>
               </Tooltip>
-              {clips.length > 0 && <span className="tabular-nums">{clips.length} {clips.length === 1 ? "clip" : "clips"} · {formatDuration(totalSeconds)} total</span>}
-              {readOnly && <span>Read-only view of another account&apos;s generation.</span>}
+              {clips.length > 0 && <span className="tabular-nums">{clips.length} {clips.length === 1 ? "clipe" : "clipes"} · total de {formatDuration(totalSeconds)}</span>}
+              {readOnly && <span>Modo somente leitura de uma geração de outra conta.</span>}
             </div>
           </div>
 
@@ -688,9 +685,9 @@ export default function TaskPage() {
                 onClick={() => void runAction("cancel", async () => {
                   await requestAction(`${taskApiUrl}/${task.id}/cancel`, "POST");
                   await fetchTaskStatus();
-                  toast.success("Generation cancelled");
+                  toast.success("Geração cancelada");
                 })}>
-                Cancel
+                Cancelar
               </Button>
             )}
             {(task.status === "cancelled" || task.status === "error") && (
@@ -705,44 +702,44 @@ export default function TaskPage() {
                     return;
                   }
                   await fetchTaskStatus();
-                  toast.success("Generation resumed");
+                  toast.success("Geração retomada");
                 })}>
-                <RotateCcw className="size-4" />Resume
+                <RotateCcw className="size-4" />Retomar
               </Button>
             )}
             {task.status === "completed" && clips.length > 0 && (
               <>
                 <Button size="sm" variant="outline" onClick={() => setSettingsSheetOpen(true)}>
-                  <Settings2 className="size-4" /><span className="hidden sm:inline">Restyle</span>
+                  <Settings2 className="size-4" /><span className="hidden sm:inline">Restilizar</span>
                 </Button>
                 <div className="inline-flex items-center rounded-md border shadow-xs">
                   <Button size="sm" variant="ghost" className="rounded-r-none" onClick={handleCopyShareLink} disabled={shareState === "copying"} aria-live="polite">
                     {shareState === "copied" ? <Check className="size-4" /> : <Share2 className="size-4" />}
-                    <span className="max-sm:sr-only">{shareState === "copying" ? "Creating link…" : shareState === "copied" ? "Link copied" : "Copy share link"}</span>
+                    <span className="max-sm:sr-only">{shareState === "copying" ? "Criando link…" : shareState === "copied" ? "Link copiado" : "Copiar link de compartilhamento"}</span>
                   </Button>
                   {task.share_enabled && (
                     <Tooltip>
                       <TooltipTrigger asChild>
-                        <Button size="icon-sm" variant="ghost" className="rounded-l-none border-l" onClick={handleRevokeShareLink} disabled={isRevokingShare} aria-label={isRevokingShare ? "Disabling…" : "Disable share link"}>
+                        <Button size="icon-sm" variant="ghost" className="rounded-l-none border-l" onClick={handleRevokeShareLink} disabled={isRevokingShare} aria-label={isRevokingShare ? "Desativando…" : "Desativar link de compartilhamento"}>
                           <Link2Off className="size-4" />
                         </Button>
                       </TooltipTrigger>
-                      <TooltipContent>Disable share link</TooltipContent>
+                      <TooltipContent>Desativar link de compartilhamento</TooltipContent>
                     </Tooltip>
                   )}
                 </div>
                 <Button size="sm" asChild>
-                  <Link href={`/tasks/${task.id}/edit`}><Clapperboard className="size-4" />Open Editor</Link>
+                  <Link href={`/tasks/${task.id}/edit`}><Clapperboard className="size-4" />Abrir editor</Link>
                 </Button>
               </>
             )}
             <Tooltip>
               <TooltipTrigger asChild>
-                <Button size="icon-sm" variant="ghost" aria-label="Delete generation" className="text-muted-foreground hover:bg-red-50 hover:text-red-600" onClick={() => setShowDeleteDialog(true)}>
+                <Button size="icon-sm" variant="ghost" aria-label="Excluir geração" className="text-muted-foreground hover:bg-red-50 hover:text-red-600" onClick={() => setShowDeleteDialog(true)}>
                   <Trash2 className="size-4" />
                 </Button>
               </TooltipTrigger>
-              <TooltipContent>Delete generation</TooltipContent>
+              <TooltipContent>Excluir geração</TooltipContent>
             </Tooltip>
           </div>
           )}
@@ -750,7 +747,7 @@ export default function TaskPage() {
       )}
 
       <div className="mt-8">
-        {reconnecting && <p role="status" className="mb-4 text-sm text-muted-foreground">Reconnecting to live updates. {readOnly ? "This generation is still processing." : "Your video is still processing."}</p>}
+        {reconnecting && <p role="status" className="mb-4 text-sm text-muted-foreground">Reconectando às atualizações em tempo real. {readOnly ? "Esta geração ainda está em processamento." : "Seu vídeo ainda está em processamento."}</p>}
 
         {isActive && task ? (
           <div className="space-y-8">
@@ -764,20 +761,20 @@ export default function TaskPage() {
         ) : !task ? (
           <div className="flex min-h-[50vh] items-center justify-center"><Loader2 className="size-5 animate-spin text-muted-foreground" /></div>
         ) : task.status === "cancelled" && clips.length === 0 ? (
-          <EmptyState icon={<PauseCircle className="size-7" />} title="Generation cancelled" body="Resume this generation when you are ready to continue." />
+          <EmptyState icon={<PauseCircle className="size-7" />} title="Geração cancelada" body="Retome esta geração quando estiver pronto para continuar." />
         ) : task.status === "error" ? (
-          <EmptyState tone="error" icon={<AlertCircle className="size-7" />} title="Processing Failed" body="There was an error processing your video. Resume to retry from where it stopped, or try another video.">
-            <Button asChild variant="outline"><Link href="/"><ArrowLeft className="size-4" />Back to Home</Link></Button>
+          <EmptyState tone="error" icon={<AlertCircle className="size-7" />} title="Falha no processamento" body="Ocorreu um erro ao processar o seu vídeo. Clique em Retomar para tentar novamente de onde parou ou tente outro vídeo.">
+            <Button asChild variant="outline"><Link href="/"><ArrowLeft className="size-4" />Voltar ao início</Link></Button>
           </EmptyState>
         ) : clips.length === 0 ? (
-          <EmptyState icon={<AlertCircle className="size-7" />} title="No Clips Generated" body="The generation completed but no clips were generated. The video may not have had suitable content for clipping.">
-            <Button asChild><Link href="/"><ArrowLeft className="size-4" />Try Another Video</Link></Button>
+          <EmptyState icon={<AlertCircle className="size-7" />} title="Nenhum clipe gerado" body="A geração foi concluída, mas nenhum clipe foi identificado. O vídeo pode não ter momentos adequados para corte vertical.">
+            <Button asChild><Link href="/"><ArrowLeft className="size-4" />Tentar outro vídeo</Link></Button>
           </EmptyState>
         ) : (
           <>
             <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
-              <div className="inline-flex rounded-lg border bg-background p-0.5" role="tablist" aria-label="Sort clips">
-                {([["score", "Best first"], ["timeline", "Timeline"]] as const).map(([value, label]) => (
+              <div className="inline-flex rounded-lg border bg-background p-0.5" role="tablist" aria-label="Ordenar clipes">
+                {([["score", "Melhores primeiro"], ["timeline", "Linha do tempo"]] as const).map(([value, label]) => (
                   <button key={value} type="button" role="tab" aria-selected={sortBy === value} onClick={() => setSortBy(value)}
                     className={cn("h-7 rounded-md px-3 text-xs font-medium transition-colors", sortBy === value ? "bg-foreground text-background" : "text-muted-foreground hover:text-foreground")}>
                     {label}
@@ -785,9 +782,9 @@ export default function TaskPage() {
                 ))}
               </div>
               <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                <span className="hidden sm:inline">Download as</span>
+                <span className="hidden sm:inline">Baixar como</span>
                 <Select value={exportPreset} onValueChange={setExportPreset}>
-                  <SelectTrigger size="sm" aria-label="Download format" className="h-8 min-w-[112px] bg-background"><SelectValue /></SelectTrigger>
+                  <SelectTrigger size="sm" aria-label="Formato de download" className="h-8 min-w-[112px] bg-background"><SelectValue /></SelectTrigger>
                   <SelectContent align="end">
                     <SelectItem value="original">Original</SelectItem>
                     {EXPORT_PRESETS.map((preset) => <SelectItem key={preset.id} value={preset.id}>{preset.label}</SelectItem>)}
@@ -835,12 +832,12 @@ export default function TaskPage() {
       <Sheet open={settingsSheetOpen} onOpenChange={setSettingsSheetOpen}>
         <SheetContent side="right" className="overflow-y-auto sm:max-w-md">
           <SheetHeader>
-            <SheetTitle className="flex items-center gap-2"><Settings2 className="size-4" />Generation settings</SheetTitle>
-            <SheetDescription>Configure font, caption, and cleanup settings for this generation&apos;s clips.</SheetDescription>
+            <SheetTitle className="flex items-center gap-2"><Settings2 className="size-4" />Configurações da geração</SheetTitle>
+            <SheetDescription>Configure fonte, legendas e limpeza para os clipes desta geração.</SheetDescription>
           </SheetHeader>
             <div className="space-y-5 px-4">
               <div className="space-y-1.5">
-                <label className="text-xs font-medium text-gray-500">Font</label>
+                <label className="text-xs font-medium text-gray-500">Fonte</label>
                 <Select
                   value={projectFontFamily ?? FONT_TEMPLATE_DEFAULT_VALUE}
                   onValueChange={(value) =>
@@ -848,10 +845,10 @@ export default function TaskPage() {
                   }
                 >
                   <SelectTrigger>
-                    <SelectValue placeholder="Template default" />
+                    <SelectValue placeholder="Padrão do modelo" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value={FONT_TEMPLATE_DEFAULT_VALUE}>Template default</SelectItem>
+                    <SelectItem value={FONT_TEMPLATE_DEFAULT_VALUE}>Padrão do modelo</SelectItem>
                     {availableFonts.map((font) => (
                       <FontSelectOption
                         key={font.name}
@@ -868,7 +865,7 @@ export default function TaskPage() {
 
               <div className="space-y-1.5">
                 <div className="flex items-center justify-between">
-                  <label className="text-xs font-medium text-gray-500">Color</label>
+                  <label className="text-xs font-medium text-gray-500">Cor</label>
                   <label className="flex items-center gap-1.5 text-xs text-gray-500 cursor-pointer">
                     <input
                       type="checkbox"
@@ -876,7 +873,7 @@ export default function TaskPage() {
                       onChange={(e) => setProjectFontColor(e.target.checked ? null : "#FFFFFF")}
                       className="rounded"
                     />
-                    Template default
+                    Padrão do modelo
                   </label>
                 </div>
                 <div className="flex items-center gap-2">
@@ -891,17 +888,17 @@ export default function TaskPage() {
                     value={projectFontColor ?? ""}
                     onChange={(e) => setProjectFontColor(e.target.value)}
                     disabled={projectFontColor === null}
-                    placeholder="Template default"
+                    placeholder="Padrão do modelo"
                   />
                 </div>
               </div>
 
               <div className="space-y-1.5">
-                <label className="text-xs font-medium text-gray-500">Caption Template</label>
+                <label className="text-xs font-medium text-gray-500">Modelo de legenda</label>
                 <Select value={projectCaptionTemplate} onValueChange={setProjectCaptionTemplate}>
                   <SelectTrigger>
                     <SelectValue>
-                      {availableTemplates.find((t) => t.id === projectCaptionTemplate)?.name || "Select style"}
+                      {availableTemplates.find((t) => t.id === projectCaptionTemplate)?.name || "Selecione o estilo"}
                     </SelectValue>
                   </SelectTrigger>
                   <SelectContent>
@@ -913,15 +910,15 @@ export default function TaskPage() {
                         </div>
                       </SelectItem>
                     ))}
-                    {availableTemplates.length === 0 && <SelectItem value="default">Default</SelectItem>}
+                    {availableTemplates.length === 0 && <SelectItem value="default">Padrão</SelectItem>}
                   </SelectContent>
                 </Select>
               </div>
 
               <div className="rounded-lg border bg-gray-50 p-3 space-y-3">
                 <div>
-                  <div className="text-sm font-medium text-gray-900">Clip cleanup</div>
-                  <div className="text-xs text-gray-500">Apply silence and filler-word cuts to regenerated clips.</div>
+                  <div className="text-sm font-medium text-gray-900">Limpeza do corte</div>
+                  <div className="text-xs text-gray-500">Aplica cortes de silêncio e palavras de preenchimento ao regenerar os clipes.</div>
                 </div>
 
                 <label className="flex items-center gap-2 text-sm text-gray-700">
@@ -931,11 +928,11 @@ export default function TaskPage() {
                     onChange={(e) => setProjectCutLongPauses(e.target.checked)}
                     className="rounded"
                   />
-                  Shorten long pauses
+                  Encurtar pausas longas
                 </label>
 
                 <div className="space-y-1.5">
-                  <label className="text-xs font-medium text-gray-500">Pause threshold (ms)</label>
+                  <label className="text-xs font-medium text-gray-500">Limite de pausa (ms)</label>
                   <Input
                     type="number"
                     min={250}
@@ -954,15 +951,15 @@ export default function TaskPage() {
                     onChange={(e) => setProjectRemoveFillerWords(e.target.checked)}
                     className="rounded"
                   />
-                  Remove filler words
+                  Remover palavras de preenchimento
                 </label>
 
                 <div className="space-y-1.5">
-                  <label className="text-xs font-medium text-gray-500">Extra filtered words or phrases</label>
+                  <label className="text-xs font-medium text-gray-500">Palavras ou termos adicionais para cortar</label>
                   <Input
                     value={projectFilteredWords}
                     onChange={(e) => setProjectFilteredWords(e.target.value)}
-                    placeholder="basically, literally, to be honest"
+                    placeholder="tipo assim, né, quer dizer"
                   />
                 </div>
               </div>
@@ -974,18 +971,18 @@ export default function TaskPage() {
                 onClick={handleApplyProjectSettings}
                 disabled={isApplyingSettings}
               >
-                {isApplyingSettings ? "Applying..." : "Apply to All Clips"}
+                {isApplyingSettings ? "Aplicando..." : "Aplicar a todos os clipes"}
               </Button>
             </SheetFooter>
         </SheetContent>
       </Sheet>
       <AlertDialog open={fontToDelete !== null} onOpenChange={(open) => { if (!open) setFontToDelete(null); }}>
         <AlertDialogContent>
-          <AlertDialogHeader><AlertDialogTitle>Delete font?</AlertDialogTitle>
-            <AlertDialogDescription>Delete {fontToDelete?.display_name}? This cannot be undone.</AlertDialogDescription>
+          <AlertDialogHeader><AlertDialogTitle>Excluir fonte?</AlertDialogTitle>
+            <AlertDialogDescription>Deseja excluir a fonte {fontToDelete?.display_name}? Esta ação não pode ser desfeita.</AlertDialogDescription>
           </AlertDialogHeader>
-          <AlertDialogFooter><AlertDialogCancel>Keep font</AlertDialogCancel>
-            <AlertDialogAction onClick={() => { if (fontToDelete) void handleDeleteFont(fontToDelete); setFontToDelete(null); }}>Delete font</AlertDialogAction>
+          <AlertDialogFooter><AlertDialogCancel>Manter fonte</AlertDialogCancel>
+            <AlertDialogAction onClick={() => { if (fontToDelete) void handleDeleteFont(fontToDelete); setFontToDelete(null); }}>Excluir fonte</AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
@@ -993,16 +990,15 @@ export default function TaskPage() {
       <AlertDialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Delete Generation</AlertDialogTitle>
+            <AlertDialogTitle>Excluir geração</AlertDialogTitle>
             <AlertDialogDescription>
-              Are you sure you want to delete this generation? This will permanently delete all clips and cannot be
-              undone.
+              Tem certeza de que deseja excluir esta geração? Isso excluirá permanentemente todos os clipes e não pode ser desfeito.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel disabled={isDeleting}>Cancel</AlertDialogCancel>
+            <AlertDialogCancel disabled={isDeleting}>Cancelar</AlertDialogCancel>
             <AlertDialogAction onClick={handleDeleteTask} disabled={isDeleting} className="bg-red-600 hover:bg-red-700">
-              {isDeleting ? "Deleting..." : "Delete"}
+              {isDeleting ? "Excluindo..." : "Excluir"}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
@@ -1012,18 +1008,18 @@ export default function TaskPage() {
       <AlertDialog open={!!deletingClipId} onOpenChange={(open) => !open && setDeletingClipId(null)}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Delete Clip</AlertDialogTitle>
+            <AlertDialogTitle>Excluir clipe</AlertDialogTitle>
             <AlertDialogDescription>
-              Are you sure you want to delete this clip? This action cannot be undone.
+              Tem certeza de que deseja excluir este clipe? Esta ação não pode ser desfeita.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogCancel>Cancelar</AlertDialogCancel>
             <AlertDialogAction
               onClick={() => deletingClipId && handleDeleteClip(deletingClipId)}
               className="bg-red-600 hover:bg-red-700"
             >
-              Delete
+              Excluir
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

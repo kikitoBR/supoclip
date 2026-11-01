@@ -15,11 +15,11 @@ it("opens the full transcript when the preview is truncated", async () => {
 
   render(<TranscriptPreview text="A long transcript that continues beyond the preview." clipTitle="Launch clip" />)
 
-  await user.click(await screen.findByRole("button", { name: "See more" }))
+  await user.click(await screen.findByRole("button", { name: "Ver mais" }))
 
   expect(screen.getByRole("dialog")).toBeInTheDocument()
-  expect(screen.getByRole("heading", { name: "Full transcript" })).toBeInTheDocument()
-  expect(screen.getByText("Transcript for Launch clip")).toBeInTheDocument()
+  expect(screen.getByRole("heading", { name: "Transcrição completa" })).toBeInTheDocument()
+  expect(screen.getByText("Transcrição de Launch clip")).toBeInTheDocument()
 })
 
 it("does not show a modal action when the whole transcript fits", () => {
@@ -28,5 +28,5 @@ it("does not show a modal action when the whole transcript fits", () => {
 
   render(<TranscriptPreview text="A short transcript." />)
 
-  expect(screen.queryByRole("button", { name: "See more" })).not.toBeInTheDocument()
+  expect(screen.queryByRole("button", { name: "Ver mais" })).not.toBeInTheDocument()
 })

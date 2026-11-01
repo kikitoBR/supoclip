@@ -39,13 +39,13 @@ const DynamicVideoPlayer: React.FC<DynamicVideoPlayerProps> = ({
         poster={poster}
         className="absolute inset-0 w-full h-full object-contain"
         tabIndex={0}
-        aria-label="Video player"
+        aria-label="Reprodutor de vídeo"
       >
-        Your browser does not support the video tag.
+        Seu navegador não suporta a tag de vídeo.
       </video>
       {failedSrc === src && <div role="alert" className="absolute inset-0 flex flex-col items-center justify-center gap-3 bg-black/90 px-4 text-center text-sm text-white">
-        <p>Couldn&apos;t load this clip.</p>
-        <Button variant="secondary" size="sm" onClick={() => { setFailedSrc(null); videoRef.current?.load(); }}>Retry playback</Button>
+        <p>Não foi possível carregar este clipe.</p>
+        <Button variant="secondary" size="sm" onClick={() => { setFailedSrc(null); videoRef.current?.load(); }}>Tentar novamente</Button>
       </div>}
     </div>
   );

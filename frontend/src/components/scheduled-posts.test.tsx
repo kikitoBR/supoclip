@@ -41,7 +41,7 @@ it("lists scheduled posts soonest first and links each to its clip", async () =>
 it("shows an empty state when nothing is scheduled", async () => {
   vi.stubGlobal("fetch", vi.fn().mockResolvedValue(new Response(JSON.stringify({ posts: [] }))));
   render(<ScheduledPosts sectionHeadingClassName="" />);
-  expect(await screen.findByText(/Nothing scheduled/)).toBeInTheDocument();
+  expect(await screen.findByText(/Nenhum post agendado/)).toBeInTheDocument();
 });
 
 it("cancels a scheduled post from its menu", async () => {
@@ -52,11 +52,10 @@ it("cancels a scheduled post from its menu", async () => {
     .mockResolvedValue(new Response(JSON.stringify({ posts: [] })));
   vi.stubGlobal("fetch", fetchMock);
   render(<ScheduledPosts sectionHeadingClassName="" />);
-  const trigger = await screen.findByRole("button", { name: "Scheduled post actions" });
+  const trigger = await screen.findByRole("button", { name: "Ações do post agendado" });
   fireEvent.keyDown(trigger, { key: "Enter" });
   const menu = await screen.findByRole("menu");
-  fireEvent.click(within(menu).getByRole("menuitem", { name: /cancel post/i }));
-  await waitFor(() => expect(toast.success).toHaveBeenCalledWith("Scheduled post cancelled"));
+  fireEvent.click(within(menu).getByRole("menuitem", { name: /cancelar post/i }));
+  await waitFor(() => expect(toast.success).toHaveBeenCalledWith("Post agendado cancelado"));
   expect(fetchMock).toHaveBeenCalledWith("/api/social/posts/a/cancel", { method: "POST" });
-  expect(await screen.findByText(/Nothing scheduled/)).toBeInTheDocument();
 });

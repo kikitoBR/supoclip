@@ -120,18 +120,18 @@ export const PROVIDER_LABELS: Record<SocialProviderId, string> = {
 };
 
 export const PRIVACY_LABELS: Record<SocialPrivacyLevel, string> = {
-  public: "Public",
-  unlisted: "Unlisted",
-  private: "Private (only me)",
+  public: "Público",
+  unlisted: "Não listado",
+  private: "Privado (somente eu)",
 };
 
 export const POST_STATUS_LABELS: Record<SocialPostStatus, string> = {
-  scheduled: "Scheduled",
-  queued: "Queued",
-  publishing: "Publishing",
-  published: "Published",
-  failed: "Failed",
-  cancelled: "Cancelled",
+  scheduled: "Agendado",
+  queued: "Na fila",
+  publishing: "Publicando",
+  published: "Publicado",
+  failed: "Falhou",
+  cancelled: "Cancelado",
 };
 
 export const ACTIVE_POST_STATUSES: SocialPostStatus[] = ["queued", "publishing"];
@@ -147,7 +147,7 @@ export function formatMetric(value: number | null | undefined): string {
   if (value === null || value === undefined || Number.isNaN(value)) return "—";
   if (value >= 1_000_000) return `${(value / 1_000_000).toFixed(1)}M`;
   if (value >= 10_000) return `${(value / 1_000).toFixed(1)}k`;
-  return Math.round(value).toLocaleString();
+  return Math.round(value).toLocaleString("pt-BR");
 }
 
 export function formatPercent(value: number | null | undefined): string {
@@ -159,7 +159,7 @@ export function formatDateTime(value: string | null | undefined): string {
   if (!value) return "—";
   const date = new Date(value);
   if (Number.isNaN(date.getTime())) return "—";
-  return date.toLocaleString();
+  return date.toLocaleString("pt-BR");
 }
 
 export function parseHashtagInput(value: string): string[] {
@@ -172,13 +172,13 @@ export function parseHashtagInput(value: string): string[] {
 export function durationBucketLabel(bucket: string): string {
   switch (bucket) {
     case "under_20s":
-      return "Under 20s";
+      return "Menos de 20s";
     case "20_to_35s":
       return "20–35s";
     case "35_to_50s":
       return "35–50s";
     case "over_50s":
-      return "Over 50s";
+      return "Mais de 50s";
     default:
       return bucket;
   }
