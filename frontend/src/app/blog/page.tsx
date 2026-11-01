@@ -9,16 +9,16 @@ import { HOSTED_APP_URL, blogPosts, getSiteUrl } from "@/lib/blog-posts";
 import { getMarketingLinks } from "@/lib/marketing-links";
 
 export const metadata: Metadata = {
-  title: { absolute: "SupoClip Blog | AI Video Clipping Guides" },
+  title: { absolute: "Blog do SupoClip | Guias de Cortes de Vídeo com IA" },
   description:
-    "Practical guides, product comparisons, and creator workflows for turning long-form video into social-ready shorts with SupoClip.",
+    "Guias práticos, comparações de ferramentas e fluxos de trabalho para criadores transformarem vídeos longos em shorts prontos para postar com o SupoClip.",
   alternates: {
     canonical: `${getSiteUrl()}/blog`,
   },
   openGraph: {
-    title: "SupoClip Blog",
+    title: "Blog do SupoClip",
     description:
-      "Guides and comparisons for AI video clipping, auto captions, vertical reframing, and short-form video workflows.",
+      "Guias e comparativos para criação de clipes com IA, legendas automáticas, reenquadramento vertical e fluxos de vídeos curtos.",
     type: "website",
     url: `${getSiteUrl()}/blog`,
     siteName: "SupoClip",
@@ -44,12 +44,12 @@ export default function BlogIndexPage() {
           <div className="flex items-center gap-2">
             <a href={HOSTED_APP_URL} target="_blank" rel="noopener noreferrer">
               <Button variant="ghost" size="sm" className="hidden sm:inline-flex">
-                Hosted App
+                Abrir App
                 <ExternalLink className="h-3.5 w-3.5" />
               </Button>
             </a>
             <Link href="/sign-up">
-              <Button size="sm">Start Clipping</Button>
+              <Button size="sm">Começar a Criar Clipes</Button>
             </Link>
           </div>
         </div>
@@ -60,12 +60,12 @@ export default function BlogIndexPage() {
           <div className="mb-5 flex flex-wrap gap-2">
             <Badge variant="secondary" className="gap-2">
               <Sparkles className="h-3.5 w-3.5" />
-              Creator Guides
+              Guias para Criadores
             </Badge>
             <a href={HOSTED_APP_URL} target="_blank" rel="noopener noreferrer">
               <Badge variant="outline" className="gap-2">
                 <ExternalLink className="h-3.5 w-3.5" />
-                Try hosted SupoClip
+                Testar SupoClip na nuvem
               </Badge>
             </a>
           </div>
@@ -74,11 +74,11 @@ export default function BlogIndexPage() {
               className="text-4xl font-extrabold tracking-tight sm:text-5xl"
               style={{ fontFamily: "var(--font-syne), var(--font-geist-sans), system-ui" }}
             >
-              Practical guides for turning long videos into better shorts.
+              Guias práticos para transformar vídeos longos em shorts melhores.
             </h1>
             <p className="mt-5 text-base leading-8 text-muted-foreground sm:text-lg">
-              Comparisons, workflows, and editing advice for creators who want a repeatable clipping workflow,
-              cleaner captions, and more control over their video pipeline.
+              Comparativos, fluxos de trabalho e dicas de edição para criadores que desejam um processo
+              consistente, legendas limpas e maior controle da sua produção.
             </p>
           </div>
         </div>
@@ -108,24 +108,57 @@ export default function BlogIndexPage() {
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
               <span className="inline-flex items-center gap-2 text-sm font-semibold">
-                Read article
+                Ler artigo
                 <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
               </span>
               <span className="inline-flex items-center gap-2 text-sm text-muted-foreground">
                 <Github className="h-4 w-4" />
-                Open source
+                Código aberto
               </span>
             </div>
           </article>
 
-          {featuredPost.image ? <Image src={featuredPost.image.src} alt={featuredPost.image.alt} width={featuredPost.image.width} height={featuredPost.image.height} sizes="(max-width: 768px) 100vw, 420px" className="h-full w-full rounded-lg object-cover" /> : <div className="rounded-lg border bg-muted/45 p-5"><p className="font-semibold">Open-source clipping</p></div>}
-
+          {featuredPost.image ? (
+            <Image
+              src={featuredPost.image.src}
+              alt={featuredPost.image.alt}
+              width={featuredPost.image.width}
+              height={featuredPost.image.height}
+              sizes="(max-width: 768px) 100vw, 420px"
+              className="h-full w-full rounded-lg object-cover"
+            />
+          ) : (
+            <div className="rounded-lg border bg-muted/45 p-5">
+              <p className="font-semibold">Criação de clipes em código aberto</p>
+            </div>
+          )}
         </Link>
 
-        {blogPosts.length > 1 && <section className="mt-12" aria-labelledby="more-articles"><h2 id="more-articles" className="text-2xl font-bold">More clipping guides</h2><div className="mt-6 grid gap-4 sm:grid-cols-2">{blogPosts.slice(1).map(post => <Link key={post.slug} href={`/blog/${post.slug}`} className="rounded-xl border p-6 hover:border-foreground/30"><p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">{post.category}</p><h3 className="mt-3 text-xl font-bold">{post.title}</h3><p className="mt-3 text-sm leading-7 text-muted-foreground">{post.summary}</p><span className="mt-5 inline-flex items-center gap-2 text-sm font-semibold">Read article<ArrowRight className="h-4 w-4" /></span></Link>)}</div></section>}
+        {blogPosts.length > 1 && (
+          <section className="mt-12" aria-labelledby="more-articles">
+            <h2 id="more-articles" className="text-2xl font-bold">Mais guias de clipes</h2>
+            <div className="mt-6 grid gap-4 sm:grid-cols-2">
+              {blogPosts.slice(1).map((post) => (
+                <Link
+                  key={post.slug}
+                  href={`/blog/${post.slug}`}
+                  className="rounded-xl border p-6 hover:border-foreground/30"
+                >
+                  <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">{post.category}</p>
+                  <h3 className="mt-3 text-xl font-bold">{post.title}</h3>
+                  <p className="mt-3 text-sm leading-7 text-muted-foreground">{post.summary}</p>
+                  <span className="mt-5 inline-flex items-center gap-2 text-sm font-semibold">
+                    Ler artigo<ArrowRight className="h-4 w-4" />
+                  </span>
+                </Link>
+              ))}
+            </div>
+          </section>
+        )}
+
         <section className="mt-14" aria-labelledby="product-guides-heading">
           <h2 id="product-guides-heading" className="text-2xl font-bold tracking-tight">
-            Product guides
+            Guias do produto
           </h2>
           <div className="mt-6 grid gap-4 md:grid-cols-2 lg:grid-cols-4">
             {[...getMarketingLinks("product"), ...getMarketingLinks("guide").filter((link) => !link.href.startsWith("/blog/"))].map(({ href, label, description }) => (

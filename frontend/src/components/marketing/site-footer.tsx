@@ -9,21 +9,21 @@ const linkClassName = "hover:text-foreground transition-colors";
 /** Crawlable footer shared by the landing page, SEO pages, and blog. */
 export function SiteFooter() {
   const columns = [
-    { heading: "Guides", links: getMarketingLinks("guide").map(({ href, label }) => ({ href, label })) },
+    { heading: "Guias", links: getMarketingLinks("guide").map(({ href, label }) => ({ href, label })) },
     {
-      heading: "Compare",
-      links: [...getMarketingLinks("comparison").map(({ href, label }) => ({ href, label })), { href: "/blog", label: "All articles" }],
+      heading: "Comparativos",
+      links: [...getMarketingLinks("comparison").map(({ href, label }) => ({ href, label })), { href: "/blog", label: "Todos os artigos" }],
     },
     {
-      heading: "Product",
+      heading: "Produto",
       links: [
         ...getMarketingLinks("product").map(({ href, label }) => ({ href, label })),
-        { href: "/sign-up", label: "Start clipping" },
-        { href: "/#pricing", label: "Pricing" },
-        { href: "/affiliate", label: "Affiliate" },
-        { href: "/status", label: "Service status" },
-        { href: "/privacy", label: "Privacy" },
-        { href: "/terms", label: "Terms" },
+        { href: "/sign-up", label: "Começar a criar clipes" },
+        { href: "/#pricing", label: "Preços" },
+        { href: "/affiliate", label: "Afiliados" },
+        { href: "/status", label: "Status do serviço" },
+        { href: "/privacy", label: "Privacidade" },
+        { href: "/terms", label: "Termos de uso" },
       ],
     },
   ];
@@ -39,16 +39,16 @@ export function SiteFooter() {
             </span>
           </Link>
           <p className="mt-3 max-w-xs text-xs leading-6 text-muted-foreground">
-            Open-source AI video clipper. Use the hosted app or run it on your own infrastructure.
+            Criador de clipes com IA de código aberto. Use a versão web ou execute na sua própria infraestrutura.
           </p>
           <div className="mt-4 flex gap-4 text-xs text-muted-foreground">
             <a href={GITHUB_URL} target="_blank" rel="noopener noreferrer" className={linkClassName}>GitHub</a>
-            <a href={APP_STORE_URL} target="_blank" rel="noopener noreferrer" className={linkClassName}>iOS App</a>
+            <a href={APP_STORE_URL} target="_blank" rel="noopener noreferrer" className={linkClassName}>App iOS</a>
             <span>&copy; {new Date().getFullYear()}</span>
           </div>
         </div>
         {columns.map((column) => (
-          <nav key={column.heading} aria-label={`${column.heading} links`}>
+          <nav key={column.heading} aria-label={`Links de ${column.heading}`}>
             <p className="text-xs font-semibold uppercase tracking-[0.16em]">{column.heading}</p>
             <ul className="mt-4 space-y-2.5 text-xs text-muted-foreground">
               {column.links.map((link) => (

@@ -90,75 +90,75 @@ function ScrollReveal({
 const FEATURES = [
   {
     icon: ScanFace,
-    title: "Face-Centered Cropping",
+    title: "Enquadramento Focado no Rosto",
     description:
-      "MediaPipe + OpenCV detects and tracks faces for perfect 9:16 vertical framing.",
+      "MediaPipe + OpenCV detecta e rastreia rostos para um enquadramento vertical 9:16 perfeito.",
   },
   {
     icon: Type,
-    title: "Word-Synced Subtitles",
+    title: "Legendas Sincronizadas",
     description:
-      "Word-level timestamps power perfectly timed, animated captions on every clip.",
+      "Carimbos no nível de palavras geram legendas dinâmicas perfeitamente sincronizadas em cada clipe.",
   },
   {
     icon: Target,
-    title: "Virality Scoring",
+    title: "Pontuação de Viralidade",
     description:
-      "AI rates hook, engagement, value, and shareability — scored 0 to 100.",
+      "A IA avalia gancho, engajamento, valor e compartilhamento — com pontuação de 0 a 100.",
   },
   {
     icon: Film,
-    title: "B-Roll Overlays",
+    title: "Inserção de B-Roll",
     description:
-      "Automatically source and overlay relevant stock footage from Pexels.",
+      "Encontre e sobreponha automaticamente vídeos de apoio relevantes diretamente do Pexels.",
   },
   {
     icon: Sparkles,
-    title: "Caption Templates",
+    title: "Modelos de Legendas",
     description:
-      "Multiple animation styles and font presets to match your brand.",
+      "Diversos estilos de animação e predefinições de fontes para combinar com a identidade da sua marca.",
   },
   {
     icon: MonitorPlay,
-    title: "Platform Export",
+    title: "Exportação para Redes",
     description:
-      "One-click presets for TikTok, Reels, and Shorts with optimized encoding.",
+      "Predefinições com um clique para TikTok, Reels e Shorts com codificação de vídeo otimizada.",
   },
 ];
 
 function getPlans() {
   return [
     {
-      name: "Self-Hosted",
+      name: "Auto-hospedado",
       price: "$0",
-      period: "forever",
-      description: "Run on your own computer. No subscription or monthly video limit.",
+      period: "para sempre",
+      description: "Execute no seu próprio computador. Sem assinatura e sem limite mensal de vídeos.",
       features: [
-        "Face-centered cropping",
-        "Word-synced subtitles",
-        "Virality scoring",
-        "All export presets",
-        "Full source code access",
+        "Enquadramento focado no rosto",
+        "Legendas sincronizadas palavra a palavra",
+        "Pontuação de viralidade",
+        "Todas as predefinições de exportação",
+        "Acesso total ao código-fonte",
       ],
-      cta: "View on GitHub",
+      cta: "Ver no GitHub",
       ctaHref: GITHUB_URL,
       highlighted: false,
     },
     ...getPublicBillingPlans().map((plan) => ({
       name: plan.name,
       price: `$${plan.priceMonthly}`,
-      period: "/month",
+      period: "/mês",
       description: plan.description,
       features: [
-        `${plan.generationLimit} generations per month`,
-        "Face tracking, captions and virality scoring",
-        "B-Roll overlays",
-        "Caption templates",
-        "Platform export presets",
+        `${plan.generationLimit} gerações por mês`,
+        "Rastreamento facial, legendas e pontuação de viralidade",
+        "Inserção de B-Roll",
+        "Modelos de legendas",
+        "Predefinições de exportação para redes",
         ...(
           plan.id === "scale"
-            ? ["YouTube videos up to 3 hours", "Priority processing"]
-            : ["Early access to new features"]
+            ? ["Vídeos do YouTube de até 3 horas", "Processamento prioritário"]
+            : ["Acesso antecipado a novos recursos"]
         ),
       ],
       cta: plan.cta,
@@ -171,23 +171,23 @@ function getPlans() {
 const STEPS = [
   {
     num: "01",
-    title: "Drop a link or file",
+    title: "Envie um link ou arquivo",
     description:
-      "Paste any YouTube URL or drag-and-drop your own video file.",
+      "Cole qualquer URL do YouTube ou arraste e solte seu próprio arquivo de vídeo.",
     icon: Youtube,
   },
   {
     num: "02",
-    title: "AI finds the gold",
+    title: "A IA encontra os destaques",
     description:
-      "Transcription, virality scoring, and segment detection surface the best moments.",
+      "Transcrição, pontuação de viralidade e detecção de segmentos revelam os momentos mais impactantes.",
     icon: Wand2,
   },
   {
     num: "03",
-    title: "Export & publish",
+    title: "Exporte e publique",
     description:
-      "Get vertical, captioned, face-tracked clips ready for every platform.",
+      "Receba clipes verticais, com legendas e enquadramento automático, prontos para todas as redes.",
     icon: Share2,
   },
 ];
@@ -249,25 +249,25 @@ export default function LandingPage() {
               href="#how-it-works"
               className="text-sm text-muted-foreground hover:text-foreground transition-colors"
             >
-              How It Works
+              Como Funciona
             </a>
             <a
               href="#features"
               className="text-sm text-muted-foreground hover:text-foreground transition-colors"
             >
-              Features
+              Recursos
             </a>
             <a
               href="#pricing"
               className="text-sm text-muted-foreground hover:text-foreground transition-colors"
             >
-              Pricing
+              Preços
             </a>
             <a
               href="#open-source"
               className="text-sm text-muted-foreground hover:text-foreground transition-colors"
             >
-              Open Source
+              Código Aberto
             </a>
             <Link
               href="/blog"
@@ -279,7 +279,7 @@ export default function LandingPage() {
               href="/affiliate"
               className="text-sm text-muted-foreground hover:text-foreground transition-colors"
             >
-              Affiliate
+              Afiliados
             </Link>
           </div>
 
@@ -289,17 +289,17 @@ export default function LandingPage() {
               <>
                 <Link href="/sign-in">
                   <Button variant="ghost" size="sm">
-                    Sign In
+                    Entrar
                   </Button>
                 </Link>
                 <Link href="/sign-up">
-                  <Button size="sm">Get Started</Button>
+                  <Button size="sm">Começar</Button>
                 </Link>
               </>
             ) : (
               <a href={HOSTED_APP_URL} target="_blank" rel="noopener noreferrer">
                 <Button size="sm">
-                  Open Hosted App
+                  Abrir App
                   <ExternalLink className="w-3.5 h-3.5" />
                 </Button>
               </a>
@@ -312,7 +312,7 @@ export default function LandingPage() {
             size="sm"
             onClick={() => setMobileNavOpen(!mobileNavOpen)}
             className="md:hidden p-2"
-            aria-label="Toggle menu"
+            aria-label="Alternar menu"
           >
             {mobileNavOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
           </Button>
@@ -327,28 +327,28 @@ export default function LandingPage() {
                 onClick={() => setMobileNavOpen(false)}
                 className="block rounded-lg px-3 py-2.5 text-sm text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors"
               >
-                How It Works
+                Como Funciona
               </a>
               <a
                 href="#features"
                 onClick={() => setMobileNavOpen(false)}
                 className="block rounded-lg px-3 py-2.5 text-sm text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors"
               >
-                Features
+                Recursos
               </a>
               <a
                 href="#pricing"
                 onClick={() => setMobileNavOpen(false)}
                 className="block rounded-lg px-3 py-2.5 text-sm text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors"
               >
-                Pricing
+                Preços
               </a>
               <a
                 href="#open-source"
                 onClick={() => setMobileNavOpen(false)}
                 className="block rounded-lg px-3 py-2.5 text-sm text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors"
               >
-                Open Source
+                Código Aberto
               </a>
               <Link
                 href="/blog"
@@ -362,7 +362,7 @@ export default function LandingPage() {
                 onClick={() => setMobileNavOpen(false)}
                 className="block rounded-lg px-3 py-2.5 text-sm text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors"
               >
-                Affiliate
+                Afiliados
               </Link>
               <Separator className="my-2" />
               <div className="flex flex-col gap-2 px-3 pt-1">
@@ -370,17 +370,17 @@ export default function LandingPage() {
                   <>
                     <Link href="/sign-in" onClick={() => setMobileNavOpen(false)}>
                       <Button variant="outline" size="sm" className="w-full">
-                        Sign In
+                        Entrar
                       </Button>
                     </Link>
                     <Link href="/sign-up" onClick={() => setMobileNavOpen(false)}>
-                      <Button size="sm" className="w-full">Get Started</Button>
+                      <Button size="sm" className="w-full">Começar</Button>
                     </Link>
                   </>
                 ) : (
                   <a href={HOSTED_APP_URL} target="_blank" rel="noopener noreferrer">
                     <Button size="sm" className="w-full">
-                      Open Hosted App
+                      Abrir App
                       <ExternalLink className="w-3.5 h-3.5" />
                     </Button>
                   </a>
@@ -414,7 +414,7 @@ export default function LandingPage() {
                 style={{ animation: "landing-fade-in-up 0.6s ease-out both" }}
               >
                 <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
-                Open Source & Self-Hostable
+                Código Aberto & Auto-hospedável
               </Badge>
 
               <h1
@@ -425,9 +425,9 @@ export default function LandingPage() {
                   animation: "landing-fade-in-up 0.6s ease-out 0.1s both",
                 }}
               >
-                Open-source AI video clipper
+                Criador de clipes com IA
                 <br />
-                for better shorts
+                para shorts que viralizam
               </h1>
 
               <p
@@ -436,9 +436,9 @@ export default function LandingPage() {
                   animation: "landing-fade-in-up 0.6s ease-out 0.2s both",
                 }}
               >
-                Turn long videos into captioned YouTube Shorts, TikToks, and Reels
-                with AI-assisted highlight detection, virality scoring, and
-                face-aware vertical crops.
+                Transforme vídeos longos em YouTube Shorts, TikToks e Reels com
+                legendas, detecção inteligente de destaques, pontuação de viralidade
+                e cortes verticais inteligentes que acompanham o rosto.
               </p>
 
               <div
@@ -450,14 +450,14 @@ export default function LandingPage() {
                 {authEnabled ? (
                   <Link href="/sign-up">
                     <Button size="lg" className="px-8 h-12 text-sm">
-                      Start Clipping
+                      Começar a Criar Clipes
                       <ArrowRight className="w-4 h-4" />
                     </Button>
                   </Link>
                 ) : (
                   <a href={HOSTED_APP_URL} target="_blank" rel="noopener noreferrer">
                     <Button size="lg" className="px-8 h-12 text-sm">
-                      Use Hosted App
+                      Usar App na Nuvem
                       <ExternalLink className="w-4 h-4" />
                     </Button>
                   </a>
@@ -469,19 +469,19 @@ export default function LandingPage() {
                 >
                   <Button variant="outline" size="lg" className="px-8 h-12 text-sm">
                     <Github className="w-4 h-4" />
-                    View Source
+                    Ver Código-fonte
                   </Button>
                 </a>
                 <a
                   href={APP_STORE_URL}
                   target="_blank"
                   rel="noopener noreferrer"
-                  aria-label="Download SupoClip on the App Store"
+                  aria-label="Baixar o SupoClip na App Store"
                   className="flex items-center"
                 >
                   <Image
                     src="/app-store-badge.svg"
-                    alt="Download on the App Store"
+                    alt="Baixar na App Store"
                     width={135}
                     height={40}
                     className="h-12 w-auto"
@@ -496,9 +496,9 @@ export default function LandingPage() {
                 }}
               >
                 {[
-                  { icon: ScanFace, label: "9:16 Auto-Crop" },
-                  { icon: Type, label: "Word-Synced Captions" },
-                  { icon: Target, label: "Virality Scoring" },
+                  { icon: ScanFace, label: "Corte Automático 9:16" },
+                  { icon: Type, label: "Legendas Sincronizadas" },
+                  { icon: Target, label: "Pontuação de Viralidade" },
                 ].map(({ icon: Icon, label }) => (
                   <div key={label} className="flex items-center gap-1.5">
                     <Icon className="w-3.5 h-3.5" />
@@ -549,7 +549,7 @@ export default function LandingPage() {
         <div className="max-w-6xl mx-auto px-6">
           <ScrollReveal className="text-center mb-14">
             <p className="text-xs font-semibold tracking-[0.2em] uppercase text-muted-foreground mb-3">
-              How It Works
+              Como Funciona
             </p>
             <h2
               className="text-3xl sm:text-4xl font-bold tracking-tight"
@@ -558,7 +558,7 @@ export default function LandingPage() {
                   "var(--font-syne), var(--font-geist-sans), system-ui",
               }}
             >
-              Three steps. Zero effort.
+              Três etapas. Zero esforço.
             </h2>
           </ScrollReveal>
 
@@ -600,7 +600,7 @@ export default function LandingPage() {
         <div className="max-w-6xl mx-auto px-6">
           <ScrollReveal className="text-center mb-14">
             <p className="text-xs font-semibold tracking-[0.2em] uppercase text-muted-foreground mb-3">
-              Features
+              Recursos
             </p>
             <h2
               className="text-3xl sm:text-4xl font-bold tracking-tight mb-4"
@@ -609,11 +609,11 @@ export default function LandingPage() {
                   "var(--font-syne), var(--font-geist-sans), system-ui",
               }}
             >
-              Everything you need to go viral
+              Tudo o que você precisa para viralizar
             </h2>
             <p className="text-sm text-muted-foreground max-w-md mx-auto">
-              Professional-grade video clipping with AI intelligence at every
-              step of the pipeline.
+              Criação de clipes com padrão profissional e inteligência artificial
+              em todas as etapas do processo.
             </p>
           </ScrollReveal>
 
@@ -654,7 +654,7 @@ export default function LandingPage() {
         <div className="relative max-w-5xl mx-auto px-6">
           <ScrollReveal className="text-center mb-16">
             <p className="text-xs font-semibold tracking-[0.2em] uppercase text-muted-foreground mb-3">
-              Pricing
+              Preços
             </p>
             <h2
               className="text-3xl sm:text-4xl font-bold tracking-tight mb-4"
@@ -663,11 +663,11 @@ export default function LandingPage() {
                   "var(--font-syne), var(--font-geist-sans), system-ui",
               }}
             >
-              Simple pricing, no surprises
+              Preços simples, sem surpresas
             </h2>
             <p className="text-sm text-muted-foreground max-w-md mx-auto">
-              Free to self-host. Hosted plans start at $10/month, with processing
-              and hosting handled for you. Change or cancel anytime.
+              Grátis para auto-hospedar. Planos na nuvem a partir de $10/mês, com
+              hospedagem e processamento inclusos. Altere ou cancele quando quiser.
             </p>
           </ScrollReveal>
 
@@ -685,7 +685,7 @@ export default function LandingPage() {
                     <div className="absolute -top-3.5 left-1/2 -translate-x-1/2">
                       <Badge className="bg-foreground text-background border-0 shadow-md gap-1.5 px-3 py-1">
                         <Zap className="w-3 h-3" />
-                        Most Popular
+                        Mais Popular
                       </Badge>
                     </div>
                   )}
@@ -753,11 +753,11 @@ export default function LandingPage() {
                     {plan.ctaHref ? (
                       <div className="flex flex-col gap-3">
                         <p className="text-xs leading-relaxed text-muted-foreground">
-                          Setup required. You provide the hardware and any paid AI services you choose.
+                          Requer instalação técnica. Você utiliza seu hardware e os serviços de IA pagos que preferir.
                         </p>
                         <Link href={SELF_HOSTING_GUIDE_HREF}>
                           <Button className="w-full h-11 text-sm" variant="outline" size="lg">
-                            Self-hosting guide
+                            Guia de auto-hospedagem
                             <ArrowRight className="w-4 h-4" />
                           </Button>
                         </Link>
@@ -802,7 +802,7 @@ export default function LandingPage() {
                           variant={plan.highlighted ? "secondary" : "default"}
                           size="lg"
                         >
-                          Use Hosted App
+                          Usar App na Nuvem
                           <ExternalLink className="w-4 h-4" />
                         </Button>
                       </a>
@@ -815,12 +815,12 @@ export default function LandingPage() {
 
           <ScrollReveal delay={0.3}>
             <p className="text-center text-xs text-muted-foreground mt-10 max-w-md mx-auto">
-              Self-hosting? All features are free and unlimited.{" "}
+              Vai auto-hospedar? Todos os recursos são livres e ilimitados.{" "}
               <Link
                 href={SELF_HOSTING_GUIDE_HREF}
                 className="underline underline-offset-2 hover:text-foreground transition-colors"
               >
-                See the self-hosting guide
+                Veja o guia de auto-hospedagem
               </Link>
               .
             </p>
@@ -836,17 +836,17 @@ export default function LandingPage() {
           <ScrollReveal className="text-center mb-10">
             <Badge variant="outline" className="mb-6 gap-1.5">
               <Github className="w-3.5 h-3.5" />
-              AGPL-3.0 Licensed
+              Licença AGPL-3.0
             </Badge>
             <h2
               className="text-3xl sm:text-4xl font-bold tracking-tight mb-4"
               style={{ fontFamily: "var(--font-syne), system-ui" }}
             >
-              Built in the open
+              Desenvolvido em código aberto
             </h2>
             <p className="text-sm text-muted-foreground max-w-lg mx-auto">
-              Fully open source. Self-host on your infrastructure, contribute
-              features, or fork it and make it yours.
+              Totalmente aberto. Auto-hospede na sua própria infraestrutura, contribua
+              com novos recursos ou adapte o código às suas necessidades.
             </p>
           </ScrollReveal>
 
@@ -854,7 +854,7 @@ export default function LandingPage() {
             <Card className="py-0 gap-0">
               <CardContent className="p-6 md:p-8">
                 <p className="text-xs font-medium text-muted-foreground mb-3">
-                  Self-host with Docker Compose:
+                  Auto-hospede com Docker Compose:
                 </p>
                 <div className="bg-primary text-primary-foreground rounded-lg p-5 font-mono text-sm leading-loose overflow-x-auto">
                   <div>
@@ -868,7 +868,7 @@ export default function LandingPage() {
                     <span className="opacity-50">$</span>{" "}
                     cd supoclip && cp .env.example .env
                   </div>
-                  <div className="opacity-40"># add a transcription + LLM provider to .env</div>
+                  <div className="opacity-40"># adicione um provedor de transcrição + LLM no .env</div>
                   <div>
                     <span className="opacity-50">$</span>{" "}
                     docker compose up -d --build
@@ -883,24 +883,24 @@ export default function LandingPage() {
                   >
                     <Button>
                       <Github className="w-4 h-4" />
-                      View on GitHub
+                      Ver no GitHub
                       <ExternalLink className="w-3.5 h-3.5 opacity-50" />
                     </Button>
                   </a>
                   <Link href={SELF_HOSTING_GUIDE_HREF}>
-                    <Button variant="outline">Self-hosting guide</Button>
+                    <Button variant="outline">Guia de auto-hospedagem</Button>
                   </Link>
                   {authEnabled ? (
                     <Link href="/sign-up">
                       <Button variant="outline">
-                        Try the hosted version
+                        Testar versão na nuvem
                         <ArrowRight className="w-4 h-4" />
                       </Button>
                     </Link>
                   ) : (
                     <a href={HOSTED_APP_URL} target="_blank" rel="noopener noreferrer">
                       <Button variant="outline">
-                        Open hosted version
+                        Abrir versão na nuvem
                         <ExternalLink className="w-4 h-4" />
                       </Button>
                     </a>
@@ -919,14 +919,14 @@ export default function LandingPage() {
         <div className="mx-auto max-w-6xl px-6">
           <ScrollReveal className="mb-12 text-center">
             <p className="mb-3 text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground">
-              Guides & Comparisons
+              Guias &amp; Comparativos
             </p>
             <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">
-              Learn the complete clipping workflow
+              Aprenda todo o processo de criação de clipes
             </h2>
             <p className="mx-auto mt-4 max-w-2xl text-sm leading-7 text-muted-foreground">
-              Practical, source-backed pages for choosing a video clipper, self-hosting SupoClip,
-              and turning long recordings into short-form content.
+              Artigos práticos e detalhados para escolher sua ferramenta de clipes, auto-hospedar o SupoClip
+              e transformar gravações longas em conteúdo curto e viral.
             </p>
           </ScrollReveal>
           <div className="grid gap-5 md:grid-cols-2">
@@ -942,7 +942,7 @@ export default function LandingPage() {
                   <h3 className="mt-3 text-xl font-bold tracking-tight">{resource.title}</h3>
                   <p className="mt-3 text-sm leading-7 text-muted-foreground">{resource.description}</p>
                   <span className="mt-5 inline-flex items-center gap-2 text-sm font-semibold">
-                    Read guide <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+                    Ler guia <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
                   </span>
                 </Link>
               </ScrollReveal>
@@ -960,30 +960,29 @@ export default function LandingPage() {
             className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight mb-6"
             style={{ fontFamily: "var(--font-syne), system-ui" }}
           >
-            Ready to clip?
+            Pronto para criar clipes?
           </h2>
           <p className="text-base text-muted-foreground mb-8">
-            Turn your next video into scroll-stopping shorts. Use the hosted app,
-            or self-host the open-source version for free.
+            Transforme seu próximo vídeo em clipes curtos envolventes. Use o aplicativo na nuvem
+            ou auto-hospede a versão de código aberto gratuitamente.
           </p>
           {authEnabled ? (
             <Link href="/sign-up">
               <Button size="lg" className="px-10 h-12 text-sm">
-                Get Started
+                Começar Agora
                 <ArrowRight className="w-4 h-4" />
               </Button>
             </Link>
           ) : (
             <a href={HOSTED_APP_URL} target="_blank" rel="noopener noreferrer">
               <Button size="lg" className="px-10 h-12 text-sm">
-                Open Hosted App
+                Abrir App na Nuvem
                 <ExternalLink className="w-4 h-4" />
               </Button>
             </a>
           )}
         </ScrollReveal>
       </section>
-
 
       <SiteFooter />
     </div>
@@ -1057,7 +1056,7 @@ function HeroVisual() {
                 {DEMO_SOURCE.title}
               </p>
               <p className="text-[10px] text-muted-foreground">
-                youtube.com · long-form source
+                youtube.com · vídeo original
               </p>
             </div>
             <ExternalLink className="w-3.5 h-3.5 text-muted-foreground/60 shrink-0" />
@@ -1068,7 +1067,7 @@ function HeroVisual() {
             <div className="flex-1 h-px bg-border" />
             <span className="flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-[0.14em] text-muted-foreground">
               <Scissors className="w-3 h-3 rotate-90" />
-              {DEMO_CLIPS.length} clips found
+              {DEMO_CLIPS.length} clipes encontrados
             </span>
             <div className="flex-1 h-px bg-border" />
           </div>
@@ -1106,7 +1105,7 @@ function HeroVisual() {
             <button
               type="button"
               onClick={togglePlay}
-              aria-label={playing ? "Pause clip" : "Play clip"}
+              aria-label={playing ? "Pausar clipe" : "Reproduzir clipe"}
               className="absolute inset-0 flex items-center justify-center focus:outline-none"
             >
               <span
@@ -1122,7 +1121,7 @@ function HeroVisual() {
             <button
               type="button"
               onClick={() => setMuted((m) => !m)}
-              aria-label={muted ? "Unmute clip" : "Mute clip"}
+              aria-label={muted ? "Ativar som" : "Desativar som"}
               className="absolute top-2 right-2 w-7 h-7 rounded-full bg-black/45 backdrop-blur-sm flex items-center justify-center text-white/90 hover:bg-black/65 transition-colors"
             >
               {muted ? (
@@ -1188,7 +1187,7 @@ function HeroVisual() {
             href="/demo"
             className="mt-3 flex items-center justify-center gap-1.5 text-[11px] font-medium text-muted-foreground hover:text-foreground transition-colors"
           >
-            How these clips were made
+            Como estes clipes foram criados
             <ArrowRight className="w-3 h-3" />
           </Link>
         </CardContent>

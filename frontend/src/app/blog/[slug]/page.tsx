@@ -36,48 +36,48 @@ interface BlogPostPageProps {
 const comparisonRows = [
   {
     icon: ShieldCheck,
-    feature: "Free usage model",
-    supoclip: "Open source and self-hostable with no plan limits. Your costs are your own compute and API keys. The hosted app is paid.",
-    opusClip: "Free plan exists, but exports can include an OpusClip watermark.",
+    feature: "Modelo de uso gratuito",
+    supoclip: "Código aberto e auto-hospedável sem limites de plano. Seus custos são sua própria máquina e chaves de API. O app na nuvem é pago.",
+    opusClip: "Plano gratuito disponível, mas as exportações podem conter marca d'água do OpusClip.",
   },
   {
     icon: Sparkles,
-    feature: "Clip discovery",
-    supoclip: "Transcribes long videos, scores segments, and surfaces promising short-form moments.",
-    opusClip: "AI clipping workflow built for finding social-ready clips from long videos.",
+    feature: "Descoberta de clipes",
+    supoclip: "Transcreve vídeos longos, pontua segmentos e revela os momentos mais promissores para vídeos curtos.",
+    opusClip: "Fluxo de cortes com IA criado para encontrar clipes prontos para redes sociais a partir de vídeos longos.",
   },
   {
     icon: ScanFace,
-    feature: "Vertical formatting",
-    supoclip: "Face-centered 9:16 cropping, subtitles, and platform-ready exports.",
-    opusClip: "Offers short-form exports and AI reframing for social platforms.",
+    feature: "Formatação vertical",
+    supoclip: "Corte 9:16 centrado no rosto, legendas dinâmicas e exportações otimizadas para plataformas.",
+    opusClip: "Oferece exportações em formato vertical e reenquadramento com IA para redes sociais.",
   },
   {
     icon: Github,
-    feature: "Control",
-    supoclip: "Full source access, editable deployment, and no vendor lock-in.",
-    opusClip: "Hosted product with managed workflows and subscription tiers.",
+    feature: "Controle total",
+    supoclip: "Acesso total ao código-fonte, implantação editável e sem aprisionamento tecnológico (lock-in).",
+    opusClip: "Produto hospedado com fluxos fechados e camadas de assinatura por créditos.",
   },
 ];
 
 const faqs = [
   {
     icon: Sparkles,
-    question: "What is the best free OpusClip alternative?",
+    question: "Qual é a melhor alternativa gratuita ao OpusClip?",
     answer:
-      "SupoClip is a strong free OpusClip alternative if you want an open-source AI clip maker that you can self-host, customize, and run with your own video workflow.",
+      "O SupoClip é uma forte alternativa gratuita ao OpusClip se você quer um criador de clipes com IA de código aberto que você pode auto-hospedar, personalizar e executar no seu próprio fluxo.",
   },
   {
     icon: ShieldCheck,
-    question: "Is SupoClip completely free?",
+    question: "O SupoClip é totalmente gratuito?",
     answer:
-      "The SupoClip codebase is free and open source, and self-hosted installs have no plan limits. You still pay for your own infrastructure and any transcription or LLM provider you configure. The hosted app requires a paid plan.",
+      "O código-fonte do SupoClip é 100% gratuito e de código aberto, e instâncias auto-hospedadas não têm limites de plano. Você paga apenas pela sua própria infraestrutura e pelos provedores de transcrição ou LLM que configurar. A versão hospedada na nuvem requer assinatura paga.",
   },
   {
     icon: Captions,
-    question: "Does SupoClip add a watermark?",
+    question: "O SupoClip adiciona marca d'água?",
     answer:
-      "No. SupoClip's rendering pipeline has no watermark step, whether you use the hosted app or a self-hosted install.",
+      "Não. O pipeline de renderização do SupoClip não inclui nenhuma marca d'água, tanto no aplicativo na nuvem quanto em instalações auto-hospedadas.",
   },
 ];
 
@@ -183,12 +183,12 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
             </Link>
             <a href={HOSTED_APP_URL} target="_blank" rel="noopener noreferrer">
               <Button variant="ghost" size="sm" className="hidden sm:inline-flex">
-                Hosted App
+                Abrir App
                 <ExternalLink className="h-3.5 w-3.5" />
               </Button>
             </a>
             <Link href="/sign-up">
-              <Button size="sm">Start Clipping</Button>
+              <Button size="sm">Começar a Criar Clipes</Button>
             </Link>
           </div>
         </div>
@@ -206,7 +206,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                 <a href={HOSTED_APP_URL} target="_blank" rel="noopener noreferrer">
                   <Badge variant="outline" className="gap-2">
                     <Play className="h-3.5 w-3.5" />
-                    Try hosted SupoClip
+                    Testar SupoClip na nuvem
                   </Badge>
                 </a>
               </div>
@@ -217,13 +217,13 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                 {post.title}
               </h1>
               <p className="mt-6 max-w-2xl text-lg leading-8 text-muted-foreground">
-                If you like the idea of OpusClip but want a free, open-source path, SupoClip gives
-                you the core workflow: find strong moments in long videos, reframe them vertically,
-                add captions, and export clips for Shorts, Reels, and TikTok.
+                Se você gosta da ideia do OpusClip mas quer uma alternativa gratuita e de código aberto, o SupoClip
+                oferece o fluxo essencial: encontre os melhores momentos em vídeos longos, reenquadre verticalmente,
+                adicione legendas e exporte clipes para Shorts, Reels e TikTok.
               </p>
               <div className="mt-8 flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
                 <span>{post.author}</span>
-                <span>Updated <time dateTime={post.updatedAt}>{formatArticleDate(post.updatedAt)}</time></span>
+                <span>Atualizado em <time dateTime={post.updatedAt}>{formatArticleDate(post.updatedAt)}</time></span>
                 <span className="flex items-center gap-1.5">
                   <Clock className="h-3.5 w-3.5" />
                   {post.readingTime}
@@ -233,13 +233,13 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
 
             <aside className="rounded-lg border bg-background p-5 md:self-end">
               <p className="text-xs font-semibold uppercase tracking-[0.18em] text-muted-foreground">
-                Best for
+                Ideal para
               </p>
               <ul className="mt-5 space-y-3 text-sm">
                 {[
-                  { icon: Play, label: "Creators clipping YouTube videos into shorts" },
-                  { icon: ShieldCheck, label: "Teams that prefer self-hosting" },
-                  { icon: Github, label: "Developers who want source-level control" },
+                  { icon: Play, label: "Criadores cortando vídeos do YouTube em shorts" },
+                  { icon: ShieldCheck, label: "Equipes que preferem auto-hospedagem" },
+                  { icon: Github, label: "Desenvolvedores que buscam controle total do código" },
                 ].map(({ icon: Icon, label }) => (
                   <li key={label} className="flex gap-3">
                     <Icon className="mt-0.5 h-4 w-4 shrink-0 text-green-600" />
@@ -248,7 +248,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                 ))}
               </ul>
               <a href={HOSTED_APP_URL} target="_blank" rel="noopener noreferrer" className="mt-5 inline-flex text-sm font-semibold">
-                Open hosted version
+                Abrir versão na nuvem
                 <ExternalLink className="ml-2 h-4 w-4" />
               </a>
             </aside>
@@ -259,36 +259,34 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
           <div className="min-w-0">
             <div className={articleBodyClassName}>
               <p>
-                OpusClip helped define the modern AI clipping category: upload a long video, let AI
-                identify moments, and publish short clips faster. That workflow is useful. The
-                friction starts when you want a free route, more control, or a pipeline you can run
-                yourself.
+                O OpusClip ajudou a popularizar a categoria moderna de clipes com IA: envie um vídeo longo,
+                deixe a IA identificar os momentos e publique vídeos curtos rapidamente. Esse fluxo é extremamente
+                útil. A fricção surge quando você busca uma rota gratuita, maior controle ou um pipeline que
+                possa executar por conta própria.
               </p>
 
               <p>
-                SupoClip is the best free OpusClip alternative for that specific creator: someone
-                who wants AI-assisted clip discovery, vertical exports, captions, and control over
-                the underlying system. You can also
-                {" "}
+                O SupoClip é a melhor alternativa gratuita ao OpusClip para esse criador: alguém que busca
+                descoberta de clipes com IA, exportações verticais, legendas dinâmicas e controle sobre o
+                sistema subjacente. Você também pode{" "}
                 <a href={HOSTED_APP_URL} target="_blank" rel="noopener noreferrer">
-                  use hosted SupoClip
-                </a>
-                {" "}
-                on a paid plan if you want to skip setup entirely.
+                  usar o SupoClip hospedado na nuvem
+                </a>{" "}
+                em um plano pago se preferir pular qualquer configuração técnica.
               </p>
 
-              <h2 id="quick-verdict">Quick Verdict</h2>
+              <h2 id="quick-verdict">Veredito Rápido</h2>
               <p>
-                Choose SupoClip if you want an open-source AI video clipper you can self-host.
-                Choose OpusClip if you want a managed hosted product and are comfortable with its
-                plan limits, watermark rules, and credit model.
+                Escolha o SupoClip se você quer um criador de clipes com IA de código aberto que você pode auto-hospedar.
+                Escolha o OpusClip se você prefere um serviço totalmente gerenciado e não se importa com limites de plano,
+                marcas d&apos;água e modelo por créditos.
               </p>
 
               <div className="not-prose my-8 grid gap-4 sm:grid-cols-3">
                 {[
-                  { icon: ShieldCheck, label: "Cost", value: "Free source code" },
-                  { icon: Wand2, label: "Workflow", value: "Long video to shorts" },
-                  { icon: Github, label: "Control", value: "Self-hostable" },
+                  { icon: ShieldCheck, label: "Custo", value: "Código-fonte grátis" },
+                  { icon: Wand2, label: "Fluxo", value: "Vídeo longo em shorts" },
+                  { icon: Github, label: "Controle", value: "Auto-hospedável" },
                 ].map(({ icon: Icon, ...stat }) => (
                   <div key={stat.label} className="rounded-lg border bg-muted/35 p-4">
                     <p className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">
@@ -300,45 +298,43 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                 ))}
               </div>
 
-              <h2>Why Creators Look for an OpusClip Alternative</h2>
+              <h2>Por que criadores buscam alternativas ao OpusClip</h2>
               <p>
-                The usual reasons are simple: creators want lower costs, cleaner exports on a free
-                workflow, more control over processing, and fewer limits when they batch through old
-                YouTube videos, podcasts, webinars, or livestreams.
+                Os motivos comuns são diretos: criadores querem custos menores, exportações limpas sem marca d&apos;água
+                em planos gratuitos, mais controle sobre o processamento e menos limitações ao processar lotes de vídeos
+                antigos do YouTube, podcasts ou transmissões ao vivo.
               </p>
 
               <p>
-                OpusClip&apos;s own help center says free-plan exports can show an OpusClip
-                watermark, and its plans use credits for processing minutes. For casual testing,
-                that can be fine. For repeat clipping, it can push creators toward a paid hosted
-                workflow.
+                A própria documentação do OpusClip indica que exportações no plano gratuito podem incluir a marca d&apos;água
+                do produto, e seus planos utilizam créditos por minuto processado. Para testes esporádicos isso pode funcionar,
+                mas para criadores recorrentes isso eleva o custo.
               </p>
 
-              <h2>What Makes SupoClip Different</h2>
+              <h2>O que torna o SupoClip diferente</h2>
               <p>
-                SupoClip is not just a thin wrapper around a hosted editor. It is a complete
-                open-source clipping app with a FastAPI backend, a Next.js frontend, background
-                workers, transcription, AI scoring, face-aware vertical reframing, caption styling,
-                and export presets.
+                O SupoClip não é apenas uma casca sobre um editor na nuvem. É uma aplicação completa de código aberto com
+                backend FastAPI, frontend Next.js, workers assíncronos, transcrição, pontuação por IA, reenquadramento
+                vertical inteligente com foco no rosto, estilização de legendas e predefinições de exportação.
               </p>
 
               <p>
-                That makes the tradeoff clear. You take on setup, but you gain ownership. You can
-                inspect the code, adapt it to your workflow, and decide which hosted AI providers
-                or local models to use. The <Link href={SELF_HOSTING_GUIDE_HREF}>self-hosting guide</Link>{" "}
-                walks through the setup, including a fully local Whisper + Ollama option.
+                A escolha fica clara: você assume a infraestrutura, mas ganha a posse total. Você pode inspecionar o código,
+                adaptá-lo ao seu fluxo e escolher se utiliza provedores de IA na nuvem ou modelos 100% locais. O{" "}
+                <Link href={SELF_HOSTING_GUIDE_HREF}>guia de auto-hospedagem</Link> explica todo o passo a passo, incluindo
+                a opção totalmente local com Whisper + Ollama.
               </p>
 
               <h2 id="supoclip-vs-opusclip">SupoClip vs OpusClip</h2>
               <p>
-                The summary below covers the essentials. For a row-by-row comparison with a source
-                for every claim, read <Link href={OPUSCLIP_COMPARISON_HREF}>SupoClip vs OpusClip: a sourced comparison</Link>.
+                O resumo abaixo cobre os pontos essenciais. Para um comparativo linha por linha com referências para cada
+                afirmação, leia <Link href={OPUSCLIP_COMPARISON_HREF}>SupoClip vs OpusClip: uma comparação detalhada</Link>.
               </p>
             </div>
 
             <div className="my-8 overflow-hidden rounded-lg border">
               <div className="grid grid-cols-[0.85fr_1fr_1fr] bg-muted/50 text-sm font-semibold">
-                <div className="p-4">Feature</div>
+                <div className="p-4">Recurso</div>
                 <div className="border-l p-4">SupoClip</div>
                 <div className="border-l p-4">OpusClip</div>
               </div>
@@ -355,28 +351,26 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
             </div>
 
             <div className={articleBodyClassName}>
-              <h2>How SupoClip Works</h2>
+              <h2>Como o SupoClip funciona</h2>
               <ol>
-                <li>Paste a YouTube URL or upload a video.</li>
-                <li>SupoClip transcribes the source and finds candidate moments.</li>
-                <li>AI scores clips for hook strength, engagement, value, and shareability.</li>
-                <li>The editor creates vertical, captioned clips with face-aware framing.</li>
-                <li>You export shorts for YouTube Shorts, TikTok, Instagram Reels, or other feeds.</li>
+                <li>Cole uma URL do YouTube ou envie um arquivo de vídeo.</li>
+                <li>O SupoClip transcreve o áudio e encontra os momentos candidatos.</li>
+                <li>A IA avalia os clipes quanto à força do gancho, engajamento, valor e potencial de compartilhamento.</li>
+                <li>O estúdio cria clipes verticais, com legendas sincronizadas e reenquadramento facial.</li>
+                <li>Você exporta os vídeos prontos para YouTube Shorts, TikTok, Instagram Reels e outras redes.</li>
               </ol>
 
-              <h2>When SupoClip Is the Better Choice</h2>
+              <h2>Quando o SupoClip é a melhor escolha</h2>
               <p>
-                SupoClip is best when you want a free OpusClip alternative with developer control.
-                It is especially useful for creators with a backlog of long videos, agencies that
-                want to customize clipping workflows, or technical teams that want AI video
-                clipping inside their own stack.
+                O SupoClip é ideal quando você quer uma alternativa gratuita ao OpusClip com controle total de código.
+                É especialmente vantajoso para criadores com um acervo extenso de vídeos longos, agências que desejam
+                personalizar fluxos de corte ou equipes técnicas que querem incorporar IA de vídeo dentro da sua própria infraestrutura.
               </p>
 
-              <h2>When OpusClip May Still Be Better</h2>
+              <h2>Quando o OpusClip ainda pode ser preferível</h2>
               <p>
-                OpusClip may still be the better fit if you want the convenience of a polished
-                hosted service and do not want to think about deployment, infrastructure, model
-                keys, queues, or maintenance.
+                O OpusClip ainda pode ser uma boa opção se você busca a conveniência de um serviço pronto e polido, sem
+                precisar se preocupar com infraestrutura, servidores, chaves de API ou filas de processamento.
               </p>
             </div>
 
@@ -385,23 +379,22 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                 <div>
                   <p className="flex items-center gap-2 text-sm font-medium text-background/70">
                     <ListChecks className="h-4 w-4" />
-                    Free if you self-host, paid plans if you don&apos;t
-
+                    Gratuito se auto-hospedar, planos na nuvem se preferir praticidade
                   </p>
                   <h2
                     className="mt-2 text-2xl font-bold tracking-tight"
                     style={{ fontFamily: "var(--font-syne), var(--font-geist-sans), system-ui" }}
                   >
-                    Start clipping with SupoClip.
+                    Comece a criar clipes com o SupoClip.
                   </h2>
                 </div>
                 <div className="flex flex-wrap gap-3">
                   <Link href={SELF_HOSTING_GUIDE_HREF}>
-                    <Button variant="secondary">Self-hosting guide</Button>
+                    <Button variant="secondary">Guia de auto-hospedagem</Button>
                   </Link>
                   <Link href="/sign-up">
                     <Button variant="secondary">
-                      Open app
+                      Abrir aplicativo
                       <ArrowRight className="h-4 w-4" />
                     </Button>
                   </Link>
@@ -416,7 +409,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
             </section>
 
             <div className={articleBodyClassName}>
-              <h2 id="faq">FAQ</h2>
+              <h2 id="faq">Perguntas Frequentes</h2>
             </div>
 
             <div className="mt-6 space-y-4">
@@ -433,25 +426,21 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
 
             <Separator className="my-10" />
 
-            <RelatedGuides href={`/blog/${post.slug}`} heading="Related SupoClip guides" />
+            <RelatedGuides href={`/blog/${post.slug}`} heading="Guias relacionados do SupoClip" />
 
             <Separator className="my-10" />
 
             <section className="text-sm leading-7 text-muted-foreground">
-              <h2 className="text-base font-semibold text-foreground">Sources</h2>
+              <h2 className="text-base font-semibold text-foreground">Fontes e referências</h2>
               <p className="mt-2">
-                OpusClip plan and watermark notes are based on the official OpusClip help center:
-                {" "}
+                As informações sobre planos e marcas d&apos;água do OpusClip têm como base a central de ajuda oficial:{" "}
                 <a href="https://help.opus.pro/docs/article/plans-and-credits" className="font-medium text-foreground underline underline-offset-4">
-                  plans and credits
-                </a>
-                {" "}
-                and
-                {" "}
+                  planos e créditos
+                </a>{" "}
+                e{" "}
                 <a href="https://help.opus.pro/docs/article/watermark" className="font-medium text-foreground underline underline-offset-4">
-                  watermark guidance
-                </a>
-                .
+                  diretrizes de marca d&apos;água
+                </a>.
               </p>
             </section>
           </div>
@@ -460,26 +449,25 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
             <div className="sticky top-8 space-y-4">
               <div className="rounded-lg border p-5">
                 <p className="text-xs font-semibold uppercase tracking-[0.18em] text-muted-foreground">
-                  Article
+                  Neste artigo
                 </p>
                 <div className="mt-4 space-y-3 text-sm">
                   <a href="#quick-verdict" className="block text-muted-foreground hover:text-foreground">
-                    Quick verdict
+                    Veredito rápido
                   </a>
                   <a href="#supoclip-vs-opusclip" className="block text-muted-foreground hover:text-foreground">
-                    Comparison
+                    Comparativo
                   </a>
                   <a href="#faq" className="block text-muted-foreground hover:text-foreground">
-                    FAQ
+                    Perguntas frequentes
                   </a>
                 </div>
               </div>
               <div className="rounded-lg border bg-muted/35 p-5">
                 <ShieldCheck className="h-5 w-5 text-green-600" />
-                <p className="mt-3 text-sm font-semibold">Open-source control</p>
+                <p className="mt-3 text-sm font-semibold">Controle em código aberto</p>
                 <p className="mt-2 text-sm leading-6 text-muted-foreground">
-                  Use SupoClip when you want the clipping workflow without handing every decision
-                  to a hosted platform.
+                  Use o SupoClip quando você quer o fluxo de cortes sem transferir cada decisão para uma plataforma proprietária fechada.
                 </p>
               </div>
             </div>

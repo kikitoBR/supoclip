@@ -17,9 +17,9 @@ const VIDEO = {
   uploadDate: "2026-10-09",
 };
 
-const title = "SupoClip Creator Program: Get Pro Free for Making Videos";
+const title = "Programa de Criadores SupoClip: Ganhe o Pro Grátis ao Criar Vídeos";
 const description =
-  "Make Shorts, Reels, TikToks or videos about SupoClip and get SupoClip Pro for free. Your audience gets 20% off their first 3 months with your code.";
+  "Crie Shorts, Reels, TikToks ou vídeos sobre o SupoClip e ganhe o SupoClip Pro de graça. Seu público ganha 20% de desconto nos primeiros 3 meses com seu código.";
 
 export const metadata: Metadata = {
   title: { absolute: title },
@@ -38,43 +38,43 @@ export const metadata: Metadata = {
 };
 
 const steps = [
-  { icon: Send, title: "Apply", detail: "Tell us where you post and pick your code, like MAYA. It takes two minutes." },
-  { icon: Search, title: "We review", detail: "Every application is reviewed by hand. You get an email either way." },
-  { icon: Link2, title: "Share", detail: "Put your link in your bio or say your code in your videos. Your account gets Pro right away." },
+  { icon: Send, title: "Inscreva-se", detail: "Conte onde você posta seus vídeos e escolha seu código, como MAYA. Leva dois minutos." },
+  { icon: Search, title: "Nós avaliamos", detail: "Cada inscrição é avaliada manualmente. Você receberá um e-mail com o retorno." },
+  { icon: Link2, title: "Compartilhe", detail: "Coloque seu link na bio ou mencione seu código nos vídeos. Sua conta ganha o Pro imediatamente." },
 ];
 
 const rules = [
-  "Mark sponsored posts as such, for example with #ad.",
-  "Don't run ads on the SupoClip name or post your code on coupon or deal sites.",
-  "Don't use your own code.",
-  "We can end the program or remove a creator at any time.",
+  "Identifique conteúdos patrocinados de forma clara, por exemplo com #publi ou #ad.",
+  "Não anuncie usando a marca SupoClip em links patrocinados nem poste seu código em sites de cupons ou promoções.",
+  "Não use o seu próprio código na sua conta.",
+  "Podemos encerrar o programa ou desligar um criador participante a qualquer momento.",
 ];
 
 function getFaqs(proPrice: string) {
   return [
     {
-      question: "Do I get paid in cash?",
-      answer: `Not right now. Approved creators get SupoClip Pro (normally $${proPrice}/month) for free while they're in the program.`,
+      question: "Eu recebo pagamentos em dinheiro?",
+      answer: `No momento não. Criadores aprovados recebem o SupoClip Pro (normalmente $${proPrice}/mês) de graça enquanto estiverem no programa.`,
     },
     {
-      question: "Is there a minimum number of followers?",
-      answer: "No. We look at what you post, not just how many people follow you. Small creators who already make videos about SupoClip are a great fit.",
+      question: "Há um número mínimo de seguidores?",
+      answer: "Não. Avaliamos a qualidade do que você publica, não apenas a contagem de inscritos. Criadores em crescimento que já produzem conteúdo sobre o SupoClip são muito bem-vindos.",
     },
     {
-      question: "What does my audience get?",
-      answer: "Anyone who signs up through your link or enters your code at checkout gets 20% off their first 3 months. On the web it works on any plan. On iPhone it applies to Pro: people tap “Have a creator code?” in the app or open your iPhone link.",
+      question: "O que o meu público ganha?",
+      answer: "Qualquer pessoa que se cadastrar pelo seu link ou inserir seu código no checkout recebe 20% de desconto nos primeiros 3 meses. Na web vale para qualquer plano. No iPhone vale para o Pro: o usuário toca em “Tem um código de criador?” no app ou abre seu link especial.",
     },
     {
-      question: "Can I pick my own code?",
-      answer: "Yes. Codes are 3 to 20 letters, numbers or hyphens, and each one can only belong to one creator. The form tells you right away if yours is available.",
+      question: "Posso escolher meu próprio código?",
+      answer: "Sim. Os códigos têm de 3 a 20 caracteres (letras, números ou hífens) e cada código pertence exclusivamente a um criador. O formulário informa na hora se o código está livre.",
     },
     {
-      question: "What happens if my application is declined?",
-      answer: "You'll get an email, with a note from us when there's something specific. You can apply again after 30 days.",
+      question: "O que acontece se minha inscrição não for aprovada?",
+      answer: "Você receberá um e-mail com os motivos apontados pela nossa equipe. Você poderá se inscrever novamente após 30 dias.",
     },
     {
-      question: "Do I need a SupoClip account?",
-      answer: "Yes. The program is tied to your account, so you'll create a free one (or sign in) before applying.",
+      question: "Preciso ter uma conta no SupoClip?",
+      answer: "Sim. O programa é vinculado à sua conta, então basta criar uma conta gratuita (ou entrar na sua) antes de enviar a inscrição.",
     },
   ];
 }
@@ -91,13 +91,13 @@ export default function AffiliatePage() {
         "@type": "BreadcrumbList",
         itemListElement: [
           { "@type": "ListItem", position: 1, name: "SupoClip", item: siteUrl },
-          { "@type": "ListItem", position: 2, name: "Creator program", item: `${siteUrl}/affiliate` },
+          { "@type": "ListItem", position: 2, name: "Programa de criadores", item: `${siteUrl}/affiliate` },
         ],
       },
       {
         "@type": "VideoObject",
-        name: "How the SupoClip creator program works",
-        description: "Apply, pick your code, and your audience gets 20% off their first 3 months. Approved creators get SupoClip Pro for free.",
+        name: "Como funciona o programa de criadores SupoClip",
+        description: "Inscreva-se, escolha seu código e seu público ganha 20% de desconto nos primeiros 3 meses. Criadores aprovados ganham o SupoClip Pro de graça.",
         thumbnailUrl: `${siteUrl}${VIDEO.poster}`,
         contentUrl: `${siteUrl}${VIDEO.src}`,
         uploadDate: VIDEO.uploadDate,
@@ -123,26 +123,26 @@ export default function AffiliatePage() {
             <Image src="/logo.png" alt="SupoClip" width={24} height={24} className="rounded-lg" />
             <span className="text-lg font-bold tracking-tight">SupoClip</span>
           </Link>
-          <nav className="flex items-center gap-2" aria-label="Primary navigation">
-            <Link href="/demo"><Button variant="ghost" size="sm">Demo</Button></Link>
-            <Link href={APPLY_HREF}><Button size="sm">Apply</Button></Link>
+          <nav className="flex items-center gap-2" aria-label="Navegação principal">
+            <Link href="/demo"><Button variant="ghost" size="sm">Demonstração</Button></Link>
+            <Link href={APPLY_HREF}><Button size="sm">Inscrever-se</Button></Link>
           </nav>
         </div>
       </header>
 
       <section className="border-b bg-muted/35">
         <div className="mx-auto max-w-5xl px-6 py-14 md:py-20">
-          <Badge variant="secondary">Creator program</Badge>
+          <Badge variant="secondary">Programa de criadores</Badge>
           <h1 className="mt-5 max-w-4xl text-4xl font-extrabold tracking-tight sm:text-5xl" style={{ fontFamily: "var(--font-syne), var(--font-geist-sans), system-ui" }}>
-            Make videos about SupoClip. Get Pro for free.
+            Crie vídeos sobre o SupoClip. Ganhe o Pro de graça.
           </h1>
           <p className="mt-6 max-w-3xl text-lg leading-8 text-muted-foreground">
-            Posting Shorts, Reels or TikToks about clipping, podcasting or creator tools? Get your own code. Your audience saves on
-            SupoClip, and you get Pro while you&apos;re in the program.
+            Posta Shorts, Reels ou TikToks sobre cortes de vídeo, podcasts ou criação de conteúdo? Tenha seu próprio código.
+            Seu público economiza no SupoClip e você ganha o plano Pro enquanto estiver no programa.
           </p>
           <div className="mt-8 flex flex-wrap items-center gap-3">
-            <Link href={APPLY_HREF}><Button size="lg">Apply now <ArrowRight className="h-4 w-4" /></Button></Link>
-            <span className="text-sm text-muted-foreground">No follower minimum.</span>
+            <Link href={APPLY_HREF}><Button size="lg">Inscreva-se agora <ArrowRight className="h-4 w-4" /></Button></Link>
+            <span className="text-sm text-muted-foreground">Sem mínimo de seguidores.</span>
           </div>
           <video
             src={VIDEO.src}
@@ -156,35 +156,35 @@ export default function AffiliatePage() {
             width={1920}
             height={1080}
             className="mt-12 aspect-video w-full rounded-2xl border bg-muted shadow-lg"
-            aria-label="Creator program explainer: apply, pick your code, and your audience gets 20% off their first 3 months"
+            aria-label="Explicação do programa de criadores: inscreva-se, escolha seu código e seu público ganha 20% de desconto nos primeiros 3 meses"
           />
         </div>
       </section>
 
       <div className="mx-auto max-w-5xl px-6 py-12 md:py-16">
         <section aria-labelledby="offer-heading">
-          <h2 id="offer-heading" className="text-3xl font-bold tracking-tight">What everyone gets</h2>
+          <h2 id="offer-heading" className="text-3xl font-bold tracking-tight">O que todo mundo ganha</h2>
           <div className="mt-8 grid gap-4 md:grid-cols-2">
             <div className="rounded-2xl border p-6">
               <Gift className="h-5 w-5" />
-              <h3 className="mt-4 text-lg font-semibold">You get SupoClip Pro, free</h3>
+              <h3 className="mt-4 text-lg font-semibold">Você ganha o SupoClip Pro, grátis</h3>
               <p className="mt-2 text-sm leading-6 text-muted-foreground">
-                Pro is normally ${proPrice}/month{pro ? ` and includes ${pro.generationLimit} videos a month` : ""}. Approved creators get it for
-                free for as long as they&apos;re in the program.
+                O Pro custa normalmente ${proPrice}/mês{pro ? ` e inclui ${pro.generationLimit} vídeos por mês` : ""}. Criadores
+                aprovados têm acesso gratuito enquanto estiverem participando do programa.
               </p>
             </div>
             <div className="rounded-2xl border p-6">
               <Percent className="h-5 w-5" />
-              <h3 className="mt-4 text-lg font-semibold">Your audience gets 20% off</h3>
+              <h3 className="mt-4 text-lg font-semibold">Seu público ganha 20% de desconto</h3>
               <p className="mt-2 text-sm leading-6 text-muted-foreground">
-                For their first 3 months on any plan. It works through your link or by typing your code at checkout.
+                Válido para os primeiros 3 meses em qualquer plano. Funciona pelo seu link especial ou inserindo seu código no checkout.
               </p>
             </div>
           </div>
         </section>
 
         <section className="mt-16" aria-labelledby="how-heading">
-          <h2 id="how-heading" className="text-3xl font-bold tracking-tight">How it works</h2>
+          <h2 id="how-heading" className="text-3xl font-bold tracking-tight">Como funciona</h2>
           <ol className="mt-8 grid gap-4 sm:grid-cols-3">
             {steps.map(({ icon: Icon, title: stepTitle, detail }, index) => (
               <li key={stepTitle} className="rounded-lg border p-5">
@@ -200,14 +200,14 @@ export default function AffiliatePage() {
         </section>
 
         <section className="mt-16" aria-labelledby="rules-heading">
-          <h2 id="rules-heading" className="text-3xl font-bold tracking-tight">The rules</h2>
+          <h2 id="rules-heading" className="text-3xl font-bold tracking-tight">Regras do programa</h2>
           <ul className="mt-6 list-disc space-y-2 pl-5 text-base leading-7 text-muted-foreground">
             {rules.map((rule) => <li key={rule}>{rule}</li>)}
           </ul>
         </section>
 
         <section className="mt-16" aria-labelledby="faq-heading">
-          <h2 id="faq-heading" className="text-3xl font-bold tracking-tight">Questions</h2>
+          <h2 id="faq-heading" className="text-3xl font-bold tracking-tight">Dúvidas frequentes</h2>
           <dl className="mt-8 divide-y rounded-2xl border">
             {faqs.map((faq) => (
               <div key={faq.question} className="p-5">
@@ -219,12 +219,12 @@ export default function AffiliatePage() {
         </section>
 
         <section className="mt-16 rounded-2xl border bg-foreground p-6 text-background md:p-8">
-          <h2 className="text-2xl font-bold tracking-tight">Already posting about SupoClip?</h2>
+          <h2 className="text-2xl font-bold tracking-tight">Já publica conteúdos sobre o SupoClip?</h2>
           <p className="mt-2 max-w-xl text-sm leading-6 text-background/70">
-            Apply with a link to your profile and pick your code. If you&apos;ve made a video about SupoClip, include it.
+            Inscreva-se informando o link do seu perfil e o código desejado. Se você já gravou vídeos sobre o SupoClip, não se esqueça de incluí-los!
           </p>
           <div className="mt-6">
-            <Link href={APPLY_HREF}><Button variant="secondary">Apply now <ArrowRight className="h-4 w-4" /></Button></Link>
+            <Link href={APPLY_HREF}><Button variant="secondary">Inscreva-se agora <ArrowRight className="h-4 w-4" /></Button></Link>
           </div>
         </section>
       </div>

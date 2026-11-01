@@ -1,4 +1,5 @@
 import { render, screen, cleanup } from "@testing-library/react";
+import { afterEach, expect, it, vi } from "vitest";
 import StatusPage from "./page";
 
 const { findMany } = vi.hoisted(() => ({ findMany: vi.fn() }));
@@ -15,11 +16,11 @@ afterEach(() => { cleanup(); vi.restoreAllMocks(); });
 it("reflects status row updates on the next request", async () => {
   findMany.mockResolvedValue([component]);
   const first = render(await StatusPage());
-  expect(screen.getByText("Degraded")).toBeInTheDocument();
+  expect(screen.getByText("Degradado")).toBeInTheDocument();
   first.unmount();
   findMany.mockResolvedValue([{ ...component, status: "operational", headline: "Resolved", description: "Downloads are working normally." }]);
   render(await StatusPage());
-  expect(screen.getByText("Operational")).toBeInTheDocument();
+  expect(screen.getByText("Operacional")).toBeInTheDocument();
   expect(screen.getByText("Resolved")).toBeInTheDocument();
   expect(screen.queryByText("Investigating")).not.toBeInTheDocument();
 });
@@ -28,6 +29,6 @@ it("reports unavailable status when the database cannot be reached", async () =>
   vi.spyOn(console, "error").mockImplementation(() => {});
   findMany.mockRejectedValue(new Error("Database unavailable"));
   render(await StatusPage());
-  expect(screen.getByRole("status")).toHaveTextContent("Service status is temporarily unavailable");
-  expect(screen.queryByText("Operational")).not.toBeInTheDocument();
+  expect(screen.getByRole("status")).toHaveTextContent("status do serviço está temporariamente indisponível");
+  expect(screen.queryByText("Operacional")).not.toBeInTheDocument();
 });

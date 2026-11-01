@@ -7,15 +7,15 @@ import { getPrismaClient } from "@/server/prisma";
 export const dynamic = "force-dynamic";
 
 const presentations: Record<string, { label: string; badge: string; border: string }> = {
-  operational: { label: "Operational", badge: "bg-emerald-100 text-emerald-900", border: "border-emerald-200" },
-  degraded: { label: "Degraded", badge: "bg-amber-100 text-amber-900", border: "border-amber-200" },
-  outage: { label: "Outage", badge: "bg-red-100 text-red-900", border: "border-red-200" },
-  maintenance: { label: "Maintenance", badge: "bg-blue-100 text-blue-900", border: "border-blue-200" },
+  operational: { label: "Operacional", badge: "bg-emerald-100 text-emerald-900", border: "border-emerald-200" },
+  degraded: { label: "Degradado", badge: "bg-amber-100 text-amber-900", border: "border-amber-200" },
+  outage: { label: "Interrupção", badge: "bg-red-100 text-red-900", border: "border-red-200" },
+  maintenance: { label: "Manutenção", badge: "bg-blue-100 text-blue-900", border: "border-blue-200" },
 };
 
 export const metadata: Metadata = {
-  title: "Service status",
-  description: "Current service status and incident updates for SupoClip.",
+  title: "Status do serviço",
+  description: "Status atual dos serviços e incidentes do SupoClip.",
   robots: { index: false, follow: true },
 };
 
@@ -32,23 +32,23 @@ export default async function StatusPage() {
             <Image src="/logo.png" alt="" width={24} height={24} className="rounded-lg" />
             <span className="font-display text-lg font-bold">SupoClip</span>
           </Link>
-          <span className="text-sm text-muted-foreground">Service status</span>
+          <span className="text-sm text-muted-foreground">Status do serviço</span>
         </div>
       </header>
 
       <div className="mx-auto max-w-3xl px-6 py-12 sm:py-20">
         <h1 className="font-display text-3xl font-bold tracking-tight sm:text-4xl">
-          Service status
+          Status do serviço
         </h1>
-        <p className="mt-3 text-muted-foreground">Updates on the SupoClip hosted service.</p>
+        <p className="mt-3 text-muted-foreground">Atualizações sobre a infraestrutura e serviços do SupoClip.</p>
 
         {!statuses?.length && (
           <p role="status" className="mt-8 rounded-2xl border bg-background p-6 text-muted-foreground">
-            Service status is temporarily unavailable. Please check back later.
+            O status do serviço está temporariamente indisponível. Por favor, volte mais tarde.
           </p>
         )}
         {statuses?.map((component) => {
-          const presentation = presentations[component.status] ?? { label: "Unknown", badge: "bg-muted text-foreground", border: "border-border" };
+          const presentation = presentations[component.status] ?? { label: "Desconhecido", badge: "bg-muted text-foreground", border: "border-border" };
           return (
             <section key={component.id} aria-labelledby={`status-${component.id}`} className={`mt-8 rounded-2xl border ${presentation.border} bg-background p-6 sm:p-8`}>
               <div className="flex flex-wrap items-center justify-between gap-4">
@@ -65,7 +65,7 @@ export default async function StatusPage() {
                   {component.description}
                 </p>
                 <p className="mt-6 text-xs text-muted-foreground">
-                  Last updated: <time dateTime={component.updatedAt.toISOString()}>{component.updatedAt.toLocaleString("en-GB", { timeZone: "Europe/Zurich", dateStyle: "long", timeStyle: "short" })} (Zurich)</time>
+                  Última atualização: <time dateTime={component.updatedAt.toISOString()}>{component.updatedAt.toLocaleString("pt-BR", { timeZone: "America/Sao_Paulo", dateStyle: "long", timeStyle: "short" })}</time>
                 </p>
               </div>
             </section>
@@ -74,7 +74,7 @@ export default async function StatusPage() {
 
         <Link href="/" className="mt-8 inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground">
           <ArrowLeft aria-hidden="true" className="size-4" />
-          Back to SupoClip
+          Voltar ao SupoClip
         </Link>
       </div>
     </main>

@@ -3,7 +3,7 @@ import { ArrowRight } from "lucide-react";
 
 import { getRelatedMarketingLinks } from "@/lib/marketing-links";
 
-export function RelatedGuides({ href, heading = "Continue exploring" }: { href: string; heading?: string }) {
+export function RelatedGuides({ href, heading = "Continue explorando" }: { href: string; heading?: string }) {
   const links = getRelatedMarketingLinks(href);
   if (links.length === 0) return null;
 
@@ -21,7 +21,7 @@ export function RelatedGuides({ href, heading = "Continue exploring" }: { href: 
             <h3 className="mt-2 font-semibold text-foreground">{link.title}</h3>
             <p className="mt-2 text-sm leading-6 !text-muted-foreground">{link.description}</p>
             <span className="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-foreground">
-              Read <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" />
+              Ler guia <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" />
             </span>
           </Link>
         ))}

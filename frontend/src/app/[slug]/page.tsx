@@ -42,7 +42,7 @@ export async function generateMetadata({ params }: SeoLandingPageProps): Promise
       type: "article",
       publishedTime: page.publishedAt,
       modifiedTime: page.updatedAt,
-      authors: ["SupoClip Team"],
+      authors: ["Equipe SupoClip"],
     },
     twitter: {
       card: "summary_large_image",
@@ -60,7 +60,7 @@ export default async function SeoLandingPage({ params }: SeoLandingPageProps) {
 
   const siteUrl = getSiteUrl();
   const url = `${siteUrl}/${page.slug}`;
-  const updatedLabel = new Intl.DateTimeFormat("en-US", { dateStyle: "long", timeZone: "UTC" }).format(
+  const updatedLabel = new Intl.DateTimeFormat("pt-BR", { dateStyle: "long", timeZone: "UTC" }).format(
     new Date(`${page.updatedAt}T00:00:00.000Z`),
   );
   const jsonLd = [
@@ -72,7 +72,7 @@ export default async function SeoLandingPage({ params }: SeoLandingPageProps) {
       url,
       datePublished: page.publishedAt,
       dateModified: page.updatedAt,
-      author: { "@type": "Organization", name: "SupoClip Team", url: siteUrl },
+      author: { "@type": "Organization", name: "Equipe SupoClip", url: siteUrl },
       publisher: { "@type": "Organization", name: "SupoClip", url: siteUrl },
       about: { "@type": "SoftwareApplication", name: "SupoClip", url: siteUrl },
     },
@@ -111,10 +111,10 @@ export default async function SeoLandingPage({ params }: SeoLandingPageProps) {
             <Image src="/logo.png" alt="SupoClip" width={24} height={24} className="rounded-lg" />
             <span className="text-lg font-bold tracking-tight">SupoClip</span>
           </Link>
-          <nav className="flex items-center gap-2" aria-label="Primary navigation">
+          <nav className="flex items-center gap-2" aria-label="Navegação principal">
             <Link href="/blog"><Button variant="ghost" size="sm">Blog</Button></Link>
-            <Link href="/blog/self-host-supoclip-docker" className="hidden sm:block"><Button variant="ghost" size="sm">Self-host</Button></Link>
-            <Link href="/sign-up"><Button size="sm">Start clipping</Button></Link>
+            <Link href="/blog/self-host-supoclip-docker" className="hidden sm:block"><Button variant="ghost" size="sm">Auto-hospedar</Button></Link>
+            <Link href="/sign-up"><Button size="sm">Começar a criar clipes</Button></Link>
           </nav>
         </div>
       </header>
@@ -133,16 +133,16 @@ export default async function SeoLandingPage({ params }: SeoLandingPageProps) {
             </h1>
             <p className="mt-6 max-w-3xl text-lg leading-8 text-muted-foreground">{page.summary}</p>
             <div className="mt-7 flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
-              <span>SupoClip Team</span>
+              <span>Equipe SupoClip</span>
               <span className="flex items-center gap-1.5">
                 <CalendarDays className="h-4 w-4" />
-                Updated <time dateTime={page.updatedAt}>{updatedLabel}</time>
+                Atualizado em <time dateTime={page.updatedAt}>{updatedLabel}</time>
               </span>
             </div>
             <div className="mt-9 flex flex-wrap gap-3">
-              <Link href="/sign-up"><Button size="lg">Try SupoClip <ArrowRight className="h-4 w-4" /></Button></Link>
+              <Link href="/sign-up"><Button size="lg">Experimentar o SupoClip <ArrowRight className="h-4 w-4" /></Button></Link>
               <a href={GITHUB_URL} target="_blank" rel="noopener noreferrer">
-                <Button variant="outline" size="lg"><Github className="h-4 w-4" /> View source</Button>
+                <Button variant="outline" size="lg"><Github className="h-4 w-4" /> Ver código-fonte</Button>
               </a>
             </div>
           </div>
@@ -150,7 +150,7 @@ export default async function SeoLandingPage({ params }: SeoLandingPageProps) {
 
         <div className="mx-auto max-w-5xl px-6 py-12 md:py-16">
           <section aria-labelledby="comparison-heading">
-            <h2 id="comparison-heading" className="text-3xl font-bold tracking-tight">Capability overview</h2>
+            <h2 id="comparison-heading" className="text-3xl font-bold tracking-tight">Visão geral de recursos</h2>
             <div className="mt-6 overflow-x-auto rounded-lg border">
               <table className="w-full border-collapse text-left text-sm">
                 <caption className="sr-only">{page.tableCaption}</caption>
@@ -169,7 +169,7 @@ export default async function SeoLandingPage({ params }: SeoLandingPageProps) {
               </table>
             </div>
             <p className="mt-3 text-xs text-muted-foreground">
-              First-party product data from the SupoClip repository and hosted application, verified {updatedLabel}.
+              Dados do produto obtidos do repositório oficial e do aplicativo hospedado do SupoClip, verificados em {updatedLabel}.
             </p>
           </section>
 
@@ -203,7 +203,7 @@ export default async function SeoLandingPage({ params }: SeoLandingPageProps) {
           </div>
 
           <section className="mt-16" aria-labelledby="faq-heading">
-            <h2 id="faq-heading" className="text-3xl font-bold tracking-tight">Frequently asked questions</h2>
+            <h2 id="faq-heading" className="text-3xl font-bold tracking-tight">Perguntas frequentes</h2>
             <div className="mt-6 divide-y rounded-lg border">
               {page.faqs.map((faq) => (
                 <div key={faq.question} className="p-5">
@@ -219,10 +219,10 @@ export default async function SeoLandingPage({ params }: SeoLandingPageProps) {
           </div>
 
           <aside className="mt-14 rounded-lg bg-muted/45 p-6 text-sm text-muted-foreground">
-            <p className="font-semibold text-foreground">Sources and review policy</p>
+            <p className="font-semibold text-foreground">Fontes e política de revisão</p>
             <p className="mt-2 leading-7">
-              Product capabilities are maintained by the SupoClip Team and checked against the public
-              repository. Review the <a href={GITHUB_URL} className="font-medium text-foreground underline underline-offset-4">source code <ExternalLink className="inline h-3.5 w-3.5" /></a> for implementation details. This page is updated when the workflow or supported configuration changes.
+              Os recursos do produto são mantidos pela Equipe SupoClip e verificados em relação ao repositório público.
+              Consulte o <a href={GITHUB_URL} className="font-medium text-foreground underline underline-offset-4">código-fonte <ExternalLink className="inline h-3.5 w-3.5" /></a> para obter detalhes da implementação. Esta página é atualizada sempre que o fluxo de trabalho ou as configurações suportadas sofrem alterações.
             </p>
           </aside>
         </div>

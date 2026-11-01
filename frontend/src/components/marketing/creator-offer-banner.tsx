@@ -37,10 +37,10 @@ export function CreatorOfferBanner() {
     <div className="fixed inset-x-4 bottom-4 z-50 mx-auto flex max-w-md items-center gap-3 rounded-2xl border bg-background/95 py-3 pl-4 pr-2 text-sm shadow-lg backdrop-blur">
       <span className="size-1.5 shrink-0 rounded-full bg-brand" aria-hidden />
       <p className="min-w-0 flex-1 leading-snug">
-        Code <span className="font-mono font-medium">{code}</span> applied: {CREATOR_OFFER_TEXT}.{" "}
-        <Link href="/sign-up" className="font-medium underline underline-offset-2">Start clipping</Link>
+        Código <span className="font-mono font-medium">{code}</span> aplicado: {CREATOR_OFFER_TEXT}.{" "}
+        <Link href="/sign-up" className="font-medium underline underline-offset-2">Começar a criar clipes</Link>
       </p>
-      <button type="button" onClick={dismiss} className="rounded-md p-1.5 text-muted-foreground hover:bg-accent hover:text-foreground" aria-label="Dismiss">
+      <button type="button" onClick={dismiss} className="rounded-md p-1.5 text-muted-foreground hover:bg-accent hover:text-foreground" aria-label="Fechar">
         <X className="size-4" />
       </button>
     </div>

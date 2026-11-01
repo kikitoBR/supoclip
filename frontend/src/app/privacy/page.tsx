@@ -5,19 +5,19 @@ import { ExternalLink } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { HOSTED_APP_URL, getSiteUrl } from "@/lib/blog-posts";
 
-const LAST_UPDATED = "October 16, 2026";
+const LAST_UPDATED = "16 de outubro de 2026";
 const CONTACT_EMAIL = "privacy@supoclip.com";
 
 export const metadata: Metadata = {
-  title: "Privacy Policy | SupoClip",
+  title: "Política de Privacidade | SupoClip",
   description:
-    "How SupoClip collects, uses, shares, and protects your data when you use the SupoClip video-clipping service.",
+    "Como o SupoClip coleta, utiliza, compartilha e protege seus dados ao utilizar o serviço de corte de vídeos SupoClip.",
   alternates: {
     canonical: `${getSiteUrl()}/privacy`,
   },
   openGraph: {
-    title: "SupoClip Privacy Policy",
-    description: "How SupoClip handles your data.",
+    title: "Política de Privacidade do SupoClip",
+    description: "Como o SupoClip cuida dos seus dados.",
     type: "website",
     url: `${getSiteUrl()}/privacy`,
     siteName: "SupoClip",
@@ -54,7 +54,7 @@ export default function PrivacyPolicyPage() {
           </Link>
           <a href={HOSTED_APP_URL} target="_blank" rel="noopener noreferrer">
             <Button variant="ghost" size="sm" className="hidden sm:inline-flex">
-              Hosted App
+              Abrir App
               <ExternalLink className="h-3.5 w-3.5" />
             </Button>
           </a>
@@ -67,241 +67,220 @@ export default function PrivacyPolicyPage() {
             className="text-4xl font-extrabold tracking-tight sm:text-5xl"
             style={{ fontFamily: "var(--font-syne), var(--font-geist-sans), system-ui" }}
           >
-            Privacy Policy
+            Política de Privacidade
           </h1>
-          <p className="text-sm text-muted-foreground">Last updated: {LAST_UPDATED}</p>
+          <p className="text-sm text-muted-foreground">Última atualização: {LAST_UPDATED}</p>
         </div>
 
         <div className="mt-12 space-y-10">
-          <Section title="Overview">
+          <Section title="Visão Geral">
             <p>
-              This Privacy Policy explains how SupoClip (&ldquo;SupoClip,&rdquo; &ldquo;we,&rdquo;
-              &ldquo;us&rdquo;) collects, uses, shares, and protects information when you use the
-              SupoClip apps and hosted service (the &ldquo;Service&rdquo;), which turn long-form
-              videos into short, captioned clips.
+              Esta Política de Privacidade explica como o SupoClip (&ldquo;SupoClip,&rdquo; &ldquo;nós,&rdquo;)
+              coleta, utiliza, compartilha e protege informações quando você usa os aplicativos e o serviço hospedado
+              SupoClip (&ldquo;Serviço&rdquo;), que transformam vídeos longos em clipes curtos e legendados.
             </p>
             <p>
-              SupoClip is also available as open-source software you can self-host. If you use a
-              self-hosted instance operated by you or a third party, that operator&mdash;not
-              SupoClip&mdash;is responsible for the data processed by that instance. This policy
-              describes the SupoClip-operated hosted service.
-            </p>
-          </Section>
-
-          <Section title="Information We Collect">
-            <p className="font-medium text-foreground">Account information.</p>
-            <p>
-              When you create an account we collect your name, email address, and a securely hashed
-              password. Authentication is handled by our auth provider; we do not store plaintext
-              passwords.
-            </p>
-            <p className="font-medium text-foreground">Content you provide.</p>
-            <p>
-              To generate clips, we process the video URLs you submit (for example links to videos
-              you are authorized to use) and any video files you upload. We store the resulting
-              clips, transcripts, captions, and related processing metadata so you can view, edit,
-              and export them. You are responsible for having the rights to any content you submit.
-            </p>
-            <p className="font-medium text-foreground">Billing information.</p>
-            <p>
-              Paid plans are processed by our payment processor, Stripe. We do not store your full
-              card number; we retain your subscription status and a customer identifier needed to
-              manage billing.
-            </p>
-            <p className="font-medium text-foreground">Usage, device, and log data.</p>
-            <p>
-              We collect session identifiers, IP address, and basic technical logs to operate,
-              secure, and debug the Service. If analytics are enabled for the hosted site, we use a
-              privacy-friendly analytics provider that does not build cross-site advertising
-              profiles.
-            </p>
-            <p className="font-medium text-foreground">Campaign and referral information.</p>
-            <p>
-              When you visit our website while signed out, your browser keeps a record of how you
-              first arrived, for up to 90 days. It stores this in your browser&apos;s local storage,
-              not in a cookie. The record includes campaign tags in the link you followed (such as{" "}
-              <code>utm_source</code>, <code>utm_campaign</code>, or a <code>ref</code> code), the
-              domain of the referring website (not the full address), the page you landed on, and
-              the time of that visit. Page addresses are reduced to their route, so share links and
-              project IDs are never recorded. Nothing is recorded while you are signed in.
-            </p>
-            <p>
-              The first account to sign in on that browser claims the record, and it is then deleted
-              from the browser so no other account can use it. If that account is new, we save the
-              record to it once, shortly after sign-up. We also note when you first download or export a clip. We use this to learn
-              which channels bring people who find SupoClip useful. If analytics are enabled, the
-              sign-up and clip-export events we send to our analytics provider include the same
-              campaign fields. We don&apos;t use this information for advertising or sell it. You can
-              remove the record from your browser by clearing site data for supoclip.com.
+              O SupoClip também está disponível como software de código aberto que você pode auto-hospedar. Se você
+              utilizar uma instância auto-hospedada operada por você ou por terceiros, esse operador &mdash; e não o
+              SupoClip &mdash; será o responsável pelos dados processados por essa instância. Esta política descreve o
+              serviço hospedado operado diretamente pelo SupoClip.
             </p>
           </Section>
 
-          <Section title="How We Use Your Information">
+          <Section title="Informações que Coletamos">
+            <p className="font-medium text-foreground">Informações da conta.</p>
+            <p>
+              Ao criar uma conta, coletamos seu nome, endereço de e-mail e uma senha protegida por hash criptográfico seguro.
+              A autenticação é gerenciada pelo nosso provedor de autenticação; nunca armazenamos senhas em texto puro.
+            </p>
+            <p className="font-medium text-foreground">Conteúdo fornecido por você.</p>
+            <p>
+              Para gerar clipes, processamos as URLs de vídeos que você envia (por exemplo, links de vídeos que você tem
+              autorização para usar) e quaisquer arquivos de vídeo carregados. Armazenamos os clipes resultantes,
+              transcrições, legendas e metadados de processamento associados para que você possa visualizá-los, editá-los e
+              exportá-los. Você é responsável por ter os direitos sobre qualquer conteúdo enviado.
+            </p>
+            <p className="font-medium text-foreground">Informações de faturamento.</p>
+            <p>
+              Os planos pagos são processados pelo nosso intermediador de pagamentos, Stripe. Não armazenamos o número completo
+              do seu cartão; mantemos apenas o status da sua assinatura e o identificador de cliente necessário para gerenciar cobranças.
+            </p>
+            <p className="font-medium text-foreground">Dados de uso, dispositivo e registros técnicos.</p>
+            <p>
+              Coletamos identificadores de sessão, endereço IP e registros técnicos básicos para operar, proteger e diagnosticar o
+              Serviço. Se métricas analíticas estiverem ativadas para o site hospedado, usamos um provedor focado em privacidade que
+              não rastreia você entre sites nem constrói perfis publicitários.
+            </p>
+            <p className="font-medium text-foreground">Informações de campanhas e referências.</p>
+            <p>
+              Quando você visita nosso site sem estar conectado, seu navegador mantém um registro de como você chegou pela primeira vez,
+              por até 90 dias. Esses dados são salvos no armazenamento local (localStorage) do seu navegador, e não em cookies. O
+              registro inclui parâmetros de campanha no link acessado (como <code>utm_source</code>, <code>utm_campaign</code> ou um código <code>ref</code>),
+              o domínio do site de origem (não o endereço completo), a página em que você entrou e a data/hora dessa visita. Os endereços das
+              páginas são reduzidos à rota básica, garantindo que links de compartilhamento e IDs de projetos nunca sejam gravados. Nada é
+              registrado enquanto você estiver conectado à sua conta.
+            </p>
+            <p>
+              A primeira conta que fizer login nesse navegador assume esse registro, que em seguida é removido do navegador para que nenhuma
+              outra conta possa utilizá-lo. Se a conta for nova, associamos o registro a ela uma única vez logo após o cadastro. Também
+              registramos quando você baixa ou exporta um clipe pela primeira vez. Usamos essas informações para entender quais canais atraem
+              usuários que consideram o SupoClip útil. Se as análises estiverem ativadas, os eventos de cadastro e exportação de clipe enviados
+              ao nosso provedor de análise incluirão os mesmos campos de campanha. Não usamos essas informações para publicidade nem as comercializamos.
+              Você pode remover o registro do seu navegador a qualquer momento limpando os dados do site supoclip.com.
+            </p>
+          </Section>
+
+          <Section title="Como Usamos Suas Informações">
             <ul className="list-disc space-y-2 pl-6">
-              <li>Provide the Service&mdash;process your videos and generate, edit, and export clips.</li>
-              <li>Authenticate you and keep your account secure.</li>
-              <li>Process payments and manage subscriptions.</li>
-              <li>Send transactional email (for example sign-up confirmation, completion notices, and billing receipts).</li>
-              <li>Maintain, debug, secure, and improve the Service.</li>
-              <li>Understand which campaigns and referring sites lead to sign-ups and first clip exports.</li>
-              <li>If you connect a social account, publish the clips you choose and show you how they perform.</li>
-              <li>Comply with legal obligations and enforce our terms.</li>
+              <li>Fornecer o Serviço &mdash; processar seus vídeos e gerar, editar e exportar clipes.</li>
+              <li>Autenticar seu acesso e manter sua conta segura.</li>
+              <li>Processar pagamentos e gerenciar assinaturas.</li>
+              <li>Enviar e-mails transacionais (como confirmação de cadastro, avisos de conclusão de processamento e recibos).</li>
+              <li>Manter, diagnosticar falhas, proteger e aprimorar o Serviço.</li>
+              <li>Entender quais campanhas e sites de referência geram cadastros e primeiras exportações de clipes.</li>
+              <li>Caso você conecte uma rede social, publicar os clipes selecionados por você e exibir as métricas de desempenho.</li>
+              <li>Cumprir obrigações legais e fazer cumprir nossos termos de uso.</li>
             </ul>
           </Section>
 
-          <Section title="Connected Social Accounts" id="connected-accounts">
+          <Section title="Contas de Redes Sociais Conectadas" id="connected-accounts">
             <p>
-              You can connect a YouTube, TikTok, or Instagram account so SupoClip can publish clips
-              for you. Connecting is optional, happens through the platform&apos;s own sign-in page,
-              and we never see your password for that platform.
+              Você pode conectar uma conta do YouTube, TikTok ou Instagram para que o SupoClip publique clipes para você. A conexão
+              é opcional, é feita diretamente pela tela de login da respectiva plataforma e nunca temos acesso à sua senha daquela rede social.
             </p>
-            <p className="font-medium text-foreground">What we access and why.</p>
+            <p className="font-medium text-foreground">O que acessamos e por quê.</p>
             <ul className="list-disc space-y-2 pl-6">
               <li>
-                <span className="text-foreground">Basic profile</span> (account ID, display name,
-                username, profile picture) &mdash; to show which account is connected.
+                <span className="text-foreground">Perfil básico</span> (ID da conta, nome de exibição, nome de usuário e foto do perfil) &mdash; para identificar qual conta está conectada.
               </li>
               <li>
-                <span className="text-foreground">Permission to upload or publish</span> &mdash; to
-                post the clips you choose, with the title, caption, visibility, and time you set.
-                We never post anything you didn&apos;t ask us to.
+                <span className="text-foreground">Permissão para upload ou publicação</span> &mdash; para publicar os clipes que você escolher, com o título, legenda, visibilidade e horário programados por você. Nunca publicamos nada que você não tenha solicitado explicitamente.
               </li>
               <li>
-                <span className="text-foreground">Statistics for posts made through SupoClip</span>{" "}
-                (views, likes, comments, shares) &mdash; to show you how your clips perform and, once
-                you have enough results, to tailor clip selection for your own future videos.
+                <span className="text-foreground">Estatísticas de publicações feitas pelo SupoClip</span> (visualizações, curtidas, comentários, compartilhamentos) &mdash; para exibir o desempenho dos seus clipes e, quando houver histórico suficiente, refinar a seleção automática de clipes para seus futuros vídeos.
               </li>
             </ul>
             <p>
-              We store the access tokens the platform issues in encrypted form and use them only for
-              the purposes above. We do not sell this data, use it for advertising, share it with
-              other users, or use it to train general-purpose AI models.
+              Armazenamos os tokens de acesso emitidos pelas plataformas de forma criptografada e os utilizamos exclusivamente para as
+              finalidades descritas acima. Não comercializamos esses dados, não os utilizamos para anúncios, não os compartilhamos com outros
+              usuários e não os usamos para treinar modelos de inteligência artificial de uso geral.
             </p>
-            <p className="font-medium text-foreground">Disconnecting and deletion.</p>
+            <p className="font-medium text-foreground">Desconexão e exclusão.</p>
             <p>
-              You can disconnect an account at any time from the Social page. Disconnecting deletes
-              the stored tokens immediately, cancels any posts still scheduled for that account, and
-              asks the platform to revoke SupoClip&apos;s access where it supports that. You can
-              also remove records of published posts, including their statistics, from the app.
-              Deleting your SupoClip account removes all of this data. You can also revoke access
-              from the platform itself, for Google at{" "}
+              Você pode desconectar uma rede social a qualquer momento na página Redes Sociais. A desconexão remove os tokens armazenados
+              imediatamente, cancela eventuais publicações ainda agendadas para essa conta e solicita a revogação do acesso do SupoClip
+              junto à plataforma (quando suportado). Você também pode excluir o histórico de postagens publicadas e suas estatísticas no próprio
+              aplicativo. A exclusão da sua conta SupoClip remove todos esses dados permanentemente. Você também pode revogar a permissão
+              diretamente nas configurações da própria plataforma, como no Google através das{" "}
               <a
                 className="text-foreground underline"
                 href="https://security.google.com/settings/security/permissions"
                 target="_blank"
                 rel="noreferrer"
               >
-                Google security settings
+                configurações de segurança do Google
               </a>
-              . To ask us to delete this data, email{" "}
+              . Para solicitar a exclusão desses dados, envie um e-mail para{" "}
               <a className="text-foreground underline" href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>.
             </p>
-            <p className="font-medium text-foreground">YouTube and Google.</p>
+            <p className="font-medium text-foreground">YouTube e Google.</p>
             <p>
-              SupoClip uses YouTube API Services. By connecting a YouTube account you agree to the{" "}
+              O SupoClip utiliza os Serviços de API do YouTube. Ao conectar uma conta do YouTube, você concorda com os{" "}
               <a className="text-foreground underline" href="https://www.youtube.com/t/terms" target="_blank" rel="noreferrer">
-                YouTube Terms of Service
+                Termos de Serviço do YouTube
               </a>
-              , and Google&apos;s handling of your data is described in the{" "}
+              , e o tratamento dos seus dados pelo Google está descrito na{" "}
               <a className="text-foreground underline" href="https://policies.google.com/privacy" target="_blank" rel="noreferrer">
-                Google Privacy Policy
+                Política de Privacidade do Google
               </a>
-              . SupoClip&apos;s use and transfer to any other app of information received from
-              Google APIs will adhere to the{" "}
+              . O uso e a transferência para qualquer outro aplicativo de informações recebidas das APIs do Google pelo SupoClip atenderão à{" "}
               <a
                 className="text-foreground underline"
                 href="https://developers.google.com/terms/api-services-user-data-policy"
                 target="_blank"
                 rel="noreferrer"
               >
-                Google API Services User Data Policy
+                Política de Dados do Usuário dos Serviços de API do Google
               </a>
-              , including the Limited Use requirements.
+              , incluindo os requisitos de Uso Limitado.
             </p>
           </Section>
 
-          <Section title="Service Providers &amp; Subprocessors">
+          <Section title="Provedores de Serviços e Subprocessadores">
             <p>
-              We share data with vendors that process it on our behalf, only as needed to provide
-              the Service:
+              Compartilhamos dados com fornecedores terceiros que os processam em nosso nome, apenas conforme necessário para viabilizar o Serviço:
             </p>
             <ul className="list-disc space-y-2 pl-6">
-              <li><span className="text-foreground">Transcription</span> &mdash; to transcribe audio from your videos.</li>
-              <li><span className="text-foreground">AI/LLM providers</span> &mdash; to analyze transcripts and identify clip-worthy segments.</li>
-              <li><span className="text-foreground">Stripe</span> &mdash; payment processing.</li>
-              <li><span className="text-foreground">Email delivery</span> &mdash; transactional emails.</li>
-              <li><span className="text-foreground">Hosting &amp; infrastructure</span> &mdash; to run the Service.</li>
-              <li><span className="text-foreground">Analytics</span> &mdash; when enabled, to measure site visits, sign-ups, and clip exports.</li>
-              <li><span className="text-foreground">YouTube, TikTok, and Instagram (Meta)</span> &mdash; only if you connect an account, to publish the clips you choose and read their statistics (see Connected Social Accounts).</li>
+              <li><span className="text-foreground">Transcrição</span> &mdash; para transcrever o áudio dos seus vídeos.</li>
+              <li><span className="text-foreground">Provedores de IA/LLM</span> &mdash; para analisar transcrições e identificar os melhores momentos para clipes.</li>
+              <li><span className="text-foreground">Stripe</span> &mdash; processamento de pagamentos.</li>
+              <li><span className="text-foreground">Envio de e-mails</span> &mdash; e-mails transacionais e notificações.</li>
+              <li><span className="text-foreground">Hospedagem e infraestrutura</span> &mdash; para manter o Serviço funcionando na nuvem.</li>
+              <li><span className="text-foreground">Análise de métricas</span> &mdash; quando ativada, para mensurar visitas, cadastros e exportações de clipes.</li>
+              <li><span className="text-foreground">YouTube, TikTok e Instagram (Meta)</span> &mdash; somente se você conectar sua conta, para publicar os clipes selecionados e coletar estatísticas (conforme seção Contas de Redes Sociais Conectadas).</li>
             </ul>
             <p>
-              We do not sell your personal information, and we do not use it for cross-context
-              behavioral advertising. We may disclose information if required by law or to protect
-              the rights, safety, and security of our users and the Service.
+              Não comercializamos suas informações pessoais e não as utilizamos para publicidade comportamental entre contextos. Podemos divulgar
+              informações se exigido por lei ou para proteger os direitos, a segurança e a integridade de nossos usuários e do Serviço.
             </p>
           </Section>
 
-          <Section title="Data Retention">
+          <Section title="Retenção de Dados">
             <p>
-              We retain your account information, including any campaign and referral information
-              saved at sign-up, for as long as your account is active. Your tasks,
-              uploaded videos, and generated clips are retained until you delete them or delete your
-              account. Temporary processing files are deleted automatically after processing. We may
-              retain limited records as required for legal, security, or accounting purposes.
+              Mantemos as informações da sua conta, incluindo dados de campanha e referência salvos no cadastro, enquanto sua conta estiver ativa.
+              Suas tarefas, vídeos carregados e clipes gerados são mantidos até que você os exclua ou encerre sua conta. Arquivos temporários de
+              processamento são excluídos automaticamente após a conclusão da tarefa. Podemos reter registros limitados conforme exigido para
+              fins legais, contábeis ou de segurança.
             </p>
           </Section>
 
-          <Section title="Your Rights &amp; Choices">
+          <Section title="Seus Direitos e Escolhas">
             <p>
-              You can access and update your account information in the app. You can delete
-              individual tasks and clips at any time. You can delete your account&mdash;which removes
-              your associated data&mdash;from the app, or by contacting us at{" "}
+              Você pode acessar e atualizar os dados da sua conta diretamente no aplicativo. Você pode excluir tarefas e clipes individuais a qualquer momento.
+              Você pode excluir sua conta &mdash; o que remove seus dados associados de forma definitiva &mdash; direto no aplicativo ou entrando em contato pelo e-mail{" "}
               <a className="text-foreground underline" href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>.
             </p>
             <p>
-              Depending on where you live (for example under GDPR or CCPA/CPRA), you may have rights
-              to access, correct, delete, or port your personal data, and to object to or restrict
-              certain processing. To exercise these rights, contact us at the address below. We will
-              not discriminate against you for exercising your rights.
+              Dependendo de onde você reside (por exemplo, sob a LGPD no Brasil, GDPR na Europa ou CCPA/CPRA nos EUA), você pode ter direitos de acessar,
+              corrigir, excluir ou portar seus dados pessoais, além de se opor ou restringir determinados processamentos. Para exercer esses direitos,
+              entre em contato pelo endereço informado. Não faremos qualquer discriminação contra você pelo exercício dos seus direitos.
             </p>
           </Section>
 
-          <Section title="Security">
+          <Section title="Segurança">
             <p>
-              We use industry-standard safeguards, including encryption in transit (HTTPS). On
-              mobile devices, session credentials are stored in the operating system keychain. No
-              method of transmission or storage is completely secure, but we work to protect your
-              information using reasonable technical and organizational measures.
+              Utilizamos medidas de proteção padrão da indústria, incluindo criptografia em trânsito (HTTPS). Em dispositivos móveis, as credenciais
+              de sessão são armazenadas no chaveiro seguro do sistema operacional. Nenhum método de transmissão ou armazenamento é 100% infalível, mas
+              trabalhamos continuamente para proteger suas informações com medidas técnicas e organizacionais adequadas.
             </p>
           </Section>
 
-          <Section title="International Transfers">
+          <Section title="Transferências Internacionais">
             <p>
-              We may process and store information in countries other than where you live. Where
-              required, we use appropriate safeguards for such transfers.
+              Podemos processar e armazenar informações em servidores localizados fora do seu país de residência. Sempre que necessário, adotamos
+              salvaguardas legais adequadas para assegurar a proteção dessas transferências.
             </p>
           </Section>
 
-          <Section title="Children&rsquo;s Privacy">
+          <Section title="Privacidade de Menores">
             <p>
-              The Service is not directed to children under 13 (or the minimum age required in your
-              jurisdiction), and we do not knowingly collect personal information from them. If you
-              believe a child has provided us personal information, contact us and we will delete it.
+              O Serviço não é direcionado a menores de 13 anos (ou a idade mínima exigida em sua jurisdição) e não coletamos intencionalmente informações
+              pessoais desse público. Se você acredita que um menor nos forneceu dados pessoais, entre em contato conosco para que possamos providenciar
+              a exclusão imediata.
             </p>
           </Section>
 
-          <Section title="Changes to This Policy">
+          <Section title="Alterações nesta Política">
             <p>
-              We may update this Privacy Policy from time to time. When we do, we will revise the
-              &ldquo;Last updated&rdquo; date above and, where appropriate, provide additional
-              notice. Your continued use of the Service after an update means you accept the revised
-              policy.
+              Podemos atualizar esta Política de Privacidade periodicamente. Quando o fizermos, atualizaremos a data de &ldquo;Última atualização&rdquo;
+              acima e, quando apropriado, forneceremos aviso prévio. A continuidade do uso do Serviço após a atualização constitui sua concordância com
+              a política revisada.
             </p>
           </Section>
 
-          <Section title="Contact Us">
+          <Section title="Fale Conosco">
             <p>
-              Questions about this policy or your data? Email us at{" "}
+              Dúvidas sobre esta política ou sobre seus dados? Envie um e-mail para{" "}
               <a className="text-foreground underline" href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>.
             </p>
           </Section>
@@ -309,7 +288,7 @@ export default function PrivacyPolicyPage() {
 
         <div className="mt-14 border-t pt-8 text-sm text-muted-foreground">
           <Link href="/" className="underline hover:text-foreground">
-            Back to SupoClip
+            Voltar ao SupoClip
           </Link>
         </div>
       </article>

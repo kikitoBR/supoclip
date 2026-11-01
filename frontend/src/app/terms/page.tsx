@@ -5,19 +5,19 @@ import { ExternalLink } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { HOSTED_APP_URL, getSiteUrl } from "@/lib/blog-posts";
 
-const LAST_UPDATED = "July 2, 2026";
+const LAST_UPDATED = "2 de julho de 2026";
 const CONTACT_EMAIL = "support@supoclip.com";
 
 export const metadata: Metadata = {
-  title: "Terms of Service | SupoClip",
+  title: "Termos de Serviço | SupoClip",
   description:
-    "The terms that govern your use of the SupoClip apps and hosted video-clipping service, including subscriptions purchased on the web or through the App Store.",
+    "Os termos que regem o seu uso dos aplicativos SupoClip e do serviço hospedado de cortes de vídeo, incluindo assinaturas adquiridas na web ou na App Store.",
   alternates: {
     canonical: `${getSiteUrl()}/terms`,
   },
   openGraph: {
-    title: "SupoClip Terms of Service",
-    description: "The terms that govern your use of SupoClip.",
+    title: "Termos de Serviço do SupoClip",
+    description: "Os termos que regem o seu uso do SupoClip.",
     type: "website",
     url: `${getSiteUrl()}/terms`,
     siteName: "SupoClip",
@@ -54,7 +54,7 @@ export default function TermsOfServicePage() {
           </Link>
           <a href={HOSTED_APP_URL} target="_blank" rel="noopener noreferrer">
             <Button variant="ghost" size="sm" className="hidden sm:inline-flex">
-              Hosted App
+              Abrir App
               <ExternalLink className="h-3.5 w-3.5" />
             </Button>
           </a>
@@ -67,135 +67,130 @@ export default function TermsOfServicePage() {
             className="text-4xl font-extrabold tracking-tight sm:text-5xl"
             style={{ fontFamily: "var(--font-syne), var(--font-geist-sans), system-ui" }}
           >
-            Terms of Service
+            Termos de Serviço
           </h1>
-          <p className="text-sm text-muted-foreground">Last updated: {LAST_UPDATED}</p>
+          <p className="text-sm text-muted-foreground">Última atualização: {LAST_UPDATED}</p>
         </div>
 
         <div className="mt-12 space-y-10">
-          <Section title="Agreement">
+          <Section title="Acordo">
             <p>
-              These Terms of Service (&ldquo;Terms&rdquo;) govern your use of the SupoClip apps and
-              hosted service (the &ldquo;Service&rdquo;), which turn long-form videos into short,
-              captioned clips. By creating an account or using the Service you agree to these Terms.
-              If you do not agree, do not use the Service.
+              Estes Termos de Serviço (&ldquo;Termos&rdquo;) regem o uso dos aplicativos e do serviço
+              hospedado SupoClip (&ldquo;Serviço&rdquo;), que transformam vídeos longos em clipes curtos
+              e legendados. Ao criar uma conta ou usar o Serviço, você concorda com estes Termos.
+              Se você não concordar, não use o Serviço.
             </p>
             <p>
-              SupoClip is also available as open-source software you can self-host. These Terms
-              apply to the SupoClip-operated hosted service; self-hosted instances are governed by
-              the applicable open-source license and the operator&rsquo;s own terms.
-            </p>
-          </Section>
-
-          <Section title="Your Account">
-            <p>
-              You must provide accurate information when creating an account and keep your
-              credentials secure. You are responsible for activity that occurs under your account.
-              You must be at least 13 years old (or the minimum age required in your jurisdiction)
-              to use the Service.
+              O SupoClip também está disponível como software de código aberto que você pode auto-hospedar.
+              Estes Termos se aplicam ao serviço hospedado operado pelo SupoClip; instâncias auto-hospedadas
+              são regidas pela licença de código aberto aplicável e pelos termos do próprio operador.
             </p>
           </Section>
 
-          <Section title="Your Content &amp; Responsibilities">
+          <Section title="Sua Conta">
             <p>
-              You retain ownership of the videos you submit and the clips the Service generates from
-              them. You grant us the limited rights needed to process, store, and deliver that
-              content to you as part of operating the Service.
-            </p>
-            <p>
-              You are solely responsible for having the necessary rights to any content you submit,
-              including videos referenced by URL. You may not use the Service to process content
-              that infringes the rights of others, is unlawful, or violates a platform&rsquo;s terms
-              that bind you.
+              Você deve fornecer informações precisas ao criar uma conta e manter suas credenciais seguras.
+              Você é responsável pelas atividades que ocorrem em sua conta. Você deve ter pelo menos 13 anos
+              de idade (ou a idade mínima exigida em sua jurisdição) para usar o Serviço.
             </p>
           </Section>
 
-          <Section title="Subscriptions &amp; Billing">
+          <Section title="Seu Conteúdo e Responsabilidades">
             <p>
-              Paid plans (for example Pro and Scale) unlock higher monthly clip-generation limits.
-              The same plan entitlement applies to your account regardless of where you purchased
-              it.
-            </p>
-            <p className="font-medium text-foreground">Purchases on the web.</p>
-            <p>
-              Web subscriptions are billed by our payment processor, Stripe, on a monthly basis.
-              They renew automatically until canceled. You can cancel anytime via the billing
-              portal in Settings; access continues until the end of the paid period.
-            </p>
-            <p className="font-medium text-foreground">Purchases in the iOS app.</p>
-            <p>
-              Subscriptions purchased in the iOS app are billed to your Apple ID as auto-renewable
-              subscriptions. Payment is charged at confirmation of purchase, and the subscription
-              renews automatically unless canceled at least 24 hours before the end of the current
-              period. You can manage or cancel App Store subscriptions in your device&rsquo;s
-              subscription settings; they cannot be managed from the web. Refunds for App Store
-              purchases are handled by Apple.
+              Você mantém a propriedade dos vídeos que envia e dos clipes que o Serviço gera a partir deles.
+              Você nos concede os direitos limitados necessários para processar, armazenar e fornecer esse
+              conteúdo a você como parte da operação do Serviço.
             </p>
             <p>
-              A subscription is managed by the platform where it was purchased. Prices may change
-              with notice; changes apply at the next renewal. Except where required by law or by
-              the platform&rsquo;s refund policy, fees are non-refundable.
+              Você é o único responsável por possuir os direitos necessários sobre qualquer conteúdo enviado,
+              incluindo vídeos referenciados por URL. Você não pode usar o Serviço para processar conteúdo que
+              infrinja os direitos de terceiros, seja ilícito ou viole os termos de qualquer plataforma que o vincule.
             </p>
           </Section>
 
-          <Section title="Acceptable Use">
+          <Section title="Assinaturas e Faturamento">
+            <p>
+              Planos pagos (por exemplo, Pro e Scale) desbloqueiam limites mensais maiores de geração de clipes.
+              O mesmo benefício do plano se aplica à sua conta, independentemente de onde você realizou a compra.
+            </p>
+            <p className="font-medium text-foreground">Compras na web.</p>
+            <p>
+              As assinaturas na web são cobradas mensalmente pelo nosso processador de pagamentos, Stripe.
+              Elas são renovadas automaticamente até serem canceladas. Você pode cancelar a qualquer momento
+              pelo portal de faturamento nas Configurações; o acesso continua até o término do período já pago.
+            </p>
+            <p className="font-medium text-foreground">Compras no aplicativo iOS.</p>
+            <p>
+              As assinaturas adquiridas no aplicativo iOS são cobradas no seu Apple ID como assinaturas auto-renováveis.
+              O pagamento é debitado na confirmação da compra, e a assinatura é renovada automaticamente, a menos que seja
+              cancelada pelo menos 24 horas antes do término do período atual. Você pode gerenciar ou cancelar
+              assinaturas da App Store nas configurações de assinatura do seu dispositivo; elas não podem ser
+              gerenciadas pela web. Reembolsos de compras na App Store são processados exclusivamente pela Apple.
+            </p>
+            <p>
+              A assinatura é gerenciada pela plataforma onde foi adquirida. Os preços podem mudar mediante aviso prévio;
+              as alterações entram em vigor na renovação seguinte. Exceto quando exigido por lei ou pela política de reembolso
+              da respectiva plataforma, os valores pagos não são reembolsáveis.
+            </p>
+          </Section>
+
+          <Section title="Uso Aceitável">
             <ul className="list-disc space-y-2 pl-6">
-              <li>No infringing, unlawful, or harmful content.</li>
-              <li>No attempts to probe, disrupt, or overload the Service or circumvent usage limits.</li>
-              <li>No reselling or white-labeling the hosted Service without our written permission.</li>
-              <li>No use of the Service to violate third-party platform terms that apply to you.</li>
+              <li>É proibido conteúdo infrator, ilegal ou prejudicial.</li>
+              <li>São proibidas tentativas de testar vulnerabilidades, interromper ou sobrecarregar o Serviço, ou contornar limites de uso.</li>
+              <li>É proibida a revenda ou distribuição em formato white-label do Serviço hospedado sem nossa permissão prévia por escrito.</li>
+              <li>É proibido usar o Serviço para violar termos de uso de plataformas terceiras aplicáveis a você.</li>
             </ul>
-            <p>We may suspend or terminate accounts that violate these Terms.</p>
+            <p>Podemos suspender ou encerrar contas que violem estes Termos.</p>
           </Section>
 
-          <Section title="Intellectual Property">
+          <Section title="Propriedade Intelectual">
             <p>
-              The Service, including its software, design, and branding, is owned by SupoClip or its
-              licensors. The open-source components are licensed under their respective licenses.
-              These Terms do not grant you any rights to our trademarks.
+              O Serviço, incluindo software, design e marca, é de propriedade do SupoClip ou de seus licenciadores.
+              Os componentes de código aberto são licenciados sob suas respectivas licenças. Estes Termos não concedem
+              a você nenhum direito de utilizar nossas marcas registradas.
             </p>
           </Section>
 
-          <Section title="Disclaimers">
+          <Section title="Isenção de Garantias">
             <p>
-              The Service is provided &ldquo;as is&rdquo; and &ldquo;as available.&rdquo;
-              AI-generated output (transcripts, captions, clip selections, virality estimates) may
-              contain errors and is provided without warranty of accuracy. To the fullest extent
-              permitted by law, we disclaim all warranties, express or implied, including fitness
-              for a particular purpose and non-infringement.
+              O Serviço é fornecido &ldquo;como está&rdquo; e &ldquo;conforme disponível&rdquo;. Os resultados
+              gerados por IA (transcrições, legendas, cortes selecionados e estimativas de viralidade) podem conter
+              imprecisões e são fornecidos sem garantia de exatidão. Na extensão máxima permitida por lei, nos
+              isentamos de todas as garantias, expressas ou implícitas, incluindo adequação a uma finalidade específica
+              e não violação de direitos.
             </p>
           </Section>
 
-          <Section title="Limitation of Liability">
+          <Section title="Limitação de Responsabilidade">
             <p>
-              To the fullest extent permitted by law, SupoClip will not be liable for indirect,
-              incidental, special, consequential, or punitive damages, or for lost profits, data, or
-              goodwill. Our aggregate liability for claims relating to the Service is limited to the
-              amount you paid us in the twelve months before the claim arose.
+              Na extensão máxima permitida pela legislação aplicável, o SupoClip não será responsável por danos indiretos,
+              incidentais, especiais, consequenciais ou punitivos, nem por perda de lucros, dados ou reputação.
+              Nossa responsabilidade total por reclamações relacionadas ao Serviço é limitada ao valor pago por você nos
+              doze meses anteriores ao fato que originou a reclamação.
             </p>
           </Section>
 
-          <Section title="Termination">
+          <Section title="Rescisão">
             <p>
-              You may stop using the Service and delete your account at any time. We may suspend or
-              terminate your access for violation of these Terms or where required by law. Sections
-              that by their nature should survive termination (such as ownership, disclaimers, and
-              limitation of liability) survive.
+              Você pode parar de usar o Serviço e excluir sua conta a qualquer momento. Podemos suspender ou encerrar
+              seu acesso por violação destes Termos ou conforme exigido por lei. As seções que por sua natureza devem
+              continuar em vigor após a rescisão (como propriedade intelectual, isenção de garantias e limitação de
+              responsabilidade) permanecerão ativas.
             </p>
           </Section>
 
-          <Section title="Changes to These Terms">
+          <Section title="Alterações nestes Termos">
             <p>
-              We may update these Terms from time to time. When we do, we will revise the
-              &ldquo;Last updated&rdquo; date above and, where appropriate, provide additional
-              notice. Your continued use of the Service after an update means you accept the
-              revised Terms.
+              Podemos atualizar estes Termos periodicamente. Quando o fizermos, atualizaremos a data de &ldquo;Última atualização&rdquo;
+              acima e, se apropriado, forneceremos aviso prévio. O uso contínuo do Serviço após a atualização significa que você
+              aceita os Termos revisados.
             </p>
           </Section>
 
-          <Section title="Contact Us">
+          <Section title="Fale Conosco">
             <p>
-              Questions about these Terms? Email us at{" "}
+              Dúvidas sobre estes Termos? Envie um e-mail para{" "}
               <a className="text-foreground underline" href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>.
             </p>
           </Section>
@@ -203,11 +198,11 @@ export default function TermsOfServicePage() {
 
         <div className="mt-14 border-t pt-8 text-sm text-muted-foreground">
           <Link href="/privacy" className="underline hover:text-foreground">
-            Privacy Policy
+            Política de Privacidade
           </Link>
           <span className="mx-2">&middot;</span>
           <Link href="/" className="underline hover:text-foreground">
-            Back to SupoClip
+            Voltar ao SupoClip
           </Link>
         </div>
       </article>
