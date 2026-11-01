@@ -56,12 +56,12 @@ export function DeleteAccountSection({ email, hasAppStoreSubscription = false }:
     try {
       const response = await authClient.deleteUser({ password });
       if (response.error) {
-        setError(response.error.message || "Failed to delete account");
+        setError(response.error.message || "Falha ao excluir conta");
         setIsDeleting(false);
         return;
       }
     } catch (deleteError) {
-      setError(deleteError instanceof Error ? deleteError.message : "Failed to delete account");
+      setError(deleteError instanceof Error ? deleteError.message : "Falha ao excluir conta");
       setIsDeleting(false);
       return;
     }
@@ -80,28 +80,28 @@ export function DeleteAccountSection({ email, hasAppStoreSubscription = false }:
           <TriangleAlert className="size-4" />
         </span>
         <div>
-          <h2 className="text-sm font-semibold">Danger zone</h2>
-          <p className="text-xs text-muted-foreground">Irreversible actions for your account.</p>
+          <h2 className="text-sm font-semibold">Zona de perigo</h2>
+          <p className="text-xs text-muted-foreground">Ações irreversíveis para a sua conta.</p>
         </div>
       </div>
       <div className="flex flex-col gap-4 p-5 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <p className="text-sm font-medium">Delete account</p>
+          <p className="text-sm font-medium">Excluir conta</p>
           <p className="text-xs text-muted-foreground">
-            Permanently delete your account, generations, clips and API keys.
+            Exclua permanentemente sua conta, vídeos criados, clipes e chaves de API.
           </p>
         </div>
         <Dialog open={open} onOpenChange={handleOpenChange}>
           <DialogTrigger asChild>
-            <Button type="button" variant="destructive">Delete account</Button>
+            <Button type="button" variant="destructive">Excluir conta</Button>
           </DialogTrigger>
           <DialogContent>
             <form onSubmit={handleDelete} className="space-y-4">
               <DialogHeader>
-                <DialogTitle>Delete your account?</DialogTitle>
+                <DialogTitle>Excluir sua conta?</DialogTitle>
                 <DialogDescription>
-                  This permanently deletes your account, all generations and clips, and revokes your API keys. This
-                  can&apos;t be undone.
+                  Esta ação excluirá permanentemente sua conta, todos os vídeos e clipes gerados, e revogará suas chaves de API. Esta ação
+                  não pode ser desfeita.
                 </DialogDescription>
               </DialogHeader>
 
@@ -109,15 +109,15 @@ export function DeleteAccountSection({ email, hasAppStoreSubscription = false }:
                 <Alert className="border-amber-200 bg-amber-50 dark:border-amber-900/60 dark:bg-amber-950/40">
                   <AlertCircle className="h-4 w-4 text-amber-600" />
                   <AlertDescription className="text-sm text-amber-800 dark:text-amber-200">
-                    Your subscription is managed through the App Store. Deleting your account doesn&apos;t cancel
-                    it, so cancel it in your App Store subscriptions to stop being charged.
+                    Sua assinatura é gerenciada pela App Store. Excluir sua conta não a cancela,
+                    portanto cancele-a nas assinaturas da App Store para evitar novas cobranças.
                   </AlertDescription>
                 </Alert>
               )}
 
               <div className="space-y-2">
                 <Label htmlFor="delete-account-confirmation" className="text-sm font-normal">
-                  Type <span className="font-semibold">{email}</span> to confirm
+                  Digite <span className="font-semibold">{email}</span> para confirmar
                 </Label>
                 <Input
                   id="delete-account-confirmation"
@@ -129,7 +129,7 @@ export function DeleteAccountSection({ email, hasAppStoreSubscription = false }:
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="delete-account-password" className="text-sm font-normal">Password</Label>
+                <Label htmlFor="delete-account-password" className="text-sm font-normal">Senha</Label>
                 <Input
                   id="delete-account-password"
                   type="password"
@@ -149,10 +149,10 @@ export function DeleteAccountSection({ email, hasAppStoreSubscription = false }:
 
               <DialogFooter>
                 <Button type="button" variant="outline" onClick={() => handleOpenChange(false)} disabled={isDeleting}>
-                  Cancel
+                  Cancelar
                 </Button>
                 <Button type="submit" variant="destructive" disabled={!confirmed || !password || isDeleting}>
-                  {isDeleting ? <><Loader2 className="size-4 animate-spin" />Deleting...</> : "Delete account"}
+                  {isDeleting ? <><Loader2 className="size-4 animate-spin" />Excluindo...</> : "Excluir conta"}
                 </Button>
               </DialogFooter>
             </form>

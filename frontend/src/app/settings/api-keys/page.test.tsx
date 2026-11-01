@@ -24,29 +24,29 @@ beforeEach(() => {
 it("blocks creation but lets unverified users send a link and revoke an existing key", async () => {
   mocks.send.mockResolvedValue({ data: { status: true } });
   render(<ApiKeysPage />);
-  expect(screen.getByRole("button", { name: /^Create$/ })).toBeDisabled();
-  fireEvent.click(screen.getByRole("button", { name: "Send verification email" }));
+  expect(screen.getByRole("button", { name: /^Criar$/ })).toBeDisabled();
+  fireEvent.click(screen.getByRole("button", { name: "Enviar e-mail de verificação" }));
   await screen.findByRole("status");
   expect(mocks.send).toHaveBeenCalledWith({ email: "owner@example.com", callbackURL: "/settings/api-keys" });
-  fireEvent.click(await screen.findByRole("button", { name: "Revoke" }));
+  fireEvent.click(await screen.findByRole("button", { name: "Revogar" }));
   await waitFor(() => expect(fetch).toHaveBeenCalledWith("/api/api-keys/key-1", { method: "DELETE" }));
-  fireEvent.click(screen.getByRole("button", { name: "I have verified my email" }));
+  fireEvent.click(screen.getByRole("button", { name: "Já confirmei meu e-mail" }));
   expect(mocks.refetch).toHaveBeenCalled();
 });
 
 it("shows send failures and keeps creation blocked", async () => {
   mocks.send.mockResolvedValue({ error: { message: "Please try again later" } });
   render(<ApiKeysPage />);
-  fireEvent.click(screen.getByRole("button", { name: "Send verification email" }));
+  fireEvent.click(screen.getByRole("button", { name: "Enviar e-mail de verificação" }));
   await screen.findByText("Please try again later");
-  expect(screen.getByRole("button", { name: /^Create$/ })).toBeDisabled();
+  expect(screen.getByRole("button", { name: /^Criar$/ })).toBeDisabled();
 });
 
 it("shows invalid verification callbacks after loading keys", async () => {
   window.history.replaceState(null, "", "/settings/api-keys?error=TOKEN_EXPIRED");
   render(<ApiKeysPage />);
   await screen.findByText("Existing key");
-  expect(screen.getByText(/verification link is invalid or expired/)).toBeInTheDocument();
+  expect(screen.getByText(/link de verificação é inválido ou expirou/)).toBeInTheDocument();
 });
 
 it("allows a verified user to create and copy a key", async () => {
@@ -55,7 +55,7 @@ it("allows a verified user to create and copy a key", async () => {
     options?.method === "POST" ? { api_key: { key: "sk_only-once" } } : { api_keys: [] }
   ), { status: 200 }));
   render(<ApiKeysPage />);
-  expect(screen.queryByRole("button", { name: "Send verification email" })).not.toBeInTheDocument();
-  fireEvent.click(screen.getByRole("button", { name: /^Create$/ }));
+  expect(screen.queryByRole("button", { name: "Enviar e-mail de verificação" })).not.toBeInTheDocument();
+  fireEvent.click(screen.getByRole("button", { name: /^Criar$/ }));
   await screen.findByText("sk_only-once");
 });

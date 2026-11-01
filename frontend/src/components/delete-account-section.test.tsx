@@ -25,7 +25,7 @@ vi.mock("../lib/auth-client", () => ({
 
 async function openDialog() {
   const user = userEvent.setup();
-  await user.click(screen.getByRole("button", { name: "Delete account" }));
+  await user.click(screen.getByRole("button", { name: "Excluir conta" }));
   return user;
 }
 
@@ -39,15 +39,15 @@ describe("DeleteAccountSection", () => {
     render(<DeleteAccountSection email="user@example.com" />);
     const user = await openDialog();
 
-    const submit = screen.getByRole("button", { name: "Delete account" });
+    const submit = screen.getByRole("button", { name: "Excluir conta" });
     expect(submit).toBeDisabled();
 
-    await user.type(screen.getByLabelText(/to confirm/), "wrong@example.com");
-    await user.type(screen.getByLabelText("Password"), "Password123!");
+    await user.type(screen.getByLabelText(/para confirmar/), "wrong@example.com");
+    await user.type(screen.getByLabelText("Senha"), "Password123!");
     expect(submit).toBeDisabled();
 
-    await user.clear(screen.getByLabelText(/to confirm/));
-    await user.type(screen.getByLabelText(/to confirm/), "User@Example.com");
+    await user.clear(screen.getByLabelText(/para confirmar/));
+    await user.type(screen.getByLabelText(/para confirmar/), "User@Example.com");
     expect(submit).toBeEnabled();
     expect(authClient.deleteUser).not.toHaveBeenCalled();
   });
@@ -57,9 +57,9 @@ describe("DeleteAccountSection", () => {
     render(<DeleteAccountSection email="user@example.com" />);
     const user = await openDialog();
 
-    await user.type(screen.getByLabelText(/to confirm/), "user@example.com");
-    await user.type(screen.getByLabelText("Password"), "Password123!");
-    await user.click(screen.getByRole("button", { name: "Delete account" }));
+    await user.type(screen.getByLabelText(/para confirmar/), "user@example.com");
+    await user.type(screen.getByLabelText("Senha"), "Password123!");
+    await user.click(screen.getByRole("button", { name: "Excluir conta" }));
 
     expect(authClient.deleteUser).toHaveBeenCalledWith({ password: "Password123!" });
     expect(authClient.signOut).toHaveBeenCalled();
@@ -74,9 +74,9 @@ describe("DeleteAccountSection", () => {
     render(<DeleteAccountSection email="user@example.com" />);
     const user = await openDialog();
 
-    await user.type(screen.getByLabelText(/to confirm/), "user@example.com");
-    await user.type(screen.getByLabelText("Password"), "Password123!");
-    await user.click(screen.getByRole("button", { name: "Delete account" }));
+    await user.type(screen.getByLabelText(/para confirmar/), "user@example.com");
+    await user.type(screen.getByLabelText("Senha"), "Password123!");
+    await user.click(screen.getByRole("button", { name: "Excluir conta" }));
 
     expect(await screen.findByText(/Cancel it from Manage Billing/)).toBeInTheDocument();
     expect(authClient.signOut).not.toHaveBeenCalled();
@@ -87,6 +87,6 @@ describe("DeleteAccountSection", () => {
     render(<DeleteAccountSection email="user@example.com" hasAppStoreSubscription />);
     await openDialog();
 
-    expect(screen.getByText(/managed through the App Store/)).toBeInTheDocument();
+    expect(screen.getByText(/gerenciada pela App Store/)).toBeInTheDocument();
   });
 });
