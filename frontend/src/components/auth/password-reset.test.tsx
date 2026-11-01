@@ -27,14 +27,14 @@ describe("ForgotPassword", () => {
     const user = userEvent.setup();
 
     render(<ForgotPassword />);
-    await user.type(screen.getByPlaceholderText("Email"), "user@example.com");
-    await user.click(screen.getByRole("button", { name: "Send reset link" }));
+    await user.type(screen.getByPlaceholderText("E-mail"), "user@example.com");
+    await user.click(screen.getByRole("button", { name: "Enviar link de recuperação" }));
 
     expect(requestPasswordReset).toHaveBeenCalledWith({
       email: "user@example.com",
       redirectTo: "/reset-password",
     });
-    expect(await screen.findByText(/a reset link is on its way/)).toBeInTheDocument();
+    expect(await screen.findByText(/link de recuperação foi enviado/)).toBeInTheDocument();
   });
 });
 
@@ -46,13 +46,13 @@ describe("ResetPassword", () => {
 
   it("shows an expired state without a token", () => {
     render(<ResetPassword />);
-    expect(screen.getByText("Link expired")).toBeInTheDocument();
+    expect(screen.getByText("Link expirado")).toBeInTheDocument();
   });
 
   it("shows an expired state when Better Auth reports an invalid token", () => {
     searchParams.set("error", "INVALID_TOKEN");
     render(<ResetPassword />);
-    expect(screen.getByRole("link", { name: "Request a new link" })).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "Solicitar um novo link" })).toBeInTheDocument();
   });
 
   it("rejects mismatched passwords", async () => {
@@ -60,11 +60,11 @@ describe("ResetPassword", () => {
     const user = userEvent.setup();
 
     render(<ResetPassword />);
-    await user.type(screen.getByPlaceholderText("New password"), "Password123!");
-    await user.type(screen.getByPlaceholderText("Confirm new password"), "Password456!");
-    await user.click(screen.getByRole("button", { name: "Reset password" }));
+    await user.type(screen.getByPlaceholderText("Nova senha"), "Password123!");
+    await user.type(screen.getByPlaceholderText("Confirme a nova senha"), "Password456!");
+    await user.click(screen.getByRole("button", { name: "Redefinir senha" }));
 
-    expect(await screen.findByText("Passwords do not match")).toBeInTheDocument();
+    expect(await screen.findByText("As senhas não coincidem")).toBeInTheDocument();
     expect(resetPassword).not.toHaveBeenCalled();
   });
 
@@ -74,11 +74,11 @@ describe("ResetPassword", () => {
     const user = userEvent.setup();
 
     render(<ResetPassword />);
-    await user.type(screen.getByPlaceholderText("New password"), "Password123!");
-    await user.type(screen.getByPlaceholderText("Confirm new password"), "Password123!");
-    await user.click(screen.getByRole("button", { name: "Reset password" }));
+    await user.type(screen.getByPlaceholderText("Nova senha"), "Password123!");
+    await user.type(screen.getByPlaceholderText("Confirme a nova senha"), "Password123!");
+    await user.click(screen.getByRole("button", { name: "Redefinir senha" }));
 
     expect(resetPassword).toHaveBeenCalledWith({ newPassword: "Password123!", token: "tok" });
-    expect(await screen.findByText(/Password updated/)).toBeInTheDocument();
+    expect(await screen.findByText(/Senha atualizada com sucesso/)).toBeInTheDocument();
   });
 });

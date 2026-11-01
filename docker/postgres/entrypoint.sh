@@ -13,3 +13,4 @@ set -e
 ) &
 
 exec docker-entrypoint.sh "$@"
+

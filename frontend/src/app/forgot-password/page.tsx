@@ -5,7 +5,7 @@ import Link from "next/link";
 export default function ForgotPasswordPage() {
   return (
     <AuthFrame
-      footer={<>Remembered it?{" "}<Link href="/sign-in" className="font-medium text-foreground underline-offset-4 hover:underline">Sign in</Link></>}
+      footer={<>Lembrou da senha?{" "}<Link href="/sign-in" className="font-medium text-foreground underline-offset-4 hover:underline">Entrar</Link></>}
     >
       <ForgotPassword />
     </AuthFrame>

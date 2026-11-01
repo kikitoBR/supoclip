@@ -19,12 +19,12 @@ export function AuthFrame({ children, footer }: { children: React.ReactNode; foo
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_30%_20%,rgb(255_255_255/0.07),transparent_60%)]" />
         <div className="relative flex h-full flex-col justify-between p-12 text-white">
           <p className="max-w-md font-display text-3xl font-bold leading-tight tracking-tight">
-            One long video in.<br /><span className="text-white/60">A week of clips out.</span>
+            Um vídeo longo entra.<br /><span className="text-white/60">Uma semana de clipes sai.</span>
           </p>
           <div className="py-10">
             <ClipCutAnimation />
           </div>
-          <p className="text-sm text-white/60">AI picks the moments, frames the speaker, and writes the captions. You just post.</p>
+          <p className="text-sm text-white/60">A IA seleciona os melhores momentos, enquadra quem está falando e gera as legendas. Você só publica.</p>
         </div>
       </div>
     </div>

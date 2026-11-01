@@ -24,10 +24,10 @@ describe("SignUp", () => {
 
     render(<SignUp />);
 
-    await user.type(screen.getByPlaceholderText("Full Name"), "Jane Admin");
-    await user.type(screen.getByPlaceholderText("Email"), "admin@example.com");
-    await user.type(screen.getByPlaceholderText("Password"), "Password123!");
-    await user.click(screen.getByRole("button", { name: "Sign Up" }));
+    await user.type(screen.getByPlaceholderText("Nome completo"), "Jane Admin");
+    await user.type(screen.getByPlaceholderText("E-mail"), "admin@example.com");
+    await user.type(screen.getByPlaceholderText("Senha"), "Password123!");
+    await user.click(screen.getByRole("button", { name: "Cadastrar-se" }));
 
     expect(await screen.findByText("Account already exists")).toBeInTheDocument();
   });
@@ -38,13 +38,13 @@ describe("SignUp", () => {
 
     render(<SignUp />);
 
-    await user.type(screen.getByPlaceholderText("Full Name"), "Jane Admin");
-    await user.type(screen.getByPlaceholderText("Email"), "admin@example.com");
-    await user.type(screen.getByPlaceholderText("Password"), "Password123!");
-    await user.click(screen.getByRole("button", { name: "Sign Up" }));
+    await user.type(screen.getByPlaceholderText("Nome completo"), "Jane Admin");
+    await user.type(screen.getByPlaceholderText("E-mail"), "admin@example.com");
+    await user.type(screen.getByPlaceholderText("Senha"), "Password123!");
+    await user.click(screen.getByRole("button", { name: "Cadastrar-se" }));
 
     expect(
-      await screen.findByText("Account created successfully! Signing you in..."),
+      await screen.findByText("Conta criada com sucesso! Entrando..."),
     ).toBeInTheDocument();
   });
 });

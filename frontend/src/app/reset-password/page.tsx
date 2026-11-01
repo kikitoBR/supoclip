@@ -6,7 +6,7 @@ import Link from "next/link";
 export default function ResetPasswordPage() {
   return (
     <AuthFrame
-      footer={<>Back to{" "}<Link href="/sign-in" className="font-medium text-foreground underline-offset-4 hover:underline">Sign in</Link></>}
+      footer={<>Voltar para o{" "}<Link href="/sign-in" className="font-medium text-foreground underline-offset-4 hover:underline">Login</Link></>}
     >
       <Suspense>
         <ResetPassword />

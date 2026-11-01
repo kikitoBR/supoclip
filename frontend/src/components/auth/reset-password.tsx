@@ -22,7 +22,7 @@ export function ResetPassword() {
     e.preventDefault();
     if (!token) return;
     if (password !== confirmPassword) {
-      setMessage("Passwords do not match");
+      setMessage("As senhas não coincidem");
       return;
     }
 
@@ -33,7 +33,7 @@ export function ResetPassword() {
 
     setLoading(false);
     if (response.error) {
-      setMessage(response.error.message || "Failed to reset password");
+      setMessage(response.error.message || "Falha ao redefinir a senha");
       return;
     }
 
@@ -44,12 +44,12 @@ export function ResetPassword() {
   if (!token || linkError) {
     return (
       <div className="w-full">
-        <h1 className="font-display text-3xl font-bold tracking-tight">Link expired</h1>
+        <h1 className="font-display text-3xl font-bold tracking-tight">Link expirado</h1>
         <p className="mt-2 text-sm text-muted-foreground">
-          This password reset link is invalid or has expired.
+          Este link de redefinição de senha é inválido ou expirou.
         </p>
         <Link href="/forgot-password" className="mt-8 inline-block text-sm font-medium underline-offset-4 hover:underline">
-          Request a new link
+          Solicitar um novo link
         </Link>
       </div>
     );
@@ -57,17 +57,17 @@ export function ResetPassword() {
 
   return (
     <div className="w-full">
-      <h1 className="font-display text-3xl font-bold tracking-tight">Choose a new password</h1>
-      <p className="mt-2 text-sm text-muted-foreground">You&apos;ll be signed out on other devices.</p>
+      <h1 className="font-display text-3xl font-bold tracking-tight">Escolha uma nova senha</h1>
+      <p className="mt-2 text-sm text-muted-foreground">Você será desconectado de outros dispositivos.</p>
       <div className="mt-8">
         {done ? (
-          <p className="text-sm text-green-600">Password updated. Redirecting to sign in...</p>
+          <p className="text-sm text-green-600">Senha atualizada com sucesso. Redirecionando para o login...</p>
         ) : (
           <form onSubmit={handleSubmit} className="space-y-4">
             <Input
               className="h-11"
               type="password"
-              placeholder="New password"
+              placeholder="Nova senha"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
@@ -77,7 +77,7 @@ export function ResetPassword() {
             <Input
               className="h-11"
               type="password"
-              placeholder="Confirm new password"
+              placeholder="Confirme a nova senha"
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
               required
@@ -85,7 +85,7 @@ export function ResetPassword() {
               disabled={loading}
             />
             <Button type="submit" className="h-11 w-full" disabled={loading}>
-              {loading ? "Saving..." : "Reset password"}
+              {loading ? "Salvando..." : "Redefinir senha"}
             </Button>
           </form>
         )}

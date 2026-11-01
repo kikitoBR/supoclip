@@ -27,7 +27,7 @@ export function SignUp() {
     });
 
     if (response.error) {
-      setMessage(response.error.message || "Failed to create account");
+      setMessage(response.error.message || "Falha ao criar conta");
       setLoading(false);
       return;
     }
@@ -36,7 +36,7 @@ export function SignUp() {
       auth_method: "email",
       ...attributionMetadata(getAnonymousAttribution()),
     });
-    setMessage("Account created successfully! Signing you in...");
+    setMessage("Conta criada com sucesso! Entrando...");
     setLoading(false);
 
     // Automatically sign in after successful sign up
@@ -47,14 +47,14 @@ export function SignUp() {
 
   return (
     <div className="w-full">
-      <h1 className="font-display text-3xl font-bold tracking-tight">Create your account</h1>
-      <p className="mt-2 text-sm text-muted-foreground">Start turning long videos into vertical, captioned clips.</p>
+      <h1 className="font-display text-3xl font-bold tracking-tight">Crie sua conta</h1>
+      <p className="mt-2 text-sm text-muted-foreground">Transforme vídeos longos em clipes verticais legendados.</p>
       <div className="mt-8">
         <form onSubmit={handleSubmit} className="space-y-4">
           <Input
             className="h-11"
             type="text"
-            placeholder="Full Name"
+            placeholder="Nome completo"
             value={name}
             onChange={(e) => setName(e.target.value)}
             required
@@ -63,7 +63,7 @@ export function SignUp() {
           <Input
             className="h-11"
             type="email"
-            placeholder="Email"
+            placeholder="E-mail"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
@@ -72,7 +72,7 @@ export function SignUp() {
           <Input
             className="h-11"
             type="password"
-            placeholder="Password"
+            placeholder="Senha"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
@@ -80,11 +80,11 @@ export function SignUp() {
             minLength={8}
           />
           <Button type="submit" className="h-11 w-full" disabled={loading}>
-            {loading ? "Creating Account..." : "Sign Up"}
+            {loading ? "Criando conta..." : "Cadastrar-se"}
           </Button>
         </form>
         {message && (
-          <p className={`mt-4 text-sm ${message.includes("successfully") ? "text-green-600" : "text-red-600"}`}>
+          <p className={`mt-4 text-sm ${message.includes("sucesso") || message.includes("successfully") ? "text-green-600" : "text-red-600"}`}>
             {message}
           </p>
         )}

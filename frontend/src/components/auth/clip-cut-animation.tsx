@@ -54,7 +54,7 @@ export function ClipCutAnimation() {
 
   const shown: Phase = reduceMotion ? "clips" : phase;
   const at = (name: Phase) => PHASES[shown] >= PHASES[name];
-  const label = at("clips") ? "3 clips · captioned · ready to post" : "podcast-episode-42.mp4 · 1:24:10";
+  const label = at("clips") ? "3 clipes · legendados · prontos para postar" : "episodio-podcast-42.mp4 · 1:24:10";
 
   return (
     <motion.svg

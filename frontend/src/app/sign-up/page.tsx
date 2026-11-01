@@ -5,7 +5,7 @@ import Link from "next/link";
 export default function SignUpPage() {
   return (
     <AuthFrame
-      footer={<>Already have an account?{" "}<Link href="/sign-in" className="font-medium text-foreground underline-offset-4 hover:underline">Sign in</Link></>}
+      footer={<>Já tem uma conta?{" "}<Link href="/sign-in" className="font-medium text-foreground underline-offset-4 hover:underline">Entrar</Link></>}
     >
       <SignUp />
     </AuthFrame>
