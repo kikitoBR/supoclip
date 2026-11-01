@@ -6,7 +6,7 @@
  * approved creator are stored. Storage is a convenience: the server still
  * applies a signup `?ref=` on its own and re-validates every code at checkout.
  */
-export const CREATOR_OFFER_TEXT = "20% off your first 3 months";
+export const CREATOR_OFFER_TEXT = "20% de desconto nos primeiros 3 meses";
 
 const STORAGE_KEY = "supoclip:creator-code:v1";
 const TTL_MS = 90 * 24 * 60 * 60 * 1000;

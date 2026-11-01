@@ -33,7 +33,7 @@ export function CreatorCodeField({ className }: { className?: string }) {
     const code = await lookupCreatorCode(value);
     setIsChecking(false);
     if (!code) {
-      setError("That code isn't valid.");
+      setError("Esse código não é válido.");
       return;
     }
     storeCreatorCode(code);
@@ -45,7 +45,7 @@ export function CreatorCodeField({ className }: { className?: string }) {
   if (applied) {
     return (
       <p className={cn("text-xs text-muted-foreground", className)}>
-        Creator code <span className="font-mono font-medium text-foreground">{applied}</span>: {CREATOR_OFFER_TEXT}.{" "}
+        Código de criador <span className="font-mono font-medium text-foreground">{applied}</span>: {CREATOR_OFFER_TEXT}.{" "}
         <button
           type="button"
           className="underline underline-offset-2 hover:text-foreground"
@@ -54,7 +54,7 @@ export function CreatorCodeField({ className }: { className?: string }) {
             setApplied(null);
           }}
         >
-          Remove
+          Remover
         </button>
       </p>
     );
@@ -67,7 +67,7 @@ export function CreatorCodeField({ className }: { className?: string }) {
         onClick={() => setIsOpen(true)}
         className={cn("text-xs text-muted-foreground underline-offset-2 hover:text-foreground hover:underline", className)}
       >
-        Have a creator code?
+        Tem um código de criador?
       </button>
     );
   }
@@ -78,14 +78,14 @@ export function CreatorCodeField({ className }: { className?: string }) {
         <Input
           value={value}
           onChange={(event) => setValue(event.target.value)}
-          placeholder="Creator code"
-          aria-label="Creator code"
+          placeholder="Código de criador"
+          aria-label="Código de criador"
           maxLength={20}
           autoFocus
           className="h-8 font-mono text-sm uppercase"
         />
         <Button type="submit" size="sm" variant="outline" disabled={!value.trim() || isChecking}>
-          {isChecking ? <Loader2 className="size-3.5 animate-spin" /> : "Apply"}
+          {isChecking ? <Loader2 className="size-3.5 animate-spin" /> : "Aplicar"}
         </Button>
       </div>
       {error && <p className="text-xs text-red-600">{error}</p>}

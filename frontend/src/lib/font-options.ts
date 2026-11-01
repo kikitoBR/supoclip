@@ -11,10 +11,10 @@ export const FONT_TEMPLATE_DEFAULT_VALUE = "__template_default__";
 
 // Font size is a simple segmented choice — null defers to the caption template's size.
 export const FONT_SIZE_OPTIONS: Array<{ label: string; value: number | null }> = [
-  { label: "Template default", value: null },
-  { label: "Small", value: 18 },
-  { label: "Medium", value: 28 },
-  { label: "Large", value: 40 },
+  { label: "Padrão", value: null },
+  { label: "Pequeno", value: 18 },
+  { label: "Médio", value: 28 },
+  { label: "Grande", value: 40 },
 ];
 
 /**

@@ -16,7 +16,7 @@ describe("FontSelectOption", () => {
     };
 
     render(<FontSelectOption font={font} isDeleting={false} onDelete={onDelete} />);
-    fireEvent.click(screen.getByRole("button", { name: "Delete Brand Font" }));
+    fireEvent.click(screen.getByRole("button", { name: "Excluir Brand Font" }));
 
     expect(onDelete).toHaveBeenCalledWith(font);
   });
@@ -30,23 +30,23 @@ describe("FontSelectOption", () => {
       />,
     );
 
-    expect(screen.queryByRole("button", { name: /delete/i })).not.toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: /excluir/i })).not.toBeInTheDocument();
   });
 
   it("shows file coverage and fallback warnings for bundled and uploaded fonts", () => {
     render(<FontSelectOption font={{ name: "Inter", display_name: "Inter", scope: "system", supported_languages: ["en", "pt"] }} />);
-    fireEvent.click(screen.getByRole("button", { name: "Language support for Inter" }));
+    fireEvent.click(screen.getByRole("button", { name: "Suporte a idiomas para Inter" }));
 
-    expect(screen.getByText(/English, Portuguese/)).toBeInTheDocument();
-    expect(screen.getByText(/Hindi/)).toBeInTheDocument();
-    expect(screen.getByText(/Missing characters use a fallback font/)).toBeInTheDocument();
+    expect(screen.getByText(/inglês.*português/i)).toBeInTheDocument();
+    expect(screen.getByText(/híndi|hindi/i)).toBeInTheDocument();
+    expect(screen.getByText(/Caracteres ausentes utilizam uma fonte alternativa/)).toBeInTheDocument();
   });
 
   it("does not claim unsupported languages when coverage is unavailable", () => {
     render(<FontSelectOption font={{ name: "custom", display_name: "Custom", scope: "user", supported_languages: null }} />);
-    fireEvent.click(screen.getByRole("button", { name: "Language support for Custom" }));
+    fireEvent.click(screen.getByRole("button", { name: "Suporte a idiomas para Custom" }));
 
-    expect(screen.getByText(/Language coverage could not be checked/)).toBeInTheDocument();
-    expect(screen.queryByText(/Not fully supported/)).not.toBeInTheDocument();
+    expect(screen.getByText(/Não foi possível verificar a cobertura de idiomas/)).toBeInTheDocument();
+    expect(screen.queryByText(/Suporte parcial/)).not.toBeInTheDocument();
   });
 });

@@ -52,8 +52,8 @@ export function FontSelectOption({
         <button
           type="button"
           className="flex h-8 w-8 shrink-0 items-center justify-center rounded-sm text-gray-500 hover:bg-red-50 hover:text-red-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500 disabled:opacity-50"
-          aria-label={`Delete ${font.display_name}`}
-          title={`Delete ${font.display_name}`}
+          aria-label={`Excluir ${font.display_name}`}
+          title={`Excluir ${font.display_name}`}
           disabled={isDeleting}
           onPointerDown={(event) => {
             event.preventDefault();

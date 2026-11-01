@@ -87,7 +87,7 @@ export function getUpgradeState(billing: UpgradeBilling | null | undefined) {
 function formatDate(value: string) {
   const date = new Date(value);
   if (Number.isNaN(date.getTime())) return null;
-  return date.toLocaleDateString(undefined, { month: "long", day: "numeric" });
+  return date.toLocaleDateString("pt-BR", { month: "long", day: "numeric" });
 }
 
 function formatRuntime(seconds: number) {
@@ -104,35 +104,35 @@ function copyFor(reason: UpgradeReason, billing: UpgradeBilling | null | undefin
   switch (reason.kind) {
     case "start":
       return {
-        eyebrow: "Ready when you are",
-        title: "Turn long videos into ready-to-post clips",
-        body: "Choose a hosted plan and we handle the processing, or self-host the open-source app on your own computer for free.",
+        eyebrow: "Pronto quando você estiver",
+        title: "Transforme vídeos longos em clipes prontos para postar",
+        body: "Escolha um plano hospedado e nós cuidamos do processamento, ou execute a versão open-source no seu próprio computador gratuitamente.",
       };
     case "limit":
       return {
-        eyebrow: "What a month",
-        title: state?.limit ? `You've clipped all ${state.limit} videos on ${planName}` : `You've used everything on ${planName}`,
+        eyebrow: "Mês produtivo",
+        title: state?.limit ? `Você usou todos os ${state.limit} vídeos no plano ${planName}` : `Você usou todo o limite no plano ${planName}`,
         body: target
-          ? `Your allowance refreshes${state?.resetsOn ? ` on ${state.resetsOn}` : " next billing period"}. Keep the momentum going with ${target.name}: ${target.generationLimit} videos a month.`
-          : `Your allowance refreshes${state?.resetsOn ? ` on ${state.resetsOn}` : " next billing period"}.`,
+          ? `Seu limite será renovado${state?.resetsOn ? ` em ${state.resetsOn}` : " no próximo ciclo"}. Mantenha o ritmo com o plano ${target.name}: ${target.generationLimit} vídeos por mês.`
+          : `Seu limite será renovado${state?.resetsOn ? ` em ${state.resetsOn}` : " no próximo ciclo"}.`,
       };
     case "video_too_long":
       return {
-        eyebrow: "A long one",
-        title: `${target?.name ?? "A bigger plan"} can take this ${formatRuntime(reason.durationSeconds)} video`,
-        body: `${planName} covers YouTube videos up to ${formatMinutes(Math.round(reason.maxSeconds / 60))}. ${target ? `${target.name} handles up to ${formatMinutes(target.youtubeMaxMinutes)}, so this one goes straight through.` : ""} This try didn't use a generation.`,
+        eyebrow: "Vídeo longo",
+        title: `${target?.name ?? "Um plano maior"} suporta este vídeo de ${formatRuntime(reason.durationSeconds)}`,
+        body: `O plano ${planName} suporta vídeos do YouTube de até ${formatMinutes(Math.round(reason.maxSeconds / 60))}. ${target ? `O plano ${target.name} suporta até ${formatMinutes(target.youtubeMaxMinutes)}, processando seu vídeo direto.` : ""} Esta tentativa não consumiu créditos.`,
       };
     case "custom_fonts":
       return {
-        eyebrow: "Make it yours",
-        title: "Captions in your brand's own font",
-        body: "Upload any .ttf or .otf and use it across every clip, so your shorts look like they come from you.",
+        eyebrow: "Sua identidade visual",
+        title: "Legendas com a fonte da sua marca",
+        body: "Envie qualquer arquivo .ttf ou .otf e utilize-o em todos os clipes, mantendo a identidade visual única do seu conteúdo.",
       };
     default:
       return {
-        eyebrow: "More room to create",
-        title: target ? `Do more with ${target.name}` : "Plans for every creator",
-        body: "More videos each month, longer sources and priority processing.",
+        eyebrow: "Mais espaço para criar",
+        title: target ? `Crie mais com o plano ${target.name}` : "Planos para todos os criadores",
+        body: "Mais vídeos por mês, durações maiores e processamento prioritário.",
       };
   }
 }
@@ -174,7 +174,7 @@ export function UpgradeDialog({ open, onOpenChange, reason, billing, source }: U
     try {
       await startUpgrade(target.id, `${source}:${reason.kind}`);
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : "We couldn't open checkout. Please try again.");
+      toast.error(error instanceof Error ? error.message : "Não foi possível abrir o checkout. Tente novamente.");
       setIsRedirecting(false);
     }
   };
@@ -184,7 +184,7 @@ export function UpgradeDialog({ open, onOpenChange, reason, billing, source }: U
       <DialogContent showCloseButton={false} className="max-h-[calc(100dvh-2rem)] max-w-3xl gap-0 overflow-x-hidden overflow-y-auto p-0 sm:grid-cols-[1.1fr_1fr]">
         <DialogClose className="absolute right-4 top-4 z-10 rounded-md p-1 text-muted-foreground transition-colors hover:bg-accent hover:text-foreground">
           <X className="size-4" />
-          <span className="sr-only">Close</span>
+          <span className="sr-only">Fechar</span>
         </DialogClose>
         <div className="flex flex-col p-6 sm:p-8">
           <p className="text-xs font-medium text-muted-foreground">{copy.eyebrow}</p>
@@ -193,10 +193,10 @@ export function UpgradeDialog({ open, onOpenChange, reason, billing, source }: U
 
           {state?.managedByAppStore ? (
             <p className="mt-6 rounded-xl border bg-muted/40 px-4 py-3 text-sm text-muted-foreground">
-              Your subscription is managed through the App Store. You can change plans in the SupoClip iOS app.
+              Sua assinatura é gerenciada pela App Store. Você pode alterar seu plano no app SupoClip para iOS.
             </p>
           ) : (
-            <div className="mt-6 space-y-2" role="radiogroup" aria-label="Plans">
+            <div className="mt-6 space-y-2" role="radiogroup" aria-label="Planos">
               {currentPlan && <PlanOption plan={currentPlan} current />}
               {options.map((plan) => (
                 <PlanOption
@@ -214,18 +214,18 @@ export function UpgradeDialog({ open, onOpenChange, reason, billing, source }: U
             <div className="mt-3 rounded-lg border bg-muted/30 px-4 py-3">
               <div className="flex items-center gap-3">
                 <Server className="size-4 shrink-0 text-muted-foreground" />
-                <p className="flex-1 text-sm font-semibold">Self-hosted</p>
-                <span className="text-sm font-semibold">Free</span>
+                <p className="flex-1 text-sm font-semibold">Auto-hospedado</p>
+                <span className="text-sm font-semibold">Grátis</span>
               </div>
               <p className="mt-2 text-xs leading-relaxed text-muted-foreground">
-                Run SupoClip on your own computer with no subscription or monthly video limit.
-                Setup required; you provide the hardware and any paid AI services you choose.
+                Execute o SupoClip no seu próprio computador ou servidor sem assinatura ou limite mensal de vídeos.
+                Requer configuração; você fornece a infraestrutura e os serviços de IA que desejar.
               </p>
               <Link
                 href="/blog/self-host-supoclip-docker"
                 className="mt-3 inline-flex items-center gap-1 text-sm font-medium underline underline-offset-4 hover:text-muted-foreground"
               >
-                Self-hosting guide <ArrowRight className="size-3.5" />
+                Guia de auto-hospedagem <ArrowRight className="size-3.5" />
               </Link>
             </div>
           )}
@@ -236,19 +236,19 @@ export function UpgradeDialog({ open, onOpenChange, reason, billing, source }: U
             {target && !state?.managedByAppStore && (
               <Button size="lg" onClick={handleContinue} disabled={isRedirecting}>
                 {isRedirecting ? <Loader2 className="size-4 animate-spin" /> : null}
-                {isRedirecting ? "Opening secure checkout…" : `Continue with ${target.name}`}
+                {isRedirecting ? "Abrindo checkout seguro…" : `Continuar com ${target.name}`}
                 {!isRedirecting && <ArrowRight className="size-4" />}
               </Button>
             )}
             <Button variant="ghost" onClick={() => onOpenChange(false)} className="text-muted-foreground">
-              Maybe later
+              Talvez mais tarde
             </Button>
           </div>
           {target && !state?.managedByAppStore && (
             <p className="mt-3 text-center text-[11px] text-muted-foreground">
               {state?.isPaid
-                ? "You'll confirm the change on Stripe and only pay the prorated difference."
-                : "Cancel anytime · Secure checkout with Stripe"}
+                ? "Você confirmará a alteração no Stripe e pagará apenas a diferença proporcional."
+                : "Cancele quando quiser · Pagamento seguro via Stripe"}
             </p>
           )}
         </div>
@@ -306,16 +306,16 @@ function PlanOption({
       <span className="min-w-0 flex-1">
         <span className="flex items-center gap-2 text-sm font-semibold">
           {plan.name}
-          {current && <span className="text-xs font-normal text-muted-foreground">Current plan</span>}
-          {recommended && <span className="text-xs font-normal text-muted-foreground">Most popular</span>}
+          {current && <span className="text-xs font-normal text-muted-foreground">Plano atual</span>}
+          {recommended && <span className="text-xs font-normal text-muted-foreground">Mais popular</span>}
         </span>
         <span className="block text-xs text-muted-foreground">
-          {plan.generationLimit} videos/mo · up to {formatMinutes(plan.youtubeMaxMinutes)} each
+          {plan.generationLimit} vídeos/mês · até {formatMinutes(plan.youtubeMaxMinutes)} cada
         </span>
       </span>
       <span className="text-sm font-semibold tabular-nums">
         ${plan.priceMonthly}
-        <span className="text-xs font-normal text-muted-foreground">/mo</span>
+        <span className="text-xs font-normal text-muted-foreground">/mês</span>
       </span>
     </button>
   );
@@ -341,7 +341,7 @@ function PlanShowcase({
               currentLimitSeconds={reason.maxSeconds}
               nextLimitSeconds={plan.youtubeMaxMinutes * 60}
               durationLabel={formatRuntime(reason.durationSeconds)}
-              currentLabel={`${currentPlan?.name ?? "Today"} · ${formatMinutes(Math.round(reason.maxSeconds / 60))}`}
+              currentLabel={`${currentPlan?.name ?? "Hoje"} · ${formatMinutes(Math.round(reason.maxSeconds / 60))}`}
               nextLabel={`${plan.name} · ${formatMinutes(plan.youtubeMaxMinutes)}`}
             />
           ) : reason.kind === "custom_fonts" ? (
@@ -351,7 +351,7 @@ function PlanShowcase({
               key={plan.id}
               from={currentPlan?.generationLimit ?? 0}
               to={plan.generationLimit}
-              label={currentPlan ? `videos a month, up from ${currentPlan.generationLimit}` : `videos a month with ${plan.name}`}
+              label={currentPlan ? `vídeos por mês, acima de ${currentPlan.generationLimit}` : `vídeos por mês com ${plan.name}`}
             />
           ))}
       </div>

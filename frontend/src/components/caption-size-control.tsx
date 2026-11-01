@@ -5,7 +5,7 @@ export function CaptionSizeControl({ value, onChange, disabled = false }: {
   value: number | null; onChange: (value: number | null) => void; disabled?: boolean;
 }) {
   return <fieldset disabled={disabled} className="space-y-2">
-    <legend className="text-sm text-muted-foreground">Size</legend>
+    <legend className="text-sm text-muted-foreground">Tamanho</legend>
     <div className="grid grid-cols-4 gap-1.5">
       {FONT_SIZE_OPTIONS.map((option) => <button key={option.label} type="button"
         aria-pressed={value === option.value} onClick={() => onChange(option.value)}

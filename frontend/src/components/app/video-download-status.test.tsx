@@ -16,9 +16,9 @@ it("shows an active incident and links to the full status page", async () => {
 
   render(<VideoDownloadStatus />);
 
-  expect(await screen.findByText("YouTube imports · Outage")).toBeInTheDocument();
+  expect(await screen.findByText("Importações do YouTube · Interrupção")).toBeInTheDocument();
   expect(screen.getByText("New imports may fail before processing starts.")).toBeInTheDocument();
-  expect(screen.getByRole("link", { name: "View status page" })).toHaveAttribute("href", "/status");
+  expect(screen.getByRole("link", { name: "Ver página de status" })).toHaveAttribute("href", "/status");
 });
 
 it("hides the banner when service is operational", async () => {
@@ -51,7 +51,7 @@ it("removes an incident banner when a refresh reports recovery", async () => {
     } })));
   vi.stubGlobal("fetch", fetch);
   const { container } = render(<VideoDownloadStatus />);
-  expect(await screen.findByText("YouTube imports · Degraded")).toBeInTheDocument();
+  expect(await screen.findByText("Importações do YouTube · Degradado")).toBeInTheDocument();
 
   Object.defineProperty(document, "visibilityState", { configurable: true, value: "visible" });
   act(() => document.dispatchEvent(new Event("visibilitychange")));

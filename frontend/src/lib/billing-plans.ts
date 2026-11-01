@@ -22,9 +22,9 @@ export function formatBillingPlanName(plan: string | null | undefined): string {
     return "Scale";
   }
   if (plan === "self_host") {
-    return "Self-Hosted";
+    return "Auto-hospedado";
   }
-  return "Free";
+  return "Gratuito";
 }
 
 export function isPaidBillingPlan(plan: string | null | undefined): plan is BillingPlanId {
@@ -47,13 +47,13 @@ export function getPublicBillingPlans(): PublicBillingPlan[] {
       priceMonthly: proPriceMonthly,
       generationLimit: proLimit,
       youtubeMaxMinutes: proYoutubeMinutes,
-      description: "For creators who clip consistently each month.",
+      description: "Para criadores que produzem clipes com frequência todos os meses.",
       highlights: [
-        `${proLimit} videos clipped every month`,
-        `YouTube videos up to ${formatMinutes(proYoutubeMinutes)}`,
-        "Custom fonts, B-roll and caption templates",
+        `${proLimit} vídeos cortados todo mês`,
+        `Vídeos do YouTube de até ${formatMinutes(proYoutubeMinutes)}`,
+        "Fontes personalizadas, B-roll e modelos de legendas",
       ],
-      cta: "Upgrade to Pro",
+      cta: "Fazer upgrade para o Pro",
       highlighted: true,
     },
     {
@@ -62,13 +62,13 @@ export function getPublicBillingPlans(): PublicBillingPlan[] {
       priceMonthly: scalePriceMonthly,
       generationLimit: scaleLimit,
       youtubeMaxMinutes: scaleYoutubeMinutes,
-      description: "For teams and high-volume publishing workflows.",
+      description: "Para equipes e criadores com alto volume de publicação.",
       highlights: [
-        `${scaleLimit} videos clipped every month`,
-        `YouTube videos up to ${formatMinutes(scaleYoutubeMinutes)}`,
-        "Priority processing",
+        `${scaleLimit} vídeos cortados todo mês`,
+        `Vídeos do YouTube de até ${formatMinutes(scaleYoutubeMinutes)}`,
+        "Processamento prioritário",
       ],
-      cta: "Upgrade to Scale",
+      cta: "Fazer upgrade para o Scale",
       highlighted: false,
     },
   ];
@@ -77,9 +77,9 @@ export function getPublicBillingPlans(): PublicBillingPlan[] {
 export function formatMinutes(minutes: number): string {
   if (minutes >= 60 && minutes % 60 === 0) {
     const hours = minutes / 60;
-    return `${hours} ${hours === 1 ? "hour" : "hours"}`;
+    return `${hours} ${hours === 1 ? "hora" : "horas"}`;
   }
-  return `${minutes} minutes`;
+  return `${minutes} minutos`;
 }
 
 /** The plan one step above `plan`, or null when there is nothing to upgrade to. */
