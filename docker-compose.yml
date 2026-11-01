@@ -21,10 +21,6 @@ services:
       # Keep the legacy port for deployments whose proxy already uses 3001.
       # .env.example selects 3107 for new self-hosted installations.
       - "127.0.0.1:${FRONTEND_PORT:-3001}:3107"
-    volumes:
-      - ./frontend/src:/app/src
-      - ./frontend/public:/app/public
-      - ./frontend/prisma:/app/prisma
     environment:
       - NODE_ENV=${NODE_ENV:-development}
       - NEXT_TELEMETRY_DISABLED=1
@@ -87,11 +83,8 @@ services:
     ports:
       - "127.0.0.1:${BACKEND_PORT:-8008}:8000"
     volumes:
-      - ./backend/src:/app/src
       - uploads:/app/uploads
       - clips:/app/clips
-      - ./backend/fonts:/app/fonts
-      - ./backend/transitions:/app/transitions
     environment:
       - PYTHONPATH=/app
       - PYTHONUNBUFFERED=1
@@ -245,11 +238,8 @@ services:
     container_name: supoclip-worker
     command: [".venv/bin/arq", "src.workers.tasks.WorkerSettings"]
     volumes:
-      - ./backend/src:/app/src
       - uploads:/app/uploads
       - clips:/app/clips
-      - ./backend/fonts:/app/fonts
-      - ./backend/transitions:/app/transitions
     environment:
       - PYTHONPATH=/app
       - PYTHONUNBUFFERED=1
@@ -394,7 +384,9 @@ services:
 
   # PostgreSQL database for storing video metadata, user data, etc.
   postgres:
-    image: postgres:15-alpine
+    build:
+      context: .
+      dockerfile: docker/postgres/Dockerfile
     container_name: supoclip-postgres
     environment:
       POSTGRES_DB: supoclip
@@ -402,7 +394,6 @@ services:
       POSTGRES_PASSWORD: supoclip_password
     volumes:
       - postgres_data:/var/lib/postgresql/data
-      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
     restart: unless-stopped
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U supoclip -d supoclip"]
