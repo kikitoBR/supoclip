@@ -34,11 +34,18 @@ const WAVE = Array.from({ length: 54 }, (_, i) => {
 
 export function ClipCutAnimation() {
   const reduceMotion = useReducedMotion();
+  const [mounted, setMounted] = useState(false);
   const [cycle, setCycle] = useState(0);
   const [phase, setPhase] = useState<Phase>("scan");
 
   useEffect(() => {
-    if (reduceMotion) return;
+    setMounted(true);
+  }, []);
+
+  const effectiveReduceMotion = mounted ? Boolean(reduceMotion) : false;
+
+  useEffect(() => {
+    if (effectiveReduceMotion) return;
     const timers = (Object.keys(PHASES) as Phase[]).map((name) =>
       window.setTimeout(() => {
         if (name === "restart") {
@@ -50,9 +57,9 @@ export function ClipCutAnimation() {
       }, PHASES[name]),
     );
     return () => timers.forEach(window.clearTimeout);
-  }, [cycle, reduceMotion]);
+  }, [cycle, effectiveReduceMotion]);
 
-  const shown: Phase = reduceMotion ? "clips" : phase;
+  const shown: Phase = effectiveReduceMotion ? "clips" : phase;
   const at = (name: Phase) => PHASES[shown] >= PHASES[name];
   const label = at("clips") ? "3 clipes · legendados · prontos para postar" : "episodio-podcast-42.mp4 · 1:24:10";
 
@@ -94,7 +101,7 @@ export function ClipCutAnimation() {
         </motion.text>
       </AnimatePresence>
 
-      {!reduceMotion && shown === "scan" && (
+      {!effectiveReduceMotion && shown === "scan" && (
         <motion.line
           x1={STRIP.x}
           x2={STRIP.x}
@@ -142,7 +149,7 @@ export function ClipCutAnimation() {
                 initial={{ opacity: 0, scaleY: 0 }}
                 animate={at("cut") ? { opacity: 0.8, scaleY: 1 } : { opacity: 0, scaleY: 0 }}
                 style={{ originY: "0px" }}
-                transition={{ duration: 0.2, delay: reduceMotion ? 0 : cutDelay(x) }}
+                transition={{ duration: 0.2, delay: effectiveReduceMotion ? 0 : cutDelay(x) }}
               />
             ))}
 
@@ -154,12 +161,12 @@ export function ClipCutAnimation() {
                   strokeWidth={1.5}
                   initial={{ x: segment.from, y: STRIP.y, width: segment.to - segment.from, height: STRIP.height }}
                   animate={{ x: CLIP_X[index], y: CLIP.y, width: CLIP.width, height: CLIP.height }}
-                  transition={reduceMotion ? { duration: 0 } : { type: "spring", stiffness: 140, damping: 18, delay: index * 0.18 }}
+                  transition={effectiveReduceMotion ? { duration: 0 } : { type: "spring", stiffness: 140, damping: 18, delay: index * 0.18 }}
                 />
                 <motion.g
                   initial={{ opacity: 0, y: 6 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.4, delay: reduceMotion ? 0 : 0.55 + index * 0.18 }}
+                  transition={{ duration: 0.4, delay: effectiveReduceMotion ? 0 : 0.55 + index * 0.18 }}
                 >
                   <ClipContents x={CLIP_X[index]} />
                 </motion.g>
@@ -169,7 +176,7 @@ export function ClipCutAnimation() {
         );
       })}
 
-      {!reduceMotion && shown === "cut" && (
+      {!effectiveReduceMotion && shown === "cut" && (
         <motion.g initial={{ x: STRIP.x }} animate={{ x: STRIP.x + STRIP.width }} transition={{ duration: CUT_MS / 1000, ease: "linear" }}>
           <Scissors />
         </motion.g>
