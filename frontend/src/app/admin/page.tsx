@@ -90,7 +90,13 @@ export default async function AdminPage({
         cache: "no-store",
       });
       if (!response.ok) {
-        return { settings: [], error: "Não foi possível carregar as configurações de execução." };
+        const errorData = (await response.json().catch(() => null)) as { detail?: string } | null;
+        return {
+          settings: [],
+          error: errorData?.detail
+            ? `Não foi possível carregar as configurações: ${errorData.detail}`
+            : `Não foi possível carregar as configurações de execução (Status: ${response.status}).`,
+        };
       }
       const payload = (await response.json()) as { settings?: RuntimeSetting[] };
       return { settings: payload.settings ?? [], error: null };

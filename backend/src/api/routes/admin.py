@@ -37,6 +37,11 @@ SETTING_METADATA = {
         "description": "Required for openai:* models.",
         "input_type": "password",
     },
+    "OPENAI_BASE_URL": {
+        "label": "OpenAI base URL",
+        "description": "Optional custom endpoint for OpenAI-compatible proxies (e.g. LiteLLM, OneAPI, Azure).",
+        "input_type": "text",
+    },
     "OPENROUTER_API_KEY": {
         "label": "OpenRouter API key",
         "description": "Required for openrouter:* models, including Sonnet with Luna fallback.",
@@ -94,7 +99,16 @@ def _setting_status(
     row = rows.get(setting_key, {})
     has_admin_value = bool(row.get("encrypted_value"))
     prefer_admin_value = bool(row.get("prefer_admin_value"))
-    metadata = SETTING_METADATA[setting_key]
+    metadata = SETTING_METADATA.get(
+        setting_key,
+        {
+            "label": setting_key,
+            "description": f"Configuration for {setting_key}.",
+            "input_type": "password"
+            if any(term in setting_key for term in ("KEY", "TOKEN", "SECRET"))
+            else "text",
+        },
+    )
 
     if has_admin_value and (prefer_admin_value or not has_env):
         source = "admin"
