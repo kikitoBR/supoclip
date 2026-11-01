@@ -15,7 +15,7 @@ function localDate(iso: string) {
 }
 
 function emptyEditor(): Editor {
-  return { title: "", description: "", href: "", action: "Learn more", isPublished: false, publishedAt: localDate(new Date().toISOString()) };
+  return { title: "", description: "", href: "", action: "Saiba mais", isPublished: false, publishedAt: localDate(new Date().toISOString()) };
 }
 
 export function AnnouncementManager() {
@@ -33,10 +33,10 @@ export function AnnouncementManager() {
     try {
       const response = await fetch("/api/admin/announcements", { cache: "no-store" });
       const data = await response.json();
-      if (!response.ok) throw new Error(data.error || "Unable to load announcements");
+      if (!response.ok) throw new Error(data.error || "Não foi possível carregar os avisos");
       setItems(data.announcements);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Unable to load announcements");
+      setError(err instanceof Error ? err.message : "Não foi possível carregar os avisos");
     } finally {
       setLoading(false);
     }
@@ -55,18 +55,18 @@ export function AnnouncementManager() {
         body: JSON.stringify(data),
       });
       const result = await response.json();
-      if (!response.ok) throw new Error(result.error || "Unable to save announcement");
+      if (!response.ok) throw new Error(result.error || "Não foi possível salvar o aviso");
       const saved: ManagedAnnouncement = id ? { ...data, id } : result.announcement;
       setItems(current => [saved, ...current.filter(item => item.id !== saved.id)]
         .sort((a, b) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime()));
       setEditor(null);
       setEditingId(null);
       setMessage(saved.isPublished
-        ? new Date(saved.publishedAt).getTime() > Date.now() ? "Announcement scheduled." : "Announcement published."
-        : "Draft saved. This announcement is hidden from visitors and users.");
+        ? new Date(saved.publishedAt).getTime() > Date.now() ? "Aviso agendado." : "Aviso publicado."
+        : "Rascunho salvo. Este aviso está oculto para visitantes e usuários.");
       window.dispatchEvent(new Event(ANNOUNCEMENTS_UPDATED_EVENT));
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Unable to save announcement");
+      setError(err instanceof Error ? err.message : "Não foi possível salvar o aviso");
     } finally {
       setSaving(false);
     }
@@ -75,44 +75,44 @@ export function AnnouncementManager() {
   return (
     <div className="space-y-5">
       <div className="flex items-center justify-between gap-3">
-        <p className="text-sm text-muted-foreground">Published announcements appear on the landing page and in the app.</p>
-        <Button disabled={saving || loading} onClick={() => { setEditingId(null); setEditor(emptyEditor()); setMessage(null); }}>New announcement</Button>
+        <p className="text-sm text-muted-foreground">Avisos publicados aparecem na página inicial e no aplicativo.</p>
+        <Button disabled={saving || loading} onClick={() => { setEditingId(null); setEditor(emptyEditor()); setMessage(null); }}>Novo aviso</Button>
       </div>
-      {error && <div role="alert" className="flex items-center gap-3 text-sm text-red-600">{error}{!editor && <Button variant="outline" size="sm" onClick={() => void load()}>Retry</Button>}</div>}
+      {error && <div role="alert" className="flex items-center gap-3 text-sm text-red-600">{error}{!editor && <Button variant="outline" size="sm" onClick={() => void load()}>Tentar novamente</Button>}</div>}
       {message && <p role="status" className="text-sm text-muted-foreground">{message}</p>}
       {editor && (
         <form className="space-y-4 rounded-2xl border bg-background p-5" onSubmit={event => {
           event.preventDefault();
           void save({ ...editor, publishedAt: new Date(editor.publishedAt).toISOString() }, editingId);
         }}>
-          <h2 className="font-semibold">{editingId ? "Edit announcement" : "New announcement"}</h2>
-          <label className="block space-y-1.5 text-sm font-medium">Title<Input required maxLength={120} value={editor.title} onChange={event => setEditor({ ...editor, title: event.target.value })} disabled={saving} /></label>
-          <label className="block space-y-1.5 text-sm font-medium">Description<Textarea required maxLength={2000} value={editor.description} onChange={event => setEditor({ ...editor, description: event.target.value })} disabled={saving} /></label>
+          <h2 className="font-semibold">{editingId ? "Editar aviso" : "Novo aviso"}</h2>
+          <label className="block space-y-1.5 text-sm font-medium">Título<Input required maxLength={120} value={editor.title} onChange={event => setEditor({ ...editor, title: event.target.value })} disabled={saving} /></label>
+          <label className="block space-y-1.5 text-sm font-medium">Descrição<Textarea required maxLength={2000} value={editor.description} onChange={event => setEditor({ ...editor, description: event.target.value })} disabled={saving} /></label>
           <div className="grid gap-4 sm:grid-cols-2">
-            <label className="block space-y-1.5 text-sm font-medium">Destination path<Input required placeholder="/affiliate" maxLength={500} value={editor.href} onChange={event => setEditor({ ...editor, href: event.target.value })} disabled={saving} /></label>
-            <label className="block space-y-1.5 text-sm font-medium">Link label<Input required maxLength={80} value={editor.action} onChange={event => setEditor({ ...editor, action: event.target.value })} disabled={saving} /></label>
+            <label className="block space-y-1.5 text-sm font-medium">Caminho de destino<Input required placeholder="/affiliate" maxLength={500} value={editor.href} onChange={event => setEditor({ ...editor, href: event.target.value })} disabled={saving} /></label>
+            <label className="block space-y-1.5 text-sm font-medium">Texto do link/botão<Input required maxLength={80} value={editor.action} onChange={event => setEditor({ ...editor, action: event.target.value })} disabled={saving} /></label>
           </div>
-          <label className="block space-y-1.5 text-sm font-medium">Publication date<Input type="datetime-local" required value={editor.publishedAt} onChange={event => setEditor({ ...editor, publishedAt: event.target.value })} disabled={saving} /><span className="block text-xs font-normal text-muted-foreground">Your local time. A future date schedules the announcement.</span></label>
-          <label className="flex items-center gap-2 text-sm"><input type="checkbox" checked={editor.isPublished} onChange={event => setEditor({ ...editor, isPublished: event.target.checked })} disabled={saving} />Publish on the landing page and in the app</label>
+          <label className="block space-y-1.5 text-sm font-medium">Data de publicação<Input type="datetime-local" required value={editor.publishedAt} onChange={event => setEditor({ ...editor, publishedAt: event.target.value })} disabled={saving} /><span className="block text-xs font-normal text-muted-foreground">Seu horário local. Uma data futura agenda o aviso.</span></label>
+          <label className="flex items-center gap-2 text-sm"><input type="checkbox" checked={editor.isPublished} onChange={event => setEditor({ ...editor, isPublished: event.target.checked })} disabled={saving} />Publicar na página inicial e no aplicativo</label>
           <div className="flex gap-2">
-            <Button type="submit" disabled={saving}>{saving ? "Saving…" : editor.isPublished ? "Save and publish" : "Save draft"}</Button>
-            <Button type="button" variant="outline" disabled={saving} onClick={() => { setEditor(null); setEditingId(null); }}>Cancel</Button>
+            <Button type="submit" disabled={saving}>{saving ? "Salvando…" : editor.isPublished ? "Salvar e publicar" : "Salvar rascunho"}</Button>
+            <Button type="button" variant="outline" disabled={saving} onClick={() => { setEditor(null); setEditingId(null); }}>Cancelar</Button>
           </div>
         </form>
       )}
-      {loading ? <p className="text-sm text-muted-foreground">Loading announcements…</p> : !items.length ? <p className="rounded-2xl border p-8 text-center text-sm text-muted-foreground">No announcements yet. Create a draft to get started.</p> : (
+      {loading ? <p className="text-sm text-muted-foreground">Carregando avisos…</p> : !items.length ? <p className="rounded-2xl border p-8 text-center text-sm text-muted-foreground">Nenhum aviso ainda. Crie um rascunho para começar.</p> : (
         <div className="divide-y overflow-hidden rounded-2xl border bg-background">
           {items.map(item => (
             <article key={item.id} className="space-y-3 p-5">
               <div className="flex flex-wrap items-center gap-2">
                 <h2 className="font-semibold">{item.title}</h2>
-                <Badge variant={item.isPublished ? "default" : "outline"}>{!item.isPublished ? "Draft" : new Date(item.publishedAt).getTime() > Date.now() ? "Scheduled" : "Published"}</Badge>
+                <Badge variant={item.isPublished ? "default" : "outline"}>{!item.isPublished ? "Rascunho" : new Date(item.publishedAt).getTime() > Date.now() ? "Agendado" : "Publicado"}</Badge>
               </div>
               <p className="whitespace-pre-wrap text-sm text-muted-foreground">{item.description}</p>
               <p className="text-xs text-muted-foreground">{new Date(item.publishedAt).toLocaleString()} · {item.href}</p>
               <div className="flex gap-2">
-                <Button variant="outline" size="sm" disabled={saving} onClick={() => { setEditingId(item.id); setEditor({ ...item, publishedAt: localDate(item.publishedAt) }); setMessage(null); }}>Edit</Button>
-                <Button variant="outline" size="sm" disabled={saving} onClick={() => void save({ ...item, isPublished: !item.isPublished }, item.id)}>{item.isPublished ? "Hide" : "Publish"}</Button>
+                <Button variant="outline" size="sm" disabled={saving} onClick={() => { setEditingId(item.id); setEditor({ ...item, publishedAt: localDate(item.publishedAt) }); setMessage(null); }}>Editar</Button>
+                <Button variant="outline" size="sm" disabled={saving} onClick={() => void save({ ...item, isPublished: !item.isPublished }, item.id)}>{item.isPublished ? "Ocultar" : "Publicar"}</Button>
               </div>
             </article>
           ))}
