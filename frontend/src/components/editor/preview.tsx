@@ -198,17 +198,17 @@ export function Preview({
     onTime(video.currentTime);
   };
   const hint = fontError
-    ? "Caption font could not load. Check your connection before exporting."
+    ? "A fonte das legendas não pôde ser carregada. Verifique sua conexão antes de exportar."
     : tab === "framing"
-      ? "Drag the video to reframe · captions stay in place"
+      ? "Arraste o vídeo para reenquadrar · legendas permanecem no lugar"
       : tab === "captions"
-        ? "Drag vertically to position captions"
+        ? "Arraste verticalmente para posicionar as legendas"
         : null;
   return (
-    <Panel aria-label="Video preview">
+    <Panel aria-label="Pré-visualização do vídeo">
       <div className="flex items-center justify-between gap-3 border-b px-4 py-2">
         <div className="flex items-center gap-2 text-sm font-semibold">
-          Preview
+          Pré-visualização
           <span className="text-xs font-normal text-muted-foreground tabular-nums">
             {size.width} × {size.height} · {Math.round(asset.fps)} fps
           </span>
@@ -219,13 +219,13 @@ export function Preview({
               size="sm"
               pressed={guides}
               onPressedChange={setGuides}
-              aria-label="Safe area"
+              aria-label="Área segura"
             >
               <Scan />
-              <span className="hidden sm:inline">Safe area</span>
+              <span className="hidden sm:inline">Área segura</span>
             </Toggle>
           </TooltipTrigger>
-          <TooltipContent>Show where platform UI covers the video</TooltipContent>
+          <TooltipContent>Mostrar onde a interface das redes sociais cobre o vídeo</TooltipContent>
         </Tooltip>
       </div>
       <div
@@ -268,7 +268,7 @@ export function Preview({
             ref={canvasRef}
             width={Math.round((size.width / size.height) * 640)}
             height={640}
-            aria-label="Edited video preview"
+            aria-label="Pré-visualização do vídeo editado"
             className={`block h-full w-full touch-none ${tab === "framing" || tab === "captions" ? "cursor-move" : "cursor-default"}`}
             onPointerDown={(e) => {
               if (tab !== "framing" && tab !== "captions") return;
@@ -336,13 +336,13 @@ export function Preview({
           {guides && (
             <div className="pointer-events-none absolute inset-x-[8%] top-[10%] bottom-[20%] rounded-lg border border-dashed border-white/60">
               <span className="absolute -top-5 text-[10px] text-white/70">
-                Keep important content here
+                Mantenha o conteúdo importante aqui
               </span>
             </div>
           )}
           {mediaError && (
             <div className="absolute inset-0 flex flex-col justify-center gap-3 bg-stone-950/90 p-5 text-center text-sm text-white">
-              <p>Preview could not load.</p>
+              <p>Não foi possível carregar a pré-visualização.</p>
               <Button
                 variant="secondary"
                 size="sm"
@@ -351,7 +351,7 @@ export function Preview({
                   videoRef.current?.load();
                 }}
               >
-                Retry preview
+                Tentar novamente
               </Button>
             </div>
           )}
@@ -370,14 +370,14 @@ export function Preview({
             <TooltipTrigger asChild>
               <Toggle
                 size="sm"
-                aria-label="Loop selected edit"
+                aria-label="Repetir edição selecionada"
                 pressed={loop}
                 onPressedChange={setLoop}
               >
                 <Repeat />
               </Toggle>
             </TooltipTrigger>
-            <TooltipContent>Loop playback</TooltipContent>
+            <TooltipContent>Repetir reprodução</TooltipContent>
           </Tooltip>
           <Select
             value={String(rate)}
@@ -385,7 +385,7 @@ export function Preview({
           >
             <SelectTrigger
               size="sm"
-              aria-label="Preview playback speed"
+              aria-label="Velocidade de reprodução"
               className="h-8 w-[4.5rem] border-transparent shadow-none hover:bg-accent tabular-nums"
             >
               <SelectValue />
@@ -401,7 +401,7 @@ export function Preview({
         </div>
         <div className="flex items-center gap-1">
           <ToolButton
-            label="Previous frame"
+            label="Quadro anterior"
             shortcut="←"
             onClick={() => step(-1)}
           >
@@ -410,7 +410,7 @@ export function Preview({
           <Button
             size="icon-lg"
             className="rounded-full"
-            aria-label={playing ? "Pause" : "Play"}
+            aria-label={playing ? "Pausar" : "Reproduzir"}
             onClick={() => void play()}
           >
             {playing ? (
@@ -419,14 +419,14 @@ export function Preview({
               <Play className="ml-0.5 fill-current" />
             )}
           </Button>
-          <ToolButton label="Next frame" shortcut="→" onClick={() => step(1)}>
+          <ToolButton label="Próximo quadro" shortcut="→" onClick={() => step(1)}>
             <SkipForward />
           </ToolButton>
         </div>
         <div className="flex items-center justify-end gap-2 text-xs tabular-nums">
           {doc.muted && (
             <VolumeX
-              aria-label="Muted"
+              aria-label="Silenciado"
               className="size-3.5 text-muted-foreground"
             />
           )}

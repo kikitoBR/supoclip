@@ -44,10 +44,10 @@ import { Field, Panel, Range, Section } from "./studio-ui";
 export type InspectorTab = "captions" | "framing" | "audio" | "effects";
 
 const TABS = [
-  ["captions", "Captions", Captions],
-  ["framing", "Framing", Crop],
-  ["audio", "Audio", Volume2],
-  ["effects", "Effects", Palette],
+  ["captions", "Legendas", Captions],
+  ["framing", "Enquadramento", Crop],
+  ["audio", "Áudio", Volume2],
+  ["effects", "Efeitos", Palette],
 ] as const;
 
 function ColorField({
@@ -127,7 +127,7 @@ export function Inspector({
     update((d) => ({ ...d, captions: { ...d.captions, ...change } }), group);
   return (
     <Panel
-      aria-label="Editor tools"
+      aria-label="Ferramentas de edição"
       className="md:sticky md:top-4 xl:col-start-3"
     >
       <Tabs
@@ -152,11 +152,11 @@ export function Inspector({
         <div className="md:max-h-[calc(100dvh-250px)] md:overflow-y-auto">
           <TabsContent value="captions" className="space-y-6 p-4">
             <Section
-              title="Caption style"
-              description="Pick a look, then fine-tune it below."
+              title="Estilo da legenda"
+              description="Escolha um visual e ajuste os detalhes abaixo."
               action={
                 <Switch
-                  aria-label="Show captions"
+                  aria-label="Exibir legendas"
                   checked={doc.captions.enabled}
                   onCheckedChange={(enabled) => caption({ enabled })}
                 />
@@ -165,8 +165,8 @@ export function Inspector({
               <div className="grid grid-cols-3 gap-2">
                 {(
                   [
-                    ["Clean", false, "#FFFFFF"],
-                    ["Highlight", true, "#FACC15"],
+                    ["Limpo", false, "#FFFFFF"],
+                    ["Destaque", true, "#FACC15"],
                     ["Pop", true, "#A3E635"],
                   ] as const
                 ).map(([name, background, accent]) => {
@@ -190,7 +190,7 @@ export function Inspector({
                             background && "rounded-sm bg-black/60",
                           )}
                         >
-                          Your <span style={{ color: accent }}>story</span>
+                          Sua <span style={{ color: accent }}>história</span>
                         </span>
                       </span>
                       <span className="block px-0.5 pt-1.5 text-xs font-medium">
@@ -200,14 +200,14 @@ export function Inspector({
                   );
                 })}
               </div>
-              <Field label="Font">
+              <Field label="Fonte">
                 <Select
                   value={doc.captions.font}
                   onValueChange={(font) =>
                     caption({ font: font as CaptionStyle["font"] })
                   }
                 >
-                  <SelectTrigger aria-label="Caption font" className="w-full">
+                  <SelectTrigger aria-label="Fonte das legendas" className="w-full">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
@@ -220,14 +220,14 @@ export function Inspector({
                 </Select>
               </Field>
               <Range
-                label="Subtitle size"
+                label="Tamanho da legenda"
                 value={doc.captions.size}
                 min={20}
                 max={100}
                 onChange={(size) => caption({ size })}
               />
               <Range
-                label="Subtitle vertical position"
+                label="Posição vertical da legenda"
                 value={doc.captions.y * 100}
                 min={10}
                 max={90}
@@ -236,33 +236,33 @@ export function Inspector({
               />
               <div className="grid grid-cols-2 gap-3">
                 <ColorField
-                  label="Text"
-                  inputLabel="Caption text color"
+                  label="Texto"
+                  inputLabel="Cor do texto da legenda"
                   value={doc.captions.color}
                   onChange={(color) => caption({ color })}
                 />
                 <ColorField
-                  label="Highlight"
-                  inputLabel="Highlight color"
+                  label="Destaque"
+                  inputLabel="Cor do destaque"
                   value={doc.captions.accent}
                   onChange={(accent) => caption({ accent })}
                 />
               </div>
               <SwitchRow
                 id="caption-background"
-                label="Text background"
+                label="Fundo do texto"
                 checked={doc.captions.background}
                 onChange={(background) => caption({ background })}
               />
               <div className="flex items-center justify-between gap-3">
-                <Label className="text-sm font-normal">Words per caption</Label>
+                <Label className="text-sm font-normal">Palavras por legenda</Label>
                 <Select
                   value={String(doc.captions.wordsPerLine)}
                   onValueChange={(n) => caption({ wordsPerLine: Number(n) })}
                 >
                   <SelectTrigger
                     size="sm"
-                    aria-label="Words per caption"
+                    aria-label="Palavras por legenda"
                     className="w-16 tabular-nums"
                   >
                     <SelectValue />
@@ -286,14 +286,14 @@ export function Inspector({
                         "supoclip-caption-style",
                         JSON.stringify(doc.captions),
                       );
-                      toast.success("Caption style saved");
+                      toast.success("Estilo da legenda salvo");
                     } catch {
-                      toast.error("Could not save style on this device");
+                      toast.error("Não foi possível salvar o estilo neste dispositivo");
                     }
                   }}
                 >
                   <Bookmark />
-                  Save style
+                  Salvar estilo
                 </Button>
                 <Button
                   size="sm"
@@ -305,13 +305,13 @@ export function Inspector({
                           "null",
                       );
                       if (style?.font && style?.size) caption(style);
-                      else toast.info("Save a style first");
+                      else toast.info("Salve um estilo primeiro");
                     } catch {
-                      toast.error("Could not load saved style");
+                      toast.error("Não foi possível carregar o estilo salvo");
                     }
                   }}
                 >
-                  Load style
+                  Carregar estilo
                 </Button>
                 <Button
                   size="sm"
@@ -327,7 +327,7 @@ export function Inspector({
                     }
                   }}
                 >
-                  {applying ? "Applying…" : "Apply to all clips"}
+                  {applying ? "Aplicando…" : "Aplicar a todos os clipes"}
                 </Button>
               </div>
             </Section>
@@ -335,13 +335,13 @@ export function Inspector({
             <Section
               title={
                 <>
-                  Transcript{" "}
+                  Transcrição{" "}
                   <span className="font-normal text-muted-foreground">
-                    · {doc.words.length} words
+                    · {doc.words.length} palavras
                   </span>
                 </>
               }
-              description="Correct a word without moving its timing. Click play to hear it in context."
+              description="Corrija uma palavra sem alterar sua sincronização. Clique em reproduzir para ouvir no contexto."
               action={
                 <Button
                   size="sm"
@@ -356,7 +356,7 @@ export function Inspector({
                     );
                   }}
                 >
-                  {script === null ? "Edit script" : "Close script"}
+                  {script === null ? "Editar roteiro" : "Fechar roteiro"}
                 </Button>
               }
             >
@@ -364,7 +364,7 @@ export function Inspector({
                 <div className="space-y-2 rounded-lg border bg-muted/40 p-3">
                   <Textarea
                     className="min-h-24 bg-background text-sm"
-                    aria-label="Subtitle text"
+                    aria-label="Texto da legenda"
                     value={script}
                     onChange={(e) => {
                       const text = e.target.value;
@@ -388,8 +388,8 @@ export function Inspector({
                   />
                   <div className="flex items-center justify-between gap-3">
                     <p className="text-xs text-muted-foreground">
-                      Existing words keep their timing. Review the timing of
-                      inserted words.
+                      Palavras existentes mantêm sua sincronização. Revise o tempo
+                      das palavras inseridas.
                     </p>
                     <Button
                       size="sm"
@@ -409,7 +409,7 @@ export function Inspector({
                         }
                       }}
                     >
-                      Apply script
+                      Aplicar roteiro
                     </Button>
                   </div>
                 </div>
@@ -428,8 +428,8 @@ export function Inspector({
                       <Button
                         size="icon-sm"
                         variant="ghost"
-                        aria-label={`Seek to word ${i + 1}`}
-                        title="Seek to word"
+                        aria-label={`Ouvir palavra ${i + 1}`}
+                        title="Ouvir palavra"
                         onClick={() => seek(word.start)}
                         className="size-7 text-muted-foreground"
                       >
@@ -437,7 +437,7 @@ export function Inspector({
                       </Button>
                       <input
                         className="h-7 min-w-0 rounded-sm bg-transparent px-1.5 text-sm outline-none focus:bg-background focus:ring-2 focus:ring-ring/50"
-                        aria-label={`Word ${i + 1}`}
+                        aria-label={`Palavra ${i + 1}`}
                         maxLength={120}
                         value={word.text}
                         onChange={(e) =>
@@ -446,8 +446,8 @@ export function Inspector({
                               ...d,
                               words: d.words.map((w) =>
                                 w.id === word.id
-                                  ? { ...w, text: e.target.value }
-                                  : w,
+                                   ? { ...w, text: e.target.value }
+                                   : w,
                               ),
                             }),
                             `word-${word.id}`,
@@ -458,7 +458,7 @@ export function Inspector({
                         <Button
                           size="icon-sm"
                           variant="ghost"
-                          aria-label={`Highlight word ${i + 1}`}
+                          aria-label={`Destacar palavra ${i + 1}`}
                           aria-pressed={word.highlight}
                           className={cn(
                             "size-7",
@@ -482,7 +482,7 @@ export function Inspector({
                         <Button
                           size="icon-sm"
                           variant="ghost"
-                          aria-label={`Delete word ${i + 1}`}
+                          aria-label={`Excluir palavra ${i + 1}`}
                           className="size-7 text-muted-foreground hover:text-destructive"
                           onClick={() =>
                             update((d) => ({
@@ -496,7 +496,7 @@ export function Inspector({
                       </span>
                       <div className="col-start-2 col-span-2 flex items-center gap-1.5 px-1.5 text-[11px] text-muted-foreground tabular-nums">
                         <input
-                          aria-label={`Word ${i + 1} start`}
+                          aria-label={`Início da palavra ${i + 1}`}
                           className="w-14 [appearance:textfield] rounded-sm bg-transparent px-1 outline-none hover:bg-background focus:bg-background focus:ring-2 focus:ring-ring/50 [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
                           type="number"
                           min={0}
@@ -526,7 +526,7 @@ export function Inspector({
                         />
                         <span aria-hidden>→</span>
                         <input
-                          aria-label={`Word ${i + 1} end`}
+                          aria-label={`Fim da palavra ${i + 1}`}
                           className="w-14 [appearance:textfield] rounded-sm bg-transparent px-1 outline-none hover:bg-background focus:bg-background focus:ring-2 focus:ring-ring/50 [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
                           type="number"
                           min={word.start + 0.01}
@@ -570,7 +570,7 @@ export function Inspector({
                       ...d.words,
                       {
                         id: uid(),
-                        text: "New",
+                        text: "Nova",
                         start: Math.min(time, asset.duration - 0.1),
                         end: Math.min(asset.duration, time + 0.5),
                         highlight: false,
@@ -580,20 +580,20 @@ export function Inspector({
                 }
               >
                 <Plus />
-                Add word at playhead
+                Adicionar palavra no cursor
               </Button>
             </Section>
           </TabsContent>
           <TabsContent value="framing" className="space-y-6 p-4">
             <Section
-              title="Framing"
-              description="Drag the video in the preview to keep your subject in focus."
+              title="Enquadramento"
+              description="Arraste o vídeo na pré-visualização para manter o foco no assunto."
             >
-              <Field label="Aspect ratio">
+              <Field label="Proporção">
                 <ToggleGroup
                   type="single"
                   variant="outline"
-                  aria-label="Aspect ratio"
+                  aria-label="Proporção"
                   className="w-full"
                   value={doc.framing.aspect}
                   onValueChange={(aspect) =>
@@ -610,8 +610,8 @@ export function Inspector({
                   {(
                     [
                       ["vertical", "9:16", "Vertical"],
-                      ["square", "1:1", "Square"],
-                      ["original", "Src", "Original"],
+                      ["square", "1:1", "Quadrado"],
+                      ["original", "Orig", "Original"],
                     ] as const
                   ).map(([value, ratio, label]) => (
                     <ToggleGroupItem
@@ -628,11 +628,11 @@ export function Inspector({
                   ))}
                 </ToggleGroup>
               </Field>
-              <Field label="Fit">
+              <Field label="Ajuste">
                 <ToggleGroup
                   type="single"
                   variant="outline"
-                  aria-label="Fit"
+                  aria-label="Ajuste"
                   className="w-full"
                   value={doc.framing.fit}
                   onValueChange={(fit) =>
@@ -647,16 +647,16 @@ export function Inspector({
                   }
                 >
                   <ToggleGroupItem value="cover" className="flex-1 text-xs">
-                    Fill frame
+                    Preencher tela
                   </ToggleGroupItem>
                   <ToggleGroupItem value="contain" className="flex-1 text-xs">
-                    Fit full video
+                    Ajustar vídeo completo
                   </ToggleGroupItem>
                 </ToggleGroup>
               </Field>
             </Section>
             <Separator />
-            <Section title="Position">
+            <Section title="Posição">
               <Range
                 label="Zoom"
                 min={1}
@@ -672,7 +672,7 @@ export function Inspector({
                 }
               />
               <Range
-                label="Horizontal position"
+                label="Posição horizontal"
                 min={0}
                 max={100}
                 value={doc.framing.x * 100}
@@ -685,7 +685,7 @@ export function Inspector({
                 }
               />
               <Range
-                label="Vertical position"
+                label="Posição vertical"
                 min={0}
                 max={100}
                 value={doc.framing.y * 100}
@@ -709,20 +709,20 @@ export function Inspector({
                 }
               >
                 <AlignCenter />
-                Center subject
+                Centralizar assunto
               </Button>
             </Section>
           </TabsContent>
           <TabsContent value="audio" className="space-y-6 p-4">
             <Section
-              title="Audio"
-              description="Audio changes are included in your export."
+              title="Áudio"
+              description="Alterações de áudio são incluídas na sua exportação."
             >
               {!asset.hasAudio && (
                 <Alert>
                   <Info />
                   <AlertDescription>
-                    This clip has no audio track.
+                    Este clipe não possui faixa de áudio.
                   </AlertDescription>
                 </Alert>
               )}
@@ -738,22 +738,22 @@ export function Inspector({
               />
               <SwitchRow
                 id="mute-export"
-                label="Mute export audio"
+                label="Silenciar áudio na exportação"
                 checked={doc.muted}
                 onChange={(muted) => update((d) => ({ ...d, muted }))}
               />
               {doc.volume > 1 && (
                 <p className="text-xs leading-relaxed text-muted-foreground">
-                  Boosting quiet audio can clip loud peaks. Listen through
-                  before exporting.
+                  Aumentar áudio muito baixo pode causar distorções nos picos.
+                  Ouça antes de exportar.
                 </p>
               )}
             </Section>
           </TabsContent>
           <TabsContent value="effects" className="space-y-6 p-4">
             <Section
-              title="Effects"
-              description="Effects apply to the video. Captions stay crisp."
+              title="Efeitos"
+              description="Efeitos se aplicam ao vídeo. As legendas continuam nítidas."
               action={
                 <Button
                   size="sm"
@@ -764,17 +764,17 @@ export function Inspector({
                   }
                 >
                   <RotateCcw />
-                  Reset
+                  Redefinir
                 </Button>
               }
             >
               {(
                 [
-                  ["Brightness", "brightness", 40, 180, 1],
-                  ["Contrast", "contrast", 40, 180, 1],
-                  ["Saturation", "saturation", 0, 220, 1],
-                  ["Blur", "blur", 0, 8, 0.1],
-                  ["Hue", "hue", -180, 180, 1],
+                  ["Brilho", "brightness", 40, 180, 1],
+                  ["Contraste", "contrast", 40, 180, 1],
+                  ["Saturação", "saturation", 0, 220, 1],
+                  ["Desfoque", "blur", 0, 8, 0.1],
+                  ["Matiz", "hue", -180, 180, 1],
                 ] as const
               ).map(([label, key, min, max, step]) => (
                 <Range

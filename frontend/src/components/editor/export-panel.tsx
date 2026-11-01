@@ -68,12 +68,12 @@ export async function readyEditor(
     signal?.throwIfAborted();
     if (Date.now() - started > 600_000)
       throw new Error(
-        "Source preparation is taking longer than expected. Reopen the editor to check its status.",
+        "A preparação do vídeo de origem está demorando mais do que o esperado. Reabra o editor para verificar o status.",
       );
     await new Promise((r) => setTimeout(r, 1500));
     state = await editorRequest<EditorState>(endpoint);
     if (state.status === "failed")
-      throw new Error(state.error || "Could not prepare clip");
+      throw new Error(state.error || "Não foi possível preparar o clipe");
   }
   return state;
 }
@@ -121,17 +121,17 @@ export function ExportPanel({
             supported: video && audio,
             label:
               !video || !audio
-                ? "Use background export"
+                ? "Usar exportação em segundo plano"
                 : aac
-                  ? "MP4 · keep this editor open"
-                  : "MP4 · Opus audio",
+                  ? "MP4 · mantenha este editor aberto"
+                  : "MP4 · áudio Opus",
           });
       })
       .catch(() => {
         if (!stopped)
           setBrowserSupport({
             supported: false,
-            label: "Use background export",
+            label: "Usar exportação em segundo plano",
           });
       });
     return () => {
@@ -146,7 +146,7 @@ export function ExportPanel({
         return (state.jobs || []).map((job) => ({
           ...job,
           endpoint: url,
-          label: `Clip ${c.clip_order}`,
+          label: `Clipe ${c.clip_order}`,
         }));
       }),
     );
@@ -186,11 +186,11 @@ export function ExportPanel({
           setProgress,
         );
         if (userId) void trackClipExport({ userId, surface: "editor", format: preset });
-        toast.success("Video exported");
+        toast.success("Vídeo exportado");
       } else {
         for (const c of batch ? clips : [clip]) {
           control.signal.throwIfAborted();
-          setMessage(`Preparing clip ${c.clip_order}…`);
+          setMessage(`Preparando clipe ${c.clip_order}…`);
           const url = `/api/tasks/${taskId}/clips/${c.id}/editor`;
           const state =
             c.id === clip.id ? asset : await readyEditor(url, control.signal);
@@ -204,14 +204,14 @@ export function ExportPanel({
         await refresh();
         toast.success(
           batch
-            ? "Clips added to the export queue"
-            : "Background export started",
+            ? "Clipes adicionados à fila de exportação"
+            : "Exportação em segundo plano iniciada",
         );
       }
     } catch (e) {
       if (!control.signal.aborted)
-        setError(e instanceof Error ? e.message : "Export failed");
-      else toast.info("Export cancelled");
+        setError(e instanceof Error ? e.message : "Falha na exportação");
+      else toast.info("Exportação cancelada");
     } finally {
       setBusy(false);
       setProgress(null);
@@ -220,18 +220,18 @@ export function ExportPanel({
     }
   };
   const summary = [
-    ["Resolution", `${size.width} × ${size.height}`],
-    ["Duration", timecode(duration)],
+    ["Resolução", `${size.width} × ${size.height}`],
+    ["Duração", timecode(duration)],
     [
-      "Audio",
+      "Áudio",
       !asset.hasAudio
-        ? "No audio track"
+        ? "Sem faixa de áudio"
         : doc.muted
-          ? "Muted"
-          : `${Math.round(doc.volume * 100)}% volume`,
+          ? "Silenciado"
+          : `${Math.round(doc.volume * 100)}% de volume`,
     ],
     [
-      "Estimated size",
+      "Tamanho estimado",
       `~${(((preset === "reels" ? 12 : 10) * duration) / 8).toFixed(1)} MB`,
     ],
   ];
@@ -239,15 +239,15 @@ export function ExportPanel({
     {
       id: "server",
       Icon: Cloud,
-      title: "Background export",
-      detail: "Works across browsers",
+      title: "Exportação em segundo plano",
+      detail: "Funciona em qualquer navegador",
       disabled: busy,
     },
     {
       id: "browser",
       Icon: Monitor,
-      title: "On this device",
-      detail: browserSupport?.label || "Checking this browser…",
+      title: "Neste dispositivo",
+      detail: browserSupport?.label || "Verificando suporte do navegador…",
       disabled: busy || !browserSupport?.supported,
     },
   ];
@@ -256,19 +256,18 @@ export function ExportPanel({
       <DialogContent className="max-h-[90vh] gap-5 overflow-y-auto sm:max-w-lg">
         <DialogHeader>
           <DialogTitle className="font-display text-2xl">
-            Ready for the feed
+            Pronto para publicar
           </DialogTitle>
           <DialogDescription>
-            Export your current edit. Background exports keep running when you
-            leave.
+            Exporte sua edição atual. Exportações em segundo plano continuam funcionando mesmo se você sair.
           </DialogDescription>
         </DialogHeader>
         <div className="space-y-2">
-          <p className="text-xs font-medium text-muted-foreground">Platform</p>
+          <p className="text-xs font-medium text-muted-foreground">Plataforma</p>
           <ToggleGroup
             type="single"
             variant="outline"
-            aria-label="Export preset"
+            aria-label="Formato de exportação"
             className="w-full"
             value={preset}
             disabled={busy}
@@ -294,7 +293,7 @@ export function ExportPanel({
           ))}
         </dl>
         <div className="space-y-2">
-          <p className="text-xs font-medium text-muted-foreground">Render on</p>
+          <p className="text-xs font-medium text-muted-foreground">Renderizar em</p>
           <div className="grid grid-cols-2 gap-2">
             {modes.map(({ id, Icon, title, detail, disabled }) => (
               <button
@@ -317,8 +316,7 @@ export function ExportPanel({
           </div>
           {mode === "browser" && browserSupport?.label.includes("Opus") && (
             <p className="text-xs text-muted-foreground">
-              This browser uses Opus audio in MP4. Background export provides
-              wider player compatibility with AAC audio.
+              Este navegador usa áudio Opus em MP4. A exportação em segundo plano oferece maior compatibilidade com áudio AAC.
             </p>
           )}
         </div>
@@ -334,26 +332,26 @@ export function ExportPanel({
               <span className="flex items-center gap-2">
                 <Loader2 className="size-4 animate-spin" />
                 {progress !== null
-                  ? `Exporting ${progress}%`
-                  : message || "Saving draft…"}
+                  ? `Exportando ${progress}%`
+                  : message || "Salvando rascunho…"}
               </span>
               <Button
                 variant="ghost"
                 size="sm"
                 onClick={() => controller.current?.abort()}
               >
-                Cancel
+                Cancelar
               </Button>
             </div>
             {progress !== null && (
-              <Progress aria-label="Browser export progress" value={progress} />
+              <Progress aria-label="Progresso da exportação no navegador" value={progress} />
             )}
           </div>
         ) : (
           <div className="flex flex-col-reverse gap-2 sm:flex-row">
             {clips.length > 1 && (
               <Button variant="outline" onClick={() => void start(true)}>
-                Export all {clips.length} clips
+                Exportar todos os {clips.length} clipes
               </Button>
             )}
             <Button
@@ -362,13 +360,13 @@ export function ExportPanel({
               className="sm:flex-1"
             >
               <Download />
-              Export clip
+              Exportar clipe
             </Button>
           </div>
         )}
         {jobs.length > 0 && (
           <div className="space-y-2 border-t pt-4">
-            <h3 className="text-sm font-semibold">Export queue</h3>
+            <h3 className="text-sm font-semibold">Fila de exportação</h3>
             <ul className="divide-y rounded-lg border">
               {jobs.map((job) => (
                 <li
@@ -393,7 +391,13 @@ export function ExportPanel({
                       >
                         {job.status === "rendering"
                           ? `${job.progress}%`
-                          : job.status}
+                          : job.status === "completed"
+                            ? "Concluído"
+                            : job.status === "failed"
+                              ? "Falhou"
+                              : job.status === "queued"
+                                ? "Na fila"
+                                : job.status}
                       </Badge>
                     </p>
                     {job.error && (
@@ -403,7 +407,7 @@ export function ExportPanel({
                       <Progress
                         className="h-1.5"
                         value={job.progress}
-                        aria-label={`${job.label} export progress`}
+                        aria-label={`Progresso da exportação do ${job.label}`}
                       />
                     )}
                   </div>
@@ -415,7 +419,7 @@ export function ExportPanel({
                         onClick={() => { if (userId) void trackClipExport({ userId, surface: "editor_queue", format: "queued_render" }); }}
                       >
                         <Download />
-                        Download
+                        Baixar
                       </a>
                     </Button>
                   ) : (
@@ -423,14 +427,14 @@ export function ExportPanel({
                       <Button
                         size="icon-sm"
                         variant="ghost"
-                        aria-label={`Cancel ${job.label} export`}
+                        aria-label={`Cancelar exportação do ${job.label}`}
                         onClick={async () => {
                           try {
                             await editorRequest(
                               `${job.endpoint}/exports/${job.id}`,
                               "DELETE",
                             );
-                            toast.info("Cancellation requested");
+                            toast.info("Cancelamento solicitado");
                             await refresh();
                           } catch (e) {
                             setError((e as Error).message);

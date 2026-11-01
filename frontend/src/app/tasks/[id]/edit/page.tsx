@@ -62,14 +62,14 @@ export default function TaskEditPage() {
       <div className="max-w-lg mx-auto px-4 py-24 text-center space-y-4">
         <h1 className="text-xl font-semibold">
           {task?.status !== "completed"
-            ? "Your clips are still processing"
-            : "No clips to edit yet"}
+            ? "Seus clipes ainda estão sendo processados"
+            : "Nenhum clipe para editar ainda"}
         </h1>
         <p className="text-sm text-muted-foreground">
-          The editor is ready once your generation completes.
+          O editor estará disponível assim que o processamento for concluído.
         </p>
         <Button asChild>
-          <Link href={`/tasks/${id}`}>Back to generation</Link>
+          <Link href={`/tasks/${id}`}>Voltar ao vídeo</Link>
         </Button>
       </div>
     );
@@ -77,7 +77,7 @@ export default function TaskEditPage() {
     <EditorWorkspace
       key={`${id}:${clip.id}`}
       taskId={id}
-      title={task?.source_title || "Untitled generation"}
+      title={task?.source_title || "Vídeo sem título"}
       clips={clips}
       clip={clip}
       onSelect={(clipId) => {

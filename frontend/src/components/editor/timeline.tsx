@@ -76,10 +76,10 @@ export function Timeline({
   const canSplit =
     currentTime > active.start + 0.04 && currentTime < active.end - 0.04;
   return (
-    <Panel aria-label="Clip timeline">
+    <Panel aria-label="Linha do tempo do clipe">
       <PanelHeader
-        title="Timeline"
-        meta={`${doc.segments.length} ${doc.segments.length === 1 ? "segment" : "segments"} · ${timecode(editDuration(doc))}`}
+        title="Linha do tempo"
+        meta={`${doc.segments.length} ${doc.segments.length === 1 ? "segmento" : "segmentos"} · ${timecode(editDuration(doc))}`}
       >
         <div className="flex items-center gap-1.5 text-muted-foreground">
           <ZoomIn className="size-4" aria-hidden />
@@ -87,7 +87,7 @@ export function Timeline({
             type="single"
             size="sm"
             variant="outline"
-            aria-label="Timeline zoom"
+            aria-label="Zoom da linha do tempo"
             value={String(zoom)}
             onValueChange={(value) => value && setZoom(Number(value))}
           >
@@ -109,7 +109,7 @@ export function Timeline({
           disabled={!canSplit}
         >
           <Scissors />
-          Split at playhead
+          Dividir no cursor
         </Button>
       </PanelHeader>
       <div className="overflow-x-auto px-4 pt-3 pb-2">
@@ -185,7 +185,7 @@ export function Timeline({
           </div>
           <div className="mt-3">
             <Slider
-              aria-label="Trim range"
+              aria-label="Intervalo de corte"
               min={0}
               max={asset.duration}
               step={1 / asset.fps}
@@ -195,7 +195,7 @@ export function Timeline({
             />
           </div>
           <label className="sr-only" htmlFor="studio-playhead">
-            Playhead
+            Cursor de reprodução
           </label>
           <input
             id="studio-playhead"
@@ -215,12 +215,12 @@ export function Timeline({
             htmlFor="studio-in"
             className="text-xs font-normal text-muted-foreground"
           >
-            In
+            Início
           </Label>
           <Input
             id="studio-in"
             className="h-8 w-24 [appearance:textfield] tabular-nums [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
-            aria-label="In point seconds"
+            aria-label="Segundos do ponto inicial"
             type="number"
             min={0}
             max={active.end - 0.04}
@@ -234,12 +234,12 @@ export function Timeline({
             htmlFor="studio-out"
             className="text-xs font-normal text-muted-foreground"
           >
-            Out
+            Fim
           </Label>
           <Input
             id="studio-out"
             className="h-8 w-24 [appearance:textfield] tabular-nums [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
-            aria-label="Out point seconds"
+            aria-label="Segundos do ponto final"
             type="number"
             min={active.start + 0.04}
             max={asset.duration}
@@ -255,7 +255,7 @@ export function Timeline({
             setRange(clamp(currentTime, 0, active.end - 0.04), active.end)
           }
         >
-          Set In <Keys keys="I" />
+          Definir início <Keys keys="I" />
         </Button>
         <Button
           size="sm"
@@ -267,17 +267,17 @@ export function Timeline({
             )
           }
         >
-          Set Out <Keys keys="O" />
+          Definir fim <Keys keys="O" />
         </Button>
         <span className="ml-auto self-center text-xs text-muted-foreground">
-          Cuts stay reversible
+          Cortes permanecem reversíveis
         </span>
       </div>
       <div className="flex flex-wrap items-center gap-2 border-t bg-muted/40 px-3 py-2">
         <div
           className="flex min-w-0 flex-1 flex-wrap gap-1.5"
           role="group"
-          aria-label="Segments"
+          aria-label="Segmentos"
         >
           {doc.segments.map((s, i) => (
             <button
@@ -293,7 +293,7 @@ export function Timeline({
               }}
             >
               <span className="block text-[10px] font-medium uppercase tracking-wider text-muted-foreground">
-                Segment {i + 1}
+                Segmento {i + 1}
               </span>
               <span className="block tabular-nums">
                 {timecode(s.start)} – {timecode(s.end)}
@@ -303,7 +303,7 @@ export function Timeline({
         </div>
         <div className="flex items-center">
           <ToolButton
-            label="Move segment earlier"
+            label="Mover segmento para antes"
             size="icon-sm"
             disabled={index === 0}
             onClick={() => move(-1)}
@@ -311,7 +311,7 @@ export function Timeline({
             <ArrowLeft />
           </ToolButton>
           <ToolButton
-            label="Move segment later"
+            label="Mover segmento para depois"
             size="icon-sm"
             disabled={index >= doc.segments.length - 1}
             onClick={() => move(1)}
@@ -319,7 +319,7 @@ export function Timeline({
             <ArrowRight />
           </ToolButton>
           <ToolButton
-            label="Duplicate selected segment"
+            label="Duplicar segmento selecionado"
             size="icon-sm"
             onClick={() =>
               update((d) => ({
@@ -335,7 +335,7 @@ export function Timeline({
             <Copy />
           </ToolButton>
           <ToolButton
-            label="Remove selected segment"
+            label="Remover segmento selecionado"
             size="icon-sm"
             className="hover:text-destructive"
             disabled={doc.segments.length === 1}

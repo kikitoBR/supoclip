@@ -49,6 +49,6 @@ it("serializes overlapping saves and drains newer changes without losing a revis
   });
   expect(requests.map((r) => r.revision)).toEqual([0, 1]);
   expect(requests.map((r) => r.document.volume)).toEqual([0.5, 0.25]);
-  expect(result.current.status).toBe("All changes saved");
+  expect(result.current.status).toBe("Todas as alterações salvas");
   expect(result.current.document?.volume).toBe(0.25);
 });

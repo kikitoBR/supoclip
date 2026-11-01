@@ -21,7 +21,7 @@ export async function editorRequest<T>(
   if (!response.ok)
     throw new Error(
       formatSupportMessage(
-        await parseApiError(response, "Could not update the editor."),
+        await parseApiError(response, "Não foi possível atualizar o editor."),
       ),
     );
   return response.json();
@@ -34,7 +34,7 @@ interface History {
 export function useEditor(endpoint: string) {
   const [asset, setAsset] = useState<EditorState | null>(null);
   const [history, setHistory] = useState<History | null>(null);
-  const [status, setStatus] = useState("Preparing preview…");
+  const [status, setStatus] = useState("Preparando pré-visualização…");
   const [error, setError] = useState<string | null>(null);
   const [storageError, setStorageError] = useState(false);
   const historyRef = useRef<History | null>(null);
@@ -70,7 +70,7 @@ export function useEditor(endpoint: string) {
       setHistory(next);
       cache(next);
       const isSaved = JSON.stringify(next.present) === saved.current;
-      setStatus(isSaved ? "All changes saved" : "Unsaved changes");
+      setStatus(isSaved ? "Todas as alterações salvas" : "Alterações não salvas");
       if (isSaved) setError(null);
     },
     [cache],
@@ -124,7 +124,7 @@ export function useEditor(endpoint: string) {
         a = assetRef.current;
       if (!h || !a || JSON.stringify(h.present) === saved.current) return;
       const document = h.present;
-      setStatus("Saving…");
+      setStatus("Salvando…");
       const operation = (async () => {
         try {
           const result = await editorRequest<{ revision: number }>(
@@ -138,15 +138,15 @@ export function useEditor(endpoint: string) {
             setError(null);
             setStatus(
               JSON.stringify(historyRef.current?.present) === saved.current
-                ? "All changes saved"
-                : "Unsaved changes",
+                ? "Todas as alterações salvas"
+                : "Alterações não salvas",
             );
             if (historyRef.current) cache(historyRef.current);
           }
         } catch (e) {
           if (mounted.current) {
-            setError(e instanceof Error ? e.message : "Could not save draft");
-            setStatus("Save failed · draft kept locally");
+            setError(e instanceof Error ? e.message : "Não foi possível salvar o rascunho");
+            setStatus("Falha ao salvar · rascunho mantido localmente");
           }
           throw e;
         }
@@ -178,7 +178,7 @@ export function useEditor(endpoint: string) {
           return;
         }
         if (state.status === "failed") {
-          setError(state.error || "Preview preparation failed");
+          setError(state.error || "Falha na preparação da pré-visualização");
           return;
         }
         assetRef.current = state;
@@ -204,7 +204,7 @@ export function useEditor(endpoint: string) {
               h = local.history;
               revision.current = local.revision;
               setError(
-                "A newer draft exists on the server. Your local changes are retained. Download a draft backup, then reload the saved version to resolve the conflict.",
+                "Existe um rascunho mais recente no servidor. Suas alterações locais foram mantidas. Baixe um backup do rascunho e recarregue a versão salva para resolver o conflito.",
               );
             }
           }
@@ -215,12 +215,12 @@ export function useEditor(endpoint: string) {
         setHistory(h);
         setStatus(
           JSON.stringify(h.present) === saved.current
-            ? "All changes saved"
-            : "Recovered local draft",
+            ? "Todas as alterações salvas"
+            : "Rascunho local recuperado",
         );
       } catch (e) {
         if (!stopped)
-          setError(e instanceof Error ? e.message : "Could not load editor");
+          setError(e instanceof Error ? e.message : "Não foi possível carregar o editor");
       }
     }
     void load();
@@ -249,7 +249,7 @@ export function useEditor(endpoint: string) {
   const reload = async () => {
     if (inFlight.current) await inFlight.current.catch(() => {});
     const state = await editorRequest<EditorState>(endpoint);
-    if (state.status !== "ready") throw new Error("Preview is not ready");
+    if (state.status !== "ready") throw new Error("A pré-visualização não está pronta");
     revision.current = state.draft.revision;
     saved.current = JSON.stringify(state.draft.document);
     assetRef.current = state;
@@ -259,7 +259,7 @@ export function useEditor(endpoint: string) {
     setHistory(h);
     cache(h);
     setError(null);
-    setStatus("All changes saved");
+    setStatus("Todas as alterações salvas");
   };
   return {
     asset,
