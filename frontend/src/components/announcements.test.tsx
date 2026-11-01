@@ -23,38 +23,38 @@ afterEach(() => {
 it("keeps the update accessible after reading and remembers it on another surface", async () => {
   const user = userEvent.setup();
   const view = render(<Announcements userId="read-test" />);
-  await user.click(await screen.findByRole("button", { name: "What's new, 1 unread announcement" }));
+  await user.click(await screen.findByRole("button", { name: "Novidades, 1 comunicado não lido" }));
   expect(screen.getByRole("heading", { name: "The creator program is open" })).toBeVisible();
   expect(screen.getByRole("link", { name: "Explore the creator program" })).toHaveAttribute("href", "/affiliate");
-  await user.click(screen.getByRole("button", { name: "Close announcements" }));
-  expect(screen.getByRole("button", { name: "What's new" })).toBeVisible();
+  await user.click(screen.getByRole("button", { name: "Fechar novidades" }));
+  expect(screen.getByRole("button", { name: "Novidades" })).toBeVisible();
   view.unmount();
   render(<Announcements userId="read-test" compact />);
-  await waitFor(() => expect(screen.getByRole("button", { name: "What's new" })).toBeVisible());
-  expect(screen.queryByRole("button", { name: /unread announcement/ })).not.toBeInTheDocument();
+  await waitFor(() => expect(screen.getByRole("button", { name: "Novidades" })).toBeVisible());
+  expect(screen.queryByRole("button", { name: /não lido/ })).not.toBeInTheDocument();
 });
 
 it("shows new announcements even when an older update has been read", async () => {
   window.localStorage.setItem("supoclip:announcements-read:visitor", '["older-update"]');
   render(<Announcements landing />);
-  expect(await screen.findByRole("button", { name: "What's new, 1 unread announcement" })).toBeVisible();
+  expect(await screen.findByRole("button", { name: "Novidades, 1 comunicado não lido" })).toBeVisible();
 });
 
 it("keeps read status separate when accounts change", async () => {
   const user = userEvent.setup();
   const view = render(<Announcements userId="first-account" />);
-  await user.click(await screen.findByRole("button", { name: /1 unread announcement/ }));
+  await user.click(await screen.findByRole("button", { name: /1 comunicado não lido/ }));
   await user.keyboard("{Escape}");
   view.rerender(<Announcements userId="second-account" />);
-  expect(await screen.findByRole("button", { name: /1 unread announcement/ })).toBeVisible();
+  expect(await screen.findByRole("button", { name: /1 comunicado não lido/ })).toBeVisible();
 });
 
 it("clears the badge even when the browser refuses storage writes", async () => {
   vi.mocked(window.localStorage.setItem).mockImplementation(() => { throw new Error("Storage blocked"); });
   render(<Announcements userId="blocked-storage-test" />);
   const user = userEvent.setup();
-  await user.click(await screen.findByRole("button", { name: /1 unread announcement/ }));
+  await user.click(await screen.findByRole("button", { name: /1 comunicado não lido/ }));
   await user.keyboard("{Escape}");
-  expect(screen.getByRole("button", { name: "What's new" })).toBeVisible();
-  expect(screen.queryByRole("button", { name: /unread announcement/ })).not.toBeInTheDocument();
+  expect(screen.getByRole("button", { name: "Novidades" })).toBeVisible();
+  expect(screen.queryByRole("button", { name: /não lido/ })).not.toBeInTheDocument();
 });

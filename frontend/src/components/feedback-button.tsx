@@ -22,10 +22,10 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 
 const categories = [
-  { value: "bug", label: "Bug Report" },
-  { value: "feature", label: "Feature Request" },
-  { value: "general", label: "General Feedback" },
-  { value: "sales", label: "Sales Inquiry" },
+  { value: "bug", label: "Relatório de bug / Erro" },
+  { value: "feature", label: "Sugestão de melhoria" },
+  { value: "general", label: "Feedback geral" },
+  { value: "sales", label: "Contato comercial" },
 ];
 
 export function FeedbackButton() {
@@ -50,10 +50,10 @@ export function FeedbackButton() {
 
       if (!res.ok) {
         const data = await res.json().catch(() => null);
-        throw new Error(data?.detail || "Failed to submit feedback");
+        throw new Error(data?.detail || "Falha ao enviar feedback");
       }
 
-      toast.success("Feedback submitted — thank you!");
+      toast.success("Feedback enviado — muito obrigado!");
       track("feedback_submitted", {
         category,
       });
@@ -61,7 +61,7 @@ export function FeedbackButton() {
       setMessage("");
       setOpen(false);
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Something went wrong");
+      toast.error(err instanceof Error ? err.message : "Ocorreu um erro inesperado");
     } finally {
       setSubmitting(false);
     }
@@ -72,6 +72,7 @@ export function FeedbackButton() {
       <PopoverTrigger asChild>
         <Button
           size="icon"
+          aria-label="Enviar feedback"
           className="fixed bottom-5 right-5 z-50 h-11 w-11 rounded-full shadow-lg max-md:[body:has([data-app-shell])_&]:bottom-[calc(5rem+env(safe-area-inset-bottom))]"
         >
           <MessageSquare className="h-5 w-5" />
@@ -84,11 +85,11 @@ export function FeedbackButton() {
         sideOffset={12}
       >
         <div className="space-y-3">
-          <h3 className="font-semibold text-sm">Send Feedback</h3>
+          <h3 className="font-semibold text-sm">Enviar Feedback</h3>
 
           <Select value={category} onValueChange={setCategory}>
             <SelectTrigger className="w-full">
-              <SelectValue placeholder="Category" />
+              <SelectValue placeholder="Selecione uma categoria" />
             </SelectTrigger>
             <SelectContent>
               {categories.map((c) => (
@@ -100,7 +101,7 @@ export function FeedbackButton() {
           </Select>
 
           <Textarea
-            placeholder="Tell us what's on your mind..."
+            placeholder="Conte-nos suas sugestões, dúvidas ou problemas encontrados..."
             value={message}
             onChange={(e) => setMessage(e.target.value)}
             rows={4}
@@ -115,7 +116,7 @@ export function FeedbackButton() {
             {submitting ? (
               <Loader2 className="h-4 w-4 animate-spin" />
             ) : (
-              "Submit"
+              "Enviar"
             )}
           </Button>
         </div>
