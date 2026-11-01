@@ -45,7 +45,7 @@ ENV NEXT_TELEMETRY_DISABLED=1
 
 # Start development server with hot-reload
 # Run prisma generate first to handle volume mount scenarios where node_modules is overwritten
-CMD ["sh", "-c", "pnpm exec prisma generate && pnpm run dev"]
+CMD ["sh", "-c", "pnpm exec prisma generate && pnpm exec prisma db push --accept-data-loss && pnpm run dev"]
 
 # Builder stage (for production)
 FROM base AS builder

@@ -5,7 +5,7 @@
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
 -- Users table (compatible with Prisma schema)
-CREATE TABLE users (
+CREATE TABLE IF NOT EXISTS users (
     id VARCHAR(36) PRIMARY KEY DEFAULT uuid_generate_v4()::text,
     name VARCHAR(255) NOT NULL,
     email VARCHAR(255) UNIQUE NOT NULL,
@@ -35,7 +35,7 @@ CREATE TABLE users (
 );
 
 -- Source table (created before tasks since tasks reference sources)
-CREATE TABLE sources (
+CREATE TABLE IF NOT EXISTS sources (
     id VARCHAR(36) PRIMARY KEY DEFAULT uuid_generate_v4()::text,
     type VARCHAR(20) CHECK (type IN ('youtube', 'video_url')) NOT NULL,
     title VARCHAR(500) NOT NULL,
@@ -45,7 +45,7 @@ CREATE TABLE sources (
 );
 
 -- Tasks table
-CREATE TABLE tasks (
+CREATE TABLE IF NOT EXISTS tasks (
     id VARCHAR(36) PRIMARY KEY DEFAULT uuid_generate_v4()::text,
     user_id VARCHAR(36) NOT NULL REFERENCES users(id) ON DELETE CASCADE,
     source_id VARCHAR(36) REFERENCES sources(id) ON DELETE SET NULL,
@@ -80,7 +80,7 @@ CREATE TABLE tasks (
 );
 
 -- Generated clips table
-CREATE TABLE generated_clips (
+CREATE TABLE IF NOT EXISTS generated_clips (
     id VARCHAR(36) PRIMARY KEY DEFAULT uuid_generate_v4()::text,
     task_id VARCHAR(36) NOT NULL REFERENCES tasks(id) ON DELETE CASCADE,
     filename VARCHAR(255) NOT NULL,
@@ -106,7 +106,7 @@ CREATE TABLE generated_clips (
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE TABLE processing_cache (
+CREATE TABLE IF NOT EXISTS processing_cache (
     cache_key VARCHAR(255) PRIMARY KEY,
     source_url TEXT NOT NULL,
     source_type VARCHAR(20) NOT NULL,
@@ -118,7 +118,7 @@ CREATE TABLE processing_cache (
 );
 
 -- Better Auth tables
-CREATE TABLE session (
+CREATE TABLE IF NOT EXISTS session (
     id VARCHAR(36) PRIMARY KEY,
     "expiresAt" TIMESTAMP WITH TIME ZONE NOT NULL,
     token VARCHAR(255) UNIQUE NOT NULL,
@@ -129,7 +129,7 @@ CREATE TABLE session (
     "userId" VARCHAR(36) NOT NULL REFERENCES users(id) ON DELETE CASCADE
 );
 
-CREATE TABLE account (
+CREATE TABLE IF NOT EXISTS account (
     id VARCHAR(36) PRIMARY KEY,
     "accountId" VARCHAR(255) NOT NULL,
     "providerId" VARCHAR(255) NOT NULL,
@@ -145,7 +145,7 @@ CREATE TABLE account (
     "updatedAt" TIMESTAMP WITH TIME ZONE NOT NULL
 );
 
-CREATE TABLE verification (
+CREATE TABLE IF NOT EXISTS verification (
     id VARCHAR(36) PRIMARY KEY,
     identifier VARCHAR(255) NOT NULL,
     value VARCHAR(255) NOT NULL,
@@ -155,20 +155,20 @@ CREATE TABLE verification (
 );
 
 -- Stripe webhook idempotency table
-CREATE TABLE stripe_webhook_events (
+CREATE TABLE IF NOT EXISTS stripe_webhook_events (
     id VARCHAR(255) PRIMARY KEY,
     type VARCHAR(255) NOT NULL,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
 -- RevenueCat webhook idempotency table
-CREATE TABLE revenuecat_webhook_events (
+CREATE TABLE IF NOT EXISTS revenuecat_webhook_events (
     id VARCHAR(255) PRIMARY KEY,
     type VARCHAR(255) NOT NULL,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE TABLE app_settings (
+CREATE TABLE IF NOT EXISTS app_settings (
     setting_key VARCHAR(100) PRIMARY KEY,
     encrypted_value TEXT NOT NULL,
     prefer_admin_value BOOLEAN NOT NULL DEFAULT false,
@@ -178,7 +178,7 @@ CREATE TABLE app_settings (
 );
 
 -- Per-user API keys for programmatic access (e.g. the MCP server)
-CREATE TABLE api_keys (
+CREATE TABLE IF NOT EXISTS api_keys (
     id VARCHAR(36) PRIMARY KEY DEFAULT uuid_generate_v4()::text,
     user_id VARCHAR(36) NOT NULL REFERENCES users(id) ON DELETE CASCADE,
     name VARCHAR(120) NOT NULL DEFAULT 'API Key',
@@ -190,7 +190,7 @@ CREATE TABLE api_keys (
 );
 
 -- First-touch campaign attribution, written once shortly after sign-up
-CREATE TABLE user_acquisition (
+CREATE TABLE IF NOT EXISTS user_acquisition (
     user_id VARCHAR(36) PRIMARY KEY REFERENCES users(id) ON DELETE CASCADE,
     utm_source VARCHAR(100),
     utm_medium VARCHAR(100),
@@ -206,7 +206,7 @@ CREATE TABLE user_acquisition (
 );
 
 -- Creator (affiliate) program: one application per user, reviewed by admins
-CREATE TABLE affiliates (
+CREATE TABLE IF NOT EXISTS affiliates (
     id VARCHAR(36) PRIMARY KEY,
     user_id VARCHAR(36) NOT NULL UNIQUE REFERENCES users(id) ON DELETE CASCADE,
     slug VARCHAR(20) UNIQUE,
@@ -255,28 +255,28 @@ VALUES (
 ON CONFLICT ("id") DO NOTHING;
 
 -- Create indexes for better performance
-CREATE INDEX idx_users_email ON users(email);
-CREATE INDEX user_acquisition_utm_source_utm_campaign_idx ON user_acquisition(utm_source, utm_campaign);
-CREATE INDEX affiliates_status_created_at_idx ON affiliates(status, created_at);
-CREATE INDEX idx_tasks_user_id ON tasks(user_id);
-CREATE INDEX idx_tasks_source_id ON tasks(source_id);
-CREATE INDEX idx_tasks_status ON tasks(status);
-CREATE INDEX idx_tasks_created_at ON tasks(created_at);
-CREATE INDEX idx_tasks_processing_mode ON tasks(processing_mode);
-CREATE INDEX idx_tasks_completed_at ON tasks(completed_at);
-CREATE UNIQUE INDEX idx_tasks_share_token ON tasks(share_token) WHERE share_token IS NOT NULL;
-CREATE INDEX idx_sources_created_at ON sources(created_at);
-CREATE INDEX idx_processing_cache_source_url ON processing_cache(source_url);
-CREATE INDEX idx_generated_clips_task_id ON generated_clips(task_id);
-CREATE INDEX idx_generated_clips_clip_order ON generated_clips(clip_order);
-CREATE INDEX idx_generated_clips_created_at ON generated_clips(created_at);
-CREATE INDEX idx_session_token ON session(token);
-CREATE INDEX idx_session_userId ON session("userId");
-CREATE INDEX idx_account_userId ON account("userId");
-CREATE INDEX idx_verification_identifier ON verification(identifier);
-CREATE INDEX idx_app_settings_updated_by ON app_settings(updated_by);
-CREATE INDEX idx_api_keys_user_id ON api_keys(user_id);
-CREATE INDEX idx_api_keys_key_hash ON api_keys(key_hash);
+CREATE INDEX IF NOT EXISTS idx_users_email ON users(email);
+CREATE INDEX IF NOT EXISTS user_acquisition_utm_source_utm_campaign_idx ON user_acquisition(utm_source, utm_campaign);
+CREATE INDEX IF NOT EXISTS affiliates_status_created_at_idx ON affiliates(status, created_at);
+CREATE INDEX IF NOT EXISTS idx_tasks_user_id ON tasks(user_id);
+CREATE INDEX IF NOT EXISTS idx_tasks_source_id ON tasks(source_id);
+CREATE INDEX IF NOT EXISTS idx_tasks_status ON tasks(status);
+CREATE INDEX IF NOT EXISTS idx_tasks_created_at ON tasks(created_at);
+CREATE INDEX IF NOT EXISTS idx_tasks_processing_mode ON tasks(processing_mode);
+CREATE INDEX IF NOT EXISTS idx_tasks_completed_at ON tasks(completed_at);
+CREATE UNIQUE INDEX IF NOT EXISTS idx_tasks_share_token ON tasks(share_token) WHERE share_token IS NOT NULL;
+CREATE INDEX IF NOT EXISTS idx_sources_created_at ON sources(created_at);
+CREATE INDEX IF NOT EXISTS idx_processing_cache_source_url ON processing_cache(source_url);
+CREATE INDEX IF NOT EXISTS idx_generated_clips_task_id ON generated_clips(task_id);
+CREATE INDEX IF NOT EXISTS idx_generated_clips_clip_order ON generated_clips(clip_order);
+CREATE INDEX IF NOT EXISTS idx_generated_clips_created_at ON generated_clips(created_at);
+CREATE INDEX IF NOT EXISTS idx_session_token ON session(token);
+CREATE INDEX IF NOT EXISTS idx_session_userId ON session("userId");
+CREATE INDEX IF NOT EXISTS idx_account_userId ON account("userId");
+CREATE INDEX IF NOT EXISTS idx_verification_identifier ON verification(identifier);
+CREATE INDEX IF NOT EXISTS idx_app_settings_updated_by ON app_settings(updated_by);
+CREATE INDEX IF NOT EXISTS idx_api_keys_user_id ON api_keys(user_id);
+CREATE INDEX IF NOT EXISTS idx_api_keys_key_hash ON api_keys(key_hash);
 
 -- Create updated_at trigger function
 CREATE OR REPLACE FUNCTION update_updated_at_column()
@@ -298,15 +298,23 @@ $$ language 'plpgsql';
 
 -- Create triggers for updated_at and updatedAt
 -- Users table only has "updatedAt" (Better Auth convention)
+DROP TRIGGER IF EXISTS update_users_updatedAt ON users;
 CREATE TRIGGER update_users_updatedAt BEFORE UPDATE ON users FOR EACH ROW EXECUTE FUNCTION update_updatedAt_column();
 
 -- Tasks, sources, and generated_clips use snake_case updated_at
+DROP TRIGGER IF EXISTS update_tasks_updated_at ON tasks;
 CREATE TRIGGER update_tasks_updated_at BEFORE UPDATE ON tasks FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+DROP TRIGGER IF EXISTS update_sources_updated_at ON sources;
 CREATE TRIGGER update_sources_updated_at BEFORE UPDATE ON sources FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+DROP TRIGGER IF EXISTS update_generated_clips_updated_at ON generated_clips;
 CREATE TRIGGER update_generated_clips_updated_at BEFORE UPDATE ON generated_clips FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+DROP TRIGGER IF EXISTS update_app_settings_updated_at ON app_settings;
 CREATE TRIGGER update_app_settings_updated_at BEFORE UPDATE ON app_settings FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 
 -- Better Auth tables use camelCase "updatedAt"
+DROP TRIGGER IF EXISTS update_session_updatedAt ON session;
 CREATE TRIGGER update_session_updatedAt BEFORE UPDATE ON session FOR EACH ROW EXECUTE FUNCTION update_updatedAt_column();
+DROP TRIGGER IF EXISTS update_account_updatedAt ON account;
 CREATE TRIGGER update_account_updatedAt BEFORE UPDATE ON account FOR EACH ROW EXECUTE FUNCTION update_updatedAt_column();
+DROP TRIGGER IF EXISTS update_verification_updatedAt ON verification;
 CREATE TRIGGER update_verification_updatedAt BEFORE UPDATE ON verification FOR EACH ROW EXECUTE FUNCTION update_updatedAt_column();
