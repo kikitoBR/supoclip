@@ -361,6 +361,7 @@ async def supoclip_create_clip_task(
     font_color: str = "",
     cut_long_pauses: bool = True,
     remove_filler_words: bool = True,
+    clip_duration: str = "auto",
 ) -> str:
     """Create a SupoClip task that downloads a video and generates viral short clips.
 
@@ -382,6 +383,7 @@ async def supoclip_create_clip_task(
         font_family / font_size / font_color: Optional subtitle styling overrides.
         cut_long_pauses: Shorten long silences to a natural breath (default on).
         remove_filler_words: Cut disfluencies like "um" and "uh" (default on).
+        clip_duration: Duration preference: 'short' (20-30s), 'medium' (30s-1m), 'long' (1m-2m), or 'auto' (flexible 20s-2m).
 
     Returns:
         str: JSON ``{"task_id": str, "job_id": str, "message": str}`` on success.
@@ -392,6 +394,7 @@ async def supoclip_create_clip_task(
 
     normalized_mode = processing_mode if processing_mode in {"fast", "balanced", "quality"} else "fast"
     normalized_format = output_format if output_format in VALID_OUTPUT_FORMATS else "vertical"
+    normalized_duration = clip_duration.strip().lower() if clip_duration and clip_duration.strip().lower() in {"short", "medium", "long", "auto"} else "auto"
 
     source: dict = {"url": cleaned_url[:2000]}
     cleaned_title = title.strip()
@@ -405,6 +408,7 @@ async def supoclip_create_clip_task(
         "add_subtitles": add_subtitles,
         "caption_template": (caption_template or "default").strip()[:50] or "default",
         "include_broll": include_broll,
+        "clip_duration": normalized_duration,
     }
 
     font_options: dict = {}

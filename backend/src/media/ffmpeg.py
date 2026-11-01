@@ -1,9 +1,7 @@
 """Ffmpeg helpers for the video pipeline."""
 
-from typing import List
-from typing import Optional
+from typing import Any, Dict, List, Optional, Tuple, Union
 from pathlib import Path
-from typing import Tuple
 from ..clip_source_map import normalize_source_ranges
 from ..config import get_config
 import json
@@ -82,10 +80,52 @@ _ISO_639_2_CODES = {
 _SECONDARY_AUDIO_DISPOSITIONS = ("comment", "visual_impaired", "hearing_impaired", "dub")
 
 
-def _audio_language_matches(tag: str, preferred_language: str) -> bool:
-    tag = tag.strip().lower()
+_LANGUAGE_KEYWORDS = {
+    "pt": {"pt", "por", "pob", "português", "portugues", "portuguese", "brasil", "brazil"},
+    "en": {"en", "eng", "english", "inglês", "ingles"},
+    "es": {"es", "spa", "spanish", "español", "espanhol"},
+    "fr": {"fr", "fra", "fre", "french", "français", "frances"},
+    "de": {"de", "deu", "ger", "german", "deutsch", "alemão", "alemao"},
+    "it": {"it", "ita", "italian", "italiano"},
+    "ja": {"ja", "jpn", "japanese", "japonês", "japones"},
+    "ru": {"ru", "rus", "russian", "russo"},
+    "zh": {"zh", "zho", "chi", "chinese", "chinês", "chines"},
+}
+
+
+def _audio_language_matches(tag_or_tags: Any, preferred_language: str) -> bool:
+    if not preferred_language:
+        return False
     base = preferred_language.strip().lower().replace("-", "_").split("_", 1)[0]
-    return tag == base or tag in _ISO_639_2_CODES.get(base, set())
+    expected_iso = {base} | _ISO_639_2_CODES.get(base, set())
+    keywords = expected_iso | _LANGUAGE_KEYWORDS.get(base, set())
+
+    if isinstance(tag_or_tags, str):
+        tag = tag_or_tags.strip().lower()
+        if not tag:
+            return False
+        tag_base = tag.replace("-", "_").split("_", 1)[0]
+        if tag == base or tag in expected_iso or tag_base in expected_iso:
+            return True
+        tokens = set(re.split(r"[^a-zA-Z0-9áéíóúâêîôûãõçÁÉÍÓÚÂÊÎÔÛÃÕÇ]+", tag))
+        return bool(tokens & keywords) or any(len(kw) > 3 and kw in tag for kw in keywords)
+
+    tags = tag_or_tags or {}
+    lang_tag = (tags.get("language") or "").strip().lower()
+    if lang_tag:
+        lang_base = lang_tag.replace("-", "_").split("_", 1)[0]
+        if lang_tag in expected_iso or lang_base in expected_iso:
+            return True
+
+    for key in ("title", "handler_name", "description", "name"):
+        val = (tags.get(key) or "").strip().lower()
+        if not val:
+            continue
+        tokens = set(re.split(r"[^a-zA-Z0-9áéíóúâêîôûãõçÁÉÍÓÚÂÊÎÔÛÃÕÇ]+", val))
+        if bool(tokens & keywords) or any(len(kw) > 3 and kw in val for kw in keywords):
+            return True
+
+    return False
 
 
 def select_audio_stream_index(
@@ -108,7 +148,7 @@ def select_audio_stream_index(
             "-select_streams",
             "a",
             "-show_entries",
-            "stream=index:stream_tags=language:stream_disposition",
+            "stream=index:stream_tags:stream_disposition",
             "-of",
             "json",
             str(video_path),
@@ -127,12 +167,16 @@ def select_audio_stream_index(
     def rank(item: Tuple[int, dict]) -> Tuple[int, int, int, int]:
         position, stream = item
         disposition = stream.get("disposition") or {}
-        language = (stream.get("tags") or {}).get("language") or ""
+        tags = stream.get("tags") or {}
         language_miss = int(
             bool(preferred_language)
-            and not _audio_language_matches(language, preferred_language or "")
+            and not _audio_language_matches(tags, preferred_language or "")
         )
-        secondary = int(any(disposition.get(key) for key in _SECONDARY_AUDIO_DISPOSITIONS))
+        is_dub = (
+            any(disposition.get(key) for key in _SECONDARY_AUDIO_DISPOSITIONS)
+            or "dub" in (tags.get("title") or "").lower()
+        )
+        secondary = int(is_dub)
         not_primary = int(not (disposition.get("default") or disposition.get("original")))
         return language_miss, secondary, not_primary, position
 

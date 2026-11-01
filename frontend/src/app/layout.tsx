@@ -81,7 +81,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <head>
         {isDataFastEnabled ? (
           <>
@@ -103,7 +103,10 @@ export default function RootLayout({
           </>
         ) : null}
       </head>
-      <body className={`${geistSans.variable} ${geistMono.variable} ${syne.variable} antialiased`}>
+      <body
+        className={`${geistSans.variable} ${geistMono.variable} ${syne.variable} antialiased`}
+        suppressHydrationWarning
+      >
         <TooltipProvider>
           {children}
           <DataFastIdentity />

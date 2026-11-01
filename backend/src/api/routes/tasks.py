@@ -197,6 +197,7 @@ def _merge_task_source_metadata(
     output_format: Any = None,
     add_subtitles: Any = None,
     cleanup_settings: Dict[str, Any] | None = None,
+    clip_duration: Any = None,
 ) -> Dict[str, Any]:
     merged = dict(existing or {})
 
@@ -210,6 +211,8 @@ def _merge_task_source_metadata(
         merged["add_subtitles"] = add_subtitles
     if cleanup_settings:
         merged.update(cleanup_settings)
+    if clip_duration in {"short", "medium", "long", "auto"}:
+        merged["clip_duration"] = clip_duration
 
     return merged
 
@@ -353,6 +356,9 @@ async def create_task(request: Request, db: AsyncSession = Depends(get_db)):
     add_subtitles = data.get("add_subtitles", True)
     if not isinstance(add_subtitles, bool):
         add_subtitles = True
+    clip_duration = data.get("clip_duration", "auto")
+    if clip_duration not in {"short", "medium", "long", "auto"}:
+        clip_duration = "auto"
     cleanup_settings = new_task_cleanup_settings(data)
     if not raw_source or not raw_source.get("url"):
         raise HTTPException(status_code=400, detail="Source URL is required")
@@ -400,6 +406,7 @@ async def create_task(request: Request, db: AsyncSession = Depends(get_db)):
                         output_format=output_format,
                         add_subtitles=add_subtitles,
                         cleanup_settings=cleanup_settings,
+                        clip_duration=clip_duration,
                     ),
                     db=db,
                 )
@@ -421,6 +428,7 @@ async def create_task(request: Request, db: AsyncSession = Depends(get_db)):
                     output_format,
                     add_subtitles,
                     cleanup_settings,
+                    clip_duration,
                     _job_id=processing_job_id,
                 )
 
@@ -1191,6 +1199,9 @@ async def resume_task(
                 metadata.get("remove_filler_words"),
                 metadata.get("filtered_words"),
             )
+            clip_duration = metadata.get("clip_duration", "auto")
+            if clip_duration not in {"short", "medium", "long", "auto"}:
+                clip_duration = "auto"
 
             if not source_url or not source_type:
                 raise HTTPException(status_code=400, detail="Task source URL is missing")
@@ -1243,6 +1254,7 @@ async def resume_task(
                         output_format,
                         add_subtitles,
                         cleanup_settings,
+                        clip_duration,
                         _job_id=processing_job_id,
                     )
                 except Exception:

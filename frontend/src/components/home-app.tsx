@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect, useCallback } from "react";
 import Link from "next/link";
 import {
-  AlertCircle, ArrowRight, ArrowUp, Captions, CaptionsOff, Check, ChevronDown, Crop, FileVideo,
+  AlertCircle, ArrowRight, ArrowUp, Captions, CaptionsOff, Check, ChevronDown, Clock, Crop, FileVideo,
   Loader2, Paintbrush, Paperclip, Upload, Wand2, X, Youtube,
 } from "lucide-react";
 import { CaptionSizeControl } from "@/components/caption-size-control";
@@ -51,6 +51,15 @@ const FRAMINGS: { id: OutputFormat; label: string; hint: string }[] = [
   { id: "original", label: "Original", hint: "Keep the source aspect ratio" },
 ];
 
+type ClipDuration = "auto" | "short" | "medium" | "long";
+
+const DURATIONS: { id: ClipDuration; label: string; range: string; hint: string }[] = [
+  { id: "auto", label: "Auto", range: "20s – 2m", hint: "A IA escolhe o tempo ideal para cada momento (20s a 2m)" },
+  { id: "short", label: "Curto", range: "20s – 30s", hint: "Ideal para TikTok e Shorts rápidos" },
+  { id: "medium", label: "Médio", range: "30s – 60s", hint: "Equilíbrio entre contexto e dinamismo" },
+  { id: "long", label: "Longo", range: "60s – 120s", hint: "Momentos mais completos e reflexivos (1m – 2m)" },
+];
+
 const COLOR_SWATCHES = ["#FFFFFF", "#000000", "#FFD700", "#FF6B6B", "#4ECDC4", "#45B7D1"];
 
 function formatBytes(bytes: number) {
@@ -83,6 +92,7 @@ export default function HomeApp() {
   const [captionTemplate, setCaptionTemplate] = useState("default");
   const [availableTemplates, setAvailableTemplates] = useState<CaptionTemplate[]>([]);
   const [outputFormat, setOutputFormat] = useState<OutputFormat>("vertical");
+  const [clipDuration, setClipDuration] = useState<ClipDuration>("auto");
   const [addSubtitles, setAddSubtitles] = useState(true);
   const [cutLongPauses, setCutLongPauses] = useState(true);
   const [pauseThresholdMs, setPauseThresholdMs] = useState("700");
@@ -247,6 +257,7 @@ export default function HomeApp() {
           pause_threshold_ms: normalizedPauseThreshold,
           remove_filler_words: removeFillerWords,
           filtered_words: normalizedFilteredWords,
+          clip_duration: clipDuration,
         }),
       });
 
@@ -272,6 +283,7 @@ export default function HomeApp() {
         pause_threshold_ms: normalizedPauseThreshold,
         remove_filler_words: removeFillerWords,
         filtered_words: normalizedFilteredWords,
+        clip_duration: clipDuration,
         processing_mode: "fast",
       });
       window.location.href = `/tasks/${startResult.task_id}`;
@@ -521,6 +533,43 @@ export default function HomeApp() {
                         <FramingGlyph kind={framing.id} />
                         <span className="mt-2 block text-sm font-medium">{framing.label}</span>
                         <span className="block text-xs text-muted-foreground">{framing.hint}</span>
+                      </button>
+                    ))}
+                  </div>
+                </PopoverContent>
+              </Popover>
+
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Chip disabled={controlsDisabled} active={clipDuration !== "auto"}>
+                    <Clock className="size-3.5" />
+                    {DURATIONS.find((d) => d.id === clipDuration)?.label}
+                    <ChevronDown className="size-3 opacity-60" />
+                  </Chip>
+                </PopoverTrigger>
+                <PopoverContent align="start" className="w-[min(92vw,360px)] rounded-2xl p-3">
+                  <p className="mb-2 px-1 text-xs font-medium uppercase tracking-wider text-muted-foreground">Duração dos cortes</p>
+                  <div className="grid grid-cols-1 gap-1.5" role="radiogroup" aria-label="Duração dos cortes">
+                    {DURATIONS.map((dur) => (
+                      <button
+                        key={dur.id}
+                        type="button"
+                        role="radio"
+                        aria-checked={clipDuration === dur.id}
+                        onClick={() => setClipDuration(dur.id)}
+                        className={cn(
+                          "flex items-center justify-between rounded-xl border p-2.5 text-left transition-colors hover:bg-accent",
+                          clipDuration === dur.id && "border-foreground ring-1 ring-foreground bg-accent/50"
+                        )}
+                      >
+                        <div className="min-w-0 flex-1 pr-2">
+                          <div className="flex items-center gap-2">
+                            <span className="text-sm font-medium">{dur.label}</span>
+                            <span className="rounded-md bg-muted px-1.5 py-0.5 text-[11px] font-mono text-muted-foreground">{dur.range}</span>
+                          </div>
+                          <span className="block text-xs text-muted-foreground mt-0.5">{dur.hint}</span>
+                        </div>
+                        {clipDuration === dur.id && <Check className="size-4 shrink-0 text-foreground" />}
                       </button>
                     ))}
                   </div>

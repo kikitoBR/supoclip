@@ -201,16 +201,18 @@ class VideoService:
         transcript: str,
         clip_signals: Optional[str] = None,
         performance_context: Optional[str] = None,
+        clip_duration: Optional[str] = "auto",
     ) -> Any:
         """
         Analyze transcript with AI to find relevant segments.
         This is already async, no need to wrap.
         """
-        logger.info("Starting AI analysis of transcript")
+        logger.info(f"Starting AI analysis of transcript (clip_duration={clip_duration})")
         relevant_parts = await get_most_relevant_parts_by_transcript(
             transcript,
             clip_signals=clip_signals,
             performance_context=performance_context,
+            clip_duration=clip_duration,
         )
         logger.info(
             f"AI analysis complete: {len(relevant_parts.most_relevant_segments)} segments found"
@@ -415,6 +417,7 @@ class VideoService:
         progress_callback: Optional[Callable[[int, str, str], Awaitable[None]]] = None,
         should_cancel: Optional[Callable[[], Awaitable[bool]]] = None,
         performance_context: Optional[str] = None,
+        clip_duration: Optional[str] = "auto",
     ) -> Dict[str, Any]:
         """
         Complete video processing pipeline.
@@ -550,6 +553,7 @@ class VideoService:
                     transcript,
                     clip_signals=clip_signals,
                     performance_context=performance_context,
+                    clip_duration=clip_duration,
                 )
 
             # Step 4: Create clips

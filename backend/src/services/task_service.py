@@ -53,9 +53,15 @@ class TaskService(ClipEditingMixin):
         self.config = config or get_config()
 
     @staticmethod
-    def _build_cache_key(url: str, source_type: str, processing_mode: str) -> str:
+    def _build_cache_key(
+        url: str,
+        source_type: str,
+        processing_mode: str,
+        clip_duration: Optional[str] = "auto",
+    ) -> str:
+        norm_duration = (clip_duration or "auto").strip().lower()
         payload = (
-            f"{source_type}|{processing_mode}|"
+            f"{source_type}|{processing_mode}|{norm_duration}|"
             f"{TRANSCRIPT_ANALYSIS_CACHE_VERSION}|{url.strip()}"
         )
         return hashlib.sha256(payload.encode("utf-8")).hexdigest()
@@ -256,6 +262,7 @@ class TaskService(ClipEditingMixin):
         processing_mode: str = "fast",
         output_format: str = "vertical",
         add_subtitles: bool = True,
+        clip_duration: Optional[str] = "auto",
         progress_callback: Optional[Callable] = None,
         should_cancel: Optional[Callable] = None,
         clip_ready_callback: Optional[Callable] = None,
@@ -281,7 +288,9 @@ class TaskService(ClipEditingMixin):
             logger.info(f"Starting processing for task {task_id}")
             started_at = datetime.utcnow()
             stage_timings: Dict[str, float] = {}
-            cache_key = self._build_cache_key(url, source_type, processing_mode)
+            cache_key = self._build_cache_key(
+                url, source_type, processing_mode, clip_duration=clip_duration
+            )
 
             cache_entry = await self.cache_repo.get_cache(self.db, cache_key)
             cached_transcript = (
@@ -350,6 +359,7 @@ class TaskService(ClipEditingMixin):
                 processing_mode=processing_mode,
                 output_format=output_format,
                 add_subtitles=add_subtitles,
+                clip_duration=clip_duration,
                 max_video_duration=max_video_duration,
                 cached_transcript=cached_transcript,
                 cached_analysis_json=cached_analysis_json,
