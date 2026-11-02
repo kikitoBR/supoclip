@@ -143,3 +143,28 @@ async def test_storage_failure_during_prepare_does_not_leave_preparing(tmp_path,
     monkeypatch.setattr(MediaStorage, "save_editor", lambda *a, **k: None)
     await prepare_editor({}, "task", "clip", "clip.mp4")
     assert read_state(directory)["status"] == "failed"
+
+
+async def test_clips_of_one_youtube_video_share_a_single_download(tmp_path):
+    import asyncio
+
+    from src.services.editor_service import _shared_youtube_source
+
+    url = "https://www.youtube.com/watch?v=YMnCg1Ks3kQ"
+    downloads = []
+
+    async def download_video(source_url):
+        downloads.append(source_url)
+        await asyncio.sleep(0.05)
+        path = tmp_path / "YMnCg1Ks3kQ.mp4"
+        path.write_bytes(b"video")
+        return path
+
+    video_service = SimpleNamespace(download_video=download_video)
+    first, second = await asyncio.gather(
+        _shared_youtube_source(video_service, url, str(tmp_path)),
+        _shared_youtube_source(video_service, url, str(tmp_path)),
+    )
+    third = await _shared_youtube_source(video_service, url, str(tmp_path))
+    assert first == second == third == tmp_path / "YMnCg1Ks3kQ.mp4"
+    assert downloads == [url]

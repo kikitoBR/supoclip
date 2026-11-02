@@ -1,8 +1,10 @@
 """Background preparation and rendering for the clip studio."""
 
 from pathlib import Path
+import asyncio
 import json
 import logging
+import os
 import subprocess
 import uuid
 
@@ -15,6 +17,33 @@ from ..editor_document import (
 )
 from ..utils.async_helpers import run_in_thread
 from ..media_storage import MediaStorage, STORAGE_ERRORS, media_work
+
+
+# One download per YouTube video at a time. Every download of a video writes
+# the same "<video_id>.mp4", so concurrent clip preparations used to delete or
+# overwrite each other's source mid-render.
+_youtube_source_locks: dict[str, asyncio.Lock] = {}
+
+
+async def _shared_youtube_source(video_service, url: str, temp_dir: str):
+    """Reuse a finished download of this video, or download it once.
+
+    The file is left in place for the other clips of the same video; the media
+    sweep removes it after MEDIA_ORPHAN_GRACE_SECONDS like any other download.
+    """
+    from ..youtube_utils import get_youtube_video_id
+
+    video_id = get_youtube_video_id(url)
+    lock = _youtube_source_locks.setdefault(video_id or url, asyncio.Lock())
+    async with lock:
+        if video_id:
+            # yt-dlp only writes this name once merging has finished.
+            existing = Path(temp_dir) / f"{video_id}.mp4"
+            if existing.is_file() and existing.stat().st_size > 0:
+                os.utime(existing)  # keep the sweep from collecting it mid-edit
+                return existing
+        downloaded = await video_service.download_video(url)
+        return Path(downloaded) if downloaded else None
 
 
 def read_state(directory: Path):
@@ -124,7 +153,7 @@ async def prepare_editor(ctx, task_id: str, clip_id: str, filename: str):
 
     directory = editor_dir(get_config().temp_dir, task_id, clip_id, filename)
     storage = MediaStorage()
-    downloaded_source = None
+    shared_youtube_source = False
     source_url = None
     source = None
     try:
@@ -155,9 +184,10 @@ async def prepare_editor(ctx, task_id: str, clip_id: str, filename: str):
             await db.close()
             if not source or not source.exists():
                 if source_type == "youtube":
-                    downloaded = await service.video_service.download_video(source_url)
-                    source = Path(downloaded) if downloaded else None
-                    downloaded_source = source
+                    source = await _shared_youtube_source(
+                        service.video_service, source_url, get_config().temp_dir
+                    )
+                    shared_youtube_source = True
                 else:
                     source = await run_in_thread(service.video_service.resolve_local_video_path, source_url)
             if not source or not source.exists():
@@ -238,16 +268,17 @@ async def prepare_editor(ctx, task_id: str, clip_id: str, filename: str):
         import logging
 
         logging.getLogger(__name__).exception("Editor preparation failed")
-        atomic_json(
-            directory / "asset.json",
-            {
-                "status": "failed",
-                "error": "Could not prepare the source video. Check that the source is available, then retry.",
-            },
+        from ..youtube_utils import YOUTUBE_BOT_CHECK_MESSAGE, youtube_blocked_by_bot_check
+
+        error = (
+            YOUTUBE_BOT_CHECK_MESSAGE
+            if source_url and youtube_blocked_by_bot_check(source_url)
+            else "Não foi possível preparar o vídeo original. Confira se ele está disponível e tente de novo."
         )
+        atomic_json(directory / "asset.json", {"status": "failed", "error": error})
     finally:
-        if downloaded_source is not None:
-            service._cleanup_source_video(downloaded_source, "youtube", source_url)
+        if shared_youtube_source:
+            pass  # other clips of this video reuse it; the media sweep removes it
         elif source is not None:
             await run_in_thread(storage.save_source_metadata, source)
         await run_in_thread(storage.save_editor, directory)
