@@ -250,6 +250,7 @@ def transcribe_with_youtube_captions(video_url: str) -> Optional[str]:
     """
     try:
         import yt_dlp
+        from ..youtube_utils import apply_ytdlp_network_options
     except ImportError:
         logger.error("yt-dlp is required for YouTube caption extraction")
         return None
@@ -278,6 +279,7 @@ def transcribe_with_youtube_captions(video_url: str) -> Optional[str]:
             "skip_download": True,
             "outtmpl": str(temp_dir / video_id),
         }
+        apply_ytdlp_network_options(ydl_opts)
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
             ydl.download([video_url])
 

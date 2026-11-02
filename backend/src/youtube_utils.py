@@ -7,7 +7,10 @@ import asyncio
 from datetime import datetime
 import html
 import logging
+import os
 import re
+import shutil
+import socket
 import subprocess
 import time
 from pathlib import Path
@@ -28,6 +31,37 @@ YOUTUBE_METADATA_PROVIDER_WEB = "web"
 YOUTUBE_DOWNLOAD_PROVIDER_YTDLP = "yt_dlp"
 YOUTUBE_DOWNLOAD_PROVIDER_APIFY = "apify"
 YOUTUBE_DATA_API_URL = "https://www.googleapis.com/youtube/v3/videos"
+
+
+def _ytdlp_cookies_copy(source: Path) -> Path:
+    """Return a private, writable copy of the configured cookies file.
+
+    yt-dlp writes refreshed cookies back on exit. A per-process copy keeps the
+    mounted original untouched and stops backend and worker overwriting it.
+    """
+    temp_dir = Path(get_config().temp_dir)
+    temp_dir.mkdir(parents=True, exist_ok=True)
+    copy = temp_dir / f".ytdlp-cookies-{socket.gethostname()}-{os.getpid()}.txt"
+    if not copy.exists() or copy.stat().st_mtime < source.stat().st_mtime:
+        shutil.copyfile(source, copy)
+    return copy
+
+
+def apply_ytdlp_network_options(opts: Dict[str, Any]) -> Dict[str, Any]:
+    """Add the optional cookies file and proxy to a yt-dlp options dict."""
+    config = get_config()
+    if config.ytdlp_cookies_file:
+        source = Path(config.ytdlp_cookies_file)
+        if source.is_file():
+            try:
+                opts["cookiefile"] = str(_ytdlp_cookies_copy(source))
+            except OSError as exc:
+                logger.warning("Could not prepare yt-dlp cookies from %s: %s", source, exc)
+        else:
+            logger.warning("YTDLP_COOKIES_FILE points to a missing file: %s", source)
+    if config.ytdlp_proxy:
+        opts["proxy"] = config.ytdlp_proxy
+    return opts
 
 
 class YouTubeDownloader:
@@ -80,7 +114,7 @@ class YouTubeDownloader:
             "age_limit": None,
         }
 
-        return opts
+        return apply_ytdlp_network_options(opts)
 
 
 def _build_info_options() -> Dict[str, Any]:
@@ -99,7 +133,7 @@ def _build_info_options() -> Dict[str, Any]:
         },
         "nocheckcertificate": True,
     }
-    return ydl_opts
+    return apply_ytdlp_network_options(ydl_opts)
 
 
 def _empty_video_info(video_id: Optional[str] = None) -> Dict[str, Any]:

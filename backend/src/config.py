@@ -58,6 +58,10 @@ class Config:
         self.youtube_metadata_provider = self._normalize_youtube_metadata_provider(
             os.getenv("YOUTUBE_METADATA_PROVIDER", "yt_dlp")
         )
+        # Datacenter IPs are often met with YouTube's bot check; a logged-in
+        # cookies.txt (Netscape format) and/or a proxy let yt-dlp through.
+        self.ytdlp_cookies_file = self._get_optional_env("YTDLP_COOKIES_FILE")
+        self.ytdlp_proxy = self._get_optional_env("YTDLP_PROXY")
         self.apify_youtube_default_quality = self._normalize_apify_quality(
             os.getenv("APIFY_YOUTUBE_DEFAULT_QUALITY", "1080")
         )
