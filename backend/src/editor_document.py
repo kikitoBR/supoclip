@@ -191,11 +191,13 @@ def caption_groups(words: list[dict], count: int):
 def write_ass(path: Path, document: EditDocument, width: int, height: int):
     from .clip_editor import _ass_color, _ass_timestamp, _escape_ass_text
     from .font_registry import get_font_family_name, find_font_path
+    from .media.captions import CaptionFontCoverage
 
     style = document.captions
     size = style.size * width / 1080
     font_path = find_font_path(style.font)
     font = (get_font_family_name(font_path) if font_path else None) or "Arial"
+    coverage = CaptionFontCoverage(style.font if font_path else None, font)
     header = f"""[Script Info]
 ScriptType: v4.00+
 PlayResX: {width}
@@ -216,7 +218,12 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
                 "{\\c"
                 + _ass_color(style.accent if word["highlight"] else style.color)
                 + "}"
-                + _escape_ass_text(word["text"]).replace("\n", " ").replace("\r", " ")
+                + coverage.render(
+                    _escape_ass_text(coverage.prepare(word["text"]))
+                    .replace("\n", " ")
+                    .replace("\r", " "),
+                    size,
+                )
                 for word in group
             )
             position = f"{{\\pos({width / 2:.2f},{height * style.y:.2f})}}"

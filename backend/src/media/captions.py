@@ -11,6 +11,9 @@ from typing import Tuple
 from ..emoji_captions import annotate_caption_words
 from ..font_registry import find_font_path
 from ..font_registry import get_font_family_name
+from ..font_registry import get_font_glyph_map
+from ..font_registry import font_draws_lowercase_as_capitals
+from ..font_registry import font_cap_height_ratio
 from ..caption_templates import get_template
 from ..clip_source_map import normalize_source_ranges
 from ..emoji_captions import normalize_token
@@ -183,6 +186,72 @@ def ass_fonts_dir(font_family: Optional[str]) -> Optional[Path]:
     return FONTS_DIR if FONTS_DIR.exists() else None
 
 
+# Heavy font with full Latin coverage, used only for letters the caption font
+# cannot draw (e.g. THEBOLDFONT has no accented letters at all).
+CAPTION_FALLBACK_FONT_FILE = FONTS_DIR / "Poppins-ExtraBold.ttf"
+
+
+class CaptionFontCoverage:
+    """Keeps accented words readable in display fonts with partial coverage.
+
+    Without this, libass silently pulls missing letters from whatever system
+    font it finds, so "ilusão" in a caps-only font renders as "ILUSãO".
+    """
+
+    def __init__(self, font_family: Optional[str], font_name: str):
+        self.font_name = font_name
+        font_path = (
+            find_font_path(font_family, allow_all_user_fonts=True) if font_family else None
+        )
+        self.glyphs = get_font_glyph_map(str(font_path)) if font_path else None
+        self.caps_only = bool(font_path) and font_draws_lowercase_as_capitals(str(font_path))
+        self.fallback_name = (
+            get_font_family_name(CAPTION_FALLBACK_FONT_FILE)
+            if self.glyphs and CAPTION_FALLBACK_FONT_FILE.exists()
+            else None
+        )
+        # Size the fallback letters so their capitals match the caption font's.
+        self.fallback_scale = 1.0
+        primary_caps = font_cap_height_ratio(str(font_path)) if font_path else None
+        fallback_caps = (
+            font_cap_height_ratio(str(CAPTION_FALLBACK_FONT_FILE)) if self.fallback_name else None
+        )
+        if primary_caps and fallback_caps:
+            self.fallback_scale = min(1.8, max(0.6, primary_caps / fallback_caps))
+
+    def prepare(self, text: str) -> str:
+        # A caps-only font already shows a-z as capitals, so uppercasing only
+        # changes how the fallback letters look.
+        return text.upper() if self.caps_only else text
+
+    def render(self, escaped: str, size: Optional[float] = None) -> str:
+        """Wrap runs of letters the font lacks in a fallback-font override.
+
+        ``size`` is the font size in effect, restored after each run.
+        """
+        if not self.glyphs or not self.fallback_name:
+            return escaped
+        scaled = size and abs(self.fallback_scale - 1.0) > 0.03
+        enter = "{\\fn" + self.fallback_name
+        leave = "{\\fn" + self.font_name
+        if scaled:
+            enter += f"\\fs{round(size * self.fallback_scale)}"
+            leave += f"\\fs{round(size)}"
+        enter += "}"
+        leave += "}"
+        out: List[str] = []
+        in_fallback = False
+        for char in escaped:
+            missing = ord(char) > 127 and ord(char) not in self.glyphs and not char.isspace()
+            if missing != in_fallback:
+                out.append(enter if missing else leave)
+                in_fallback = missing
+            out.append(char)
+        if in_fallback:
+            out.append(leave)
+        return "".join(out)
+
+
 def _balance_title_lines(words: List[str], max_chars: int) -> List[str]:
     """Split title words into one line, or two lines balanced around the middle."""
     text = " ".join(words)
@@ -208,6 +277,7 @@ def build_hook_title_ass(
     output_duration: float,
     font_name: str,
     caption_font_px: int,
+    coverage: Optional[CaptionFontCoverage] = None,
 ) -> Tuple[str, List[str]]:
     """Build the (style_line, dialogue_events) for a burned-in hook title.
 
@@ -218,6 +288,8 @@ def build_hook_title_ass(
     """
     uppercase = bool(template.get("uppercase"))
     title_text = hook_title.upper() if uppercase else hook_title
+    if coverage:
+        title_text = coverage.prepare(title_text)
 
     primary = hex_to_ass_color(template.get("font_color"), "#FFFFFF")
     highlight = hex_to_ass_color(
@@ -262,7 +334,10 @@ def build_hook_title_ass(
             token = normalize_token(word)
             accented = bool(token) and (token in POWER_WORDS or any(c.isdigit() for c in token))
             color = highlight if accented else primary
-            spans.append(f"{{\\c{color}}}{escape_ass_text(word)}")
+            disp = escape_ass_text(word)
+            if coverage:
+                disp = coverage.render(disp, hook_px)
+            spans.append(f"{{\\c{color}}}{disp}")
         rendered_lines.append(" ".join(spans))
     text = "\\N".join(rendered_lines)
 
@@ -371,6 +446,7 @@ def build_assemblyai_ass_subtitles(
     est_text_height = int(font_px * 1.5)
     y_pos = get_safe_vertical_position(video_height, est_text_height, pos_y)
     font_name = ass_font_name(effective_font_family)
+    coverage = CaptionFontCoverage(effective_font_family, font_name)
     border_style = (
         3
         if template.get("background") and template.get("background_color")
@@ -396,6 +472,7 @@ def build_assemblyai_ass_subtitles(
             output_duration,
             font_name,
             font_px,
+            coverage,
         )
         hook_style_block = f"{hook_style_line}\n"
 
@@ -445,7 +522,7 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
         text = str(word.get("text", ""))
         if uppercase:
             text = text.upper()
-        disp = escape_ass_text(text)
+        disp = coverage.render(escape_ass_text(coverage.prepare(text)), font_px)
         emoji = emoji_by_idx.get(global_idx)
         if emoji:
             # Force the colour-emoji font for the glyph; the next word's span

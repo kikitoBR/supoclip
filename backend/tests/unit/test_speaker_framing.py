@@ -560,3 +560,58 @@ def test_tracked_pieces_render_in_ffmpeg():
     )
 
     assert result.returncode == 0, result.stderr
+
+
+def test_follow_speaker_mode_cuts_on_diarized_turns(monkeypatch, tmp_path):
+    commands = []
+    monkeypatch.setattr(reframing, "ffprobe_video_size", lambda _: (1920, 1080))
+    monkeypatch.setattr(reframing, "ffprobe_has_audio", lambda _: False)
+    monkeypatch.setattr(reframing, "ffprobe_duration", lambda _: 10.0)
+    monkeypatch.setattr(reframing, "output_fps_for", lambda _: 30)
+    monkeypatch.setattr(
+        speaker_framing, "build_speaker_crop_chain",
+        lambda *args, **kwargs: "crop=606:1080:x='0':y=0,scale=1080:1920",
+    )
+
+    def no_motion_plan(*_args, **_kwargs):
+        raise AssertionError("raw-motion pan must not run when diarized framing works")
+
+    monkeypatch.setattr(reframing, "detect_speaker_reframe_plan", no_motion_plan)
+    monkeypatch.setattr(
+        reframing, "run_ffmpeg_command",
+        lambda command, **_: commands.append(command) or subprocess.CompletedProcess(command, 0),
+    )
+    turns = [{"speaker": "A", "start": 0, "end": 5}, {"speaker": "B", "start": 5, "end": 10}]
+
+    ok, width, height = reframing.render_reframed_clip_ffmpeg(
+        tmp_path / "clip.mp4", tmp_path / "out.mp4", "vertical_pan",
+        speaker_turns=turns, speaker_words=[_word(0, 1, "A")],
+    )
+
+    assert ok and (width, height) == (1080, 1920)
+    vf = commands[0][commands[0].index("-vf") + 1]
+    assert vf.startswith("crop=606:1080:x='0'")
+
+
+def test_motion_fallback_ignores_brief_listener_motion():
+    # Left speaker talks throughout (30 fps samples); the listener on the right
+    # moves the mic for a second, twice. The frame must stay on the speaker.
+    times = [i / 30 for i in range(600)]
+    left = [1.0] * 600
+    right = [0.6] * 600
+    for start in (120, 360):
+        for i in range(start, start + 30):
+            right[i] = 1.5
+    timeline_segments = reframing.build_speaker_timeline_from_motion(times, left, right)
+
+    assert [segment["speaker"] for segment in timeline_segments] == ["left"]
+
+
+def test_motion_fallback_still_follows_a_real_speaker_change():
+    times = [i / 30 for i in range(600)]
+    left = [1.0] * 300 + [0.4] * 300
+    right = [0.4] * 300 + [1.0] * 300
+    timeline_segments = reframing.build_speaker_timeline_from_motion(times, left, right)
+
+    assert [segment["speaker"] for segment in timeline_segments] == ["left", "right"]
+    assert 10.0 <= timeline_segments[1]["start"] <= 12.0

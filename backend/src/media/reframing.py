@@ -420,8 +420,17 @@ def build_speaker_timeline_from_motion(
     times: List[float],
     left_values: List[float],
     right_values: List[float],
-    min_duration: float = 1.0,
+    min_duration: float = 2.0,
+    margin: float = 1.15,
+    switch_after: float = 1.5,
 ) -> List[Dict[str, Any]]:
+    """Left/right speaker timeline from raw region motion (no transcript).
+
+    Fallback when diarized speaker framing is unavailable. Raw motion also
+    rises when a listener gestures or moves the mic, so the other side must
+    lead for ``switch_after`` seconds in a row before the frame moves, and
+    every shot is held for ``min_duration`` seconds.
+    """
     if not times or len(left_values) != len(right_values):
         return []
 
@@ -434,14 +443,22 @@ def build_speaker_timeline_from_motion(
     if not left or not right:
         return []
 
-    margin = 1.15
     current = 0 if left[0] >= right[0] else 1
     speakers: List[int] = []
-    for left_value, right_value in zip(left, right):
-        if current == 0 and right_value > left_value * margin:
-            current = 1
-        elif current == 1 and left_value > right_value * margin:
-            current = 0
+    challenger_since: Optional[float] = None
+    for t, left_value, right_value in zip(times, left, right):
+        other_leads = (
+            right_value > left_value * margin
+            if current == 0
+            else left_value > right_value * margin
+        )
+        if not other_leads:
+            challenger_since = None
+        elif challenger_since is None:
+            challenger_since = t
+        if challenger_since is not None and t - challenger_since >= switch_after:
+            current = 1 - current
+            challenger_since = None
         speakers.append(current)
 
     segments: List[Dict[str, Any]] = []
@@ -1109,6 +1126,32 @@ def build_vertical_compositor_filter(
     )
 
 
+def build_diarized_speaker_chain(
+    input_path: Path,
+    width: int,
+    height: int,
+    speaker_turns: List[Dict[str, Any]],
+    speaker_words: List[Dict[str, Any]],
+) -> Optional[str]:
+    """Crop chain cutting to whoever the transcript says is talking, or None.
+
+    Each diarized speaker is matched to the face whose mouth moves while they
+    talk, which is far steadier than raw motion (an interviewer moving the mic
+    is not speaking).
+    """
+    from .speaker_framing import build_speaker_crop_chain
+
+    crop_w, crop_h = compute_vertical_crop_dims(width, height)
+    try:
+        return build_speaker_crop_chain(
+            input_path, width, height, crop_w, crop_h, ffprobe_duration(input_path),
+            speaker_turns, speaker_words,
+        )
+    except Exception as exc:
+        logger.warning("Speaker framing failed (%s); tracking dominant face", exc)
+        return None
+
+
 def build_vertical_filter_plan(
     input_path: Path,
     width: int,
@@ -1166,16 +1209,9 @@ def build_vertical_filter_plan(
         # All-face clip with diarized speakers: cut to whoever is talking on
         # multi-person wide shots. Clips with content shots keep the
         # compositor below, so slides/tweets are never cropped.
-        from .speaker_framing import build_speaker_crop_chain
-
-        try:
-            speaker_chain = build_speaker_crop_chain(
-                input_path, width, height, crop_w, crop_h, duration,
-                speaker_turns, speaker_words,
-            )
-        except Exception as exc:
-            logger.warning("Speaker framing failed (%s); tracking dominant face", exc)
-            speaker_chain = None
+        speaker_chain = build_diarized_speaker_chain(
+            input_path, width, height, speaker_turns, speaker_words
+        )
         if speaker_chain:
             return (speaker_chain, "vf")
     if not fit_intervals:
@@ -1238,6 +1274,21 @@ def render_reframed_clip_ffmpeg(
             str(output_path),
         ]
         return run_ffmpeg_command(command).returncode == 0, out_w, out_h
+
+    if output_format == "vertical_pan" and speaker_turns and speaker_words:
+        speaker_chain = build_diarized_speaker_chain(
+            input_path, width, height, speaker_turns, speaker_words
+        )
+        if speaker_chain:
+            command = [
+                "ffmpeg", "-y", "-i", str(input_path),
+                "-vf", f"{speaker_chain},{subs}" if subs else speaker_chain,
+                *build_final_video_encode_args(fps=fps),
+                *audio_args,
+                "-movflags", "+faststart",
+                str(output_path),
+            ]
+            return run_ffmpeg_command(command).returncode == 0, 1080, 1920
 
     plan = (
         detect_speaker_reframe_plan(input_path, output_format)

@@ -253,6 +253,165 @@ def get_font_family_name(font_path: Path) -> str | None:
     return None
 
 
+def _cmap_format4_glyphs(data: bytes, start: int) -> dict[int, int]:
+    seg_count = struct.unpack_from(">H", data, start + 6)[0] // 2
+    ends_at = start + 14
+    starts_at = ends_at + seg_count * 2 + 2
+    deltas_at = starts_at + seg_count * 2
+    ranges_at = deltas_at + seg_count * 2
+    glyphs: dict[int, int] = {}
+    for seg in range(seg_count):
+        end = struct.unpack_from(">H", data, ends_at + seg * 2)[0]
+        first = struct.unpack_from(">H", data, starts_at + seg * 2)[0]
+        delta = struct.unpack_from(">h", data, deltas_at + seg * 2)[0]
+        range_offset = struct.unpack_from(">H", data, ranges_at + seg * 2)[0]
+        for code in range(first, min(end, 0xFFFE) + 1):
+            if range_offset == 0:
+                glyph = (code + delta) & 0xFFFF
+            else:
+                at = ranges_at + seg * 2 + range_offset + (code - first) * 2
+                if at + 2 > len(data):
+                    continue
+                glyph = struct.unpack_from(">H", data, at)[0]
+                if glyph:
+                    glyph = (glyph + delta) & 0xFFFF
+            if glyph:
+                glyphs[code] = glyph
+    return glyphs
+
+
+def _cmap_format12_glyphs(data: bytes, start: int) -> dict[int, int]:
+    group_count = struct.unpack_from(">I", data, start + 12)[0]
+    glyphs: dict[int, int] = {}
+    for group in range(group_count):
+        first, last, glyph = struct.unpack_from(">III", data, start + 16 + group * 12)
+        for offset, code in enumerate(range(first, min(last, 0x2FFFF) + 1)):
+            glyphs[code] = glyph + offset
+    return glyphs
+
+
+@lru_cache(maxsize=64)
+def get_font_glyph_map(font_path: str) -> dict[int, int] | None:
+    """Codepoint → glyph id from a font's Unicode cmap, or None if unreadable.
+
+    Lets the caption renderer spot characters a display font cannot draw (many
+    free display fonts ship without accented letters) and caps-only fonts that
+    draw lowercase letters with the capital glyphs.
+    """
+    try:
+        data = Path(font_path).read_bytes()
+        num_tables = struct.unpack_from(">H", data, 4)[0]
+        cmap_offset = None
+        for table_index in range(num_tables):
+            tag, _checksum, table_offset, _length = struct.unpack_from(
+                ">4sIII", data, 12 + table_index * 16
+            )
+            if tag == b"cmap":
+                cmap_offset = table_offset
+                break
+        if cmap_offset is None:
+            return None
+        subtable_count = struct.unpack_from(">H", data, cmap_offset + 2)[0]
+        glyphs: dict[int, int] = {}
+        for index in range(subtable_count):
+            platform_id, encoding_id, offset = struct.unpack_from(
+                ">HHI", data, cmap_offset + 4 + index * 8
+            )
+            if not (platform_id == 0 or (platform_id == 3 and encoding_id in (1, 10))):
+                continue
+            start = cmap_offset + offset
+            table_format = struct.unpack_from(">H", data, start)[0]
+            if table_format == 4:
+                glyphs.update(_cmap_format4_glyphs(data, start))
+            elif table_format == 12:
+                glyphs.update(_cmap_format12_glyphs(data, start))
+        return glyphs or None
+    except Exception:
+        return None
+
+
+@lru_cache(maxsize=64)
+def font_cap_height_ratio(font_path: str) -> float | None:
+    """Height of the capital "H" relative to the size libass gives the font.
+
+    libass (like VSFilter) maps the ASS font size onto the OS/2 Windows
+    ascent + descent, not the em, so two fonts at the same size can have very
+    different capitals. None when the font cannot be read.
+    """
+    glyphs = get_font_glyph_map(font_path)
+    if not glyphs or ord("H") not in glyphs:
+        return None
+    try:
+        data = Path(font_path).read_bytes()
+        num_tables = struct.unpack_from(">H", data, 4)[0]
+        tables: dict[bytes, int] = {}
+        for table_index in range(num_tables):
+            tag, _checksum, table_offset, _length = struct.unpack_from(
+                ">4sIII", data, 12 + table_index * 16
+            )
+            tables[tag] = table_offset
+        if not {b"glyf", b"loca", b"head"} <= tables.keys():
+            return None
+        units_per_em = struct.unpack_from(">H", data, tables[b"head"] + 18)[0]
+        long_offsets = struct.unpack_from(">h", data, tables[b"head"] + 50)[0] == 1
+        glyph = glyphs[ord("H")]
+        if long_offsets:
+            start = struct.unpack_from(">I", data, tables[b"loca"] + glyph * 4)[0]
+        else:
+            start = struct.unpack_from(">H", data, tables[b"loca"] + glyph * 2)[0] * 2
+        y_max = struct.unpack_from(">h", data, tables[b"glyf"] + start + 8)[0]
+        line_height = units_per_em
+        if b"OS/2" in tables:
+            win_ascent, win_descent = struct.unpack_from(">HH", data, tables[b"OS/2"] + 74)
+            line_height = win_ascent + win_descent or units_per_em
+        return y_max / line_height if line_height and y_max > 0 else None
+    except Exception:
+        return None
+
+
+@lru_cache(maxsize=64)
+def font_draws_lowercase_as_capitals(font_path: str) -> bool:
+    """Whether a caps-only display font reuses the capital outlines for a-z.
+
+    Such fonts show "ilusão" as "ILUSãO" when the accented letter has to come
+    from a fallback font, so captions in them are uppercased up front.
+    """
+    glyphs = get_font_glyph_map(font_path)
+    if not glyphs:
+        return False
+    try:
+        data = Path(font_path).read_bytes()
+        num_tables = struct.unpack_from(">H", data, 4)[0]
+        tables: dict[bytes, int] = {}
+        for table_index in range(num_tables):
+            tag, _checksum, table_offset, _length = struct.unpack_from(
+                ">4sIII", data, 12 + table_index * 16
+            )
+            tables[tag] = table_offset
+        if not {b"glyf", b"loca", b"head"} <= tables.keys():
+            return False
+        long_offsets = struct.unpack_from(">h", data, tables[b"head"] + 50)[0] == 1
+
+        def outline(code: int) -> bytes | None:
+            glyph = glyphs.get(code)
+            if glyph is None:
+                return None
+            if long_offsets:
+                start, end = struct.unpack_from(">II", data, tables[b"loca"] + glyph * 4)
+            else:
+                start, end = (v * 2 for v in struct.unpack_from(">HH", data, tables[b"loca"] + glyph * 2))
+            return data[tables[b"glyf"] + start : tables[b"glyf"] + end]
+
+        letters = "abcdefghijklmnopqrstuvwxyz"
+        same = sum(
+            1 for letter in letters
+            if outline(ord(letter)) is not None and outline(ord(letter)) == outline(ord(letter.upper()))
+        )
+        return same >= 20
+    except Exception:
+        return False
+
+
 def sanitize_font_stem(file_name: str) -> str:
     raw_stem = Path(file_name).stem
     safe_stem = re.sub(r"[^A-Za-z0-9_-]", "-", raw_stem).strip("-")

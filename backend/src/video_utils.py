@@ -369,7 +369,7 @@ def create_optimized_clip(
 
             speaker_turns: List[Dict[str, Any]] = []
             speaker_words: List[Dict[str, Any]] = []
-            if reframe_format == "vertical" and get_config().speaker_framing:
+            if reframe_format in {"vertical", "vertical_pan"} and get_config().speaker_framing:
                 try:
                     speaker_turns, speaker_words = build_clip_speaker_turns(
                         video_path, effective_keep_ranges
