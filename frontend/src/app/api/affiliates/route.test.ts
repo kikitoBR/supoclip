@@ -73,7 +73,7 @@ describe("/api/affiliates", () => {
     const response = await apply(application);
 
     expect(response.status).toBe(409);
-    await expect(response.json()).resolves.toEqual({ error: "That code is already taken." });
+    await expect(response.json()).resolves.toEqual({ error: "Esse código já está em uso." });
   });
 
   it("maps a lost slug race to a conflict", async () => {

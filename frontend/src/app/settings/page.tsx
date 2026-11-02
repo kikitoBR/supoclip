@@ -494,7 +494,7 @@ export default function SettingsPage() {
           <span className="flex size-9 items-center justify-center rounded-lg bg-muted"><Megaphone className="size-4" /></span>
           <span className="min-w-0 flex-1">
             <span className="block text-sm font-semibold">Programa de criadores</span>
-            <span className="block text-xs text-muted-foreground">Faça vídeos sobre o SupoClip, ganhe o Pro gratuito e um cupom para seu público</span>
+            <span className="block text-xs text-muted-foreground">Faça vídeos sobre o Kortes, ganhe o Pro gratuito e um cupom para seu público</span>
           </span>
           <ChevronRight className="size-4 text-muted-foreground transition-transform group-hover:translate-x-0.5" />
         </Link>

@@ -28,11 +28,11 @@ export async function exportDraft(
     (asset.hasAudio && !audioCodec)
   )
     throw new Error(
-      "This browser cannot encode this video. Choose background export to render it on the server.",
+      "Este navegador não consegue codificar este vídeo. Escolha a exportação em segundo plano para renderizar no servidor.",
     );
   await loadEditorFont(doc.captions.font);
   const response = await fetch(url, { signal });
-  if (!response.ok) throw new Error("Could not load the source video.");
+  if (!response.ok) throw new Error("Não foi possível carregar o vídeo original.");
   const input = new m.Input({
     source: new m.BlobSource(await response.blob()),
     formats: m.ALL_FORMATS,
@@ -47,7 +47,7 @@ export async function exportDraft(
   const ctx = canvas.getContext("2d");
   if (!ctx) {
     input.dispose();
-    throw new Error("Canvas is unavailable. Use background export.");
+    throw new Error("Canvas indisponível. Use a exportação em segundo plano.");
   }
   let finalized = false;
   try {
@@ -59,12 +59,12 @@ export async function exportDraft(
       (audio && !(await audio.canDecode()))
     )
       throw new Error(
-        "This browser cannot decode the source. Use background export.",
+        "Este navegador não consegue decodificar o vídeo original. Use a exportação em segundo plano.",
       );
     const videoSource = new m.CanvasSource(canvas, { codec: "avc", bitrate });
     output.addVideoTrack(videoSource);
     if (audio && !audioCodec)
-      throw new Error("Audio encoding is unavailable. Use background export.");
+      throw new Error("A codificação de áudio está indisponível. Use a exportação em segundo plano.");
     const audioSource =
       audio && audioCodec
         ? new m.AudioSampleSource({ codec: audioCodec, bitrate: 192_000 })
@@ -164,7 +164,7 @@ export async function exportDraft(
     signal.throwIfAborted();
     await output.finalize();
     finalized = true;
-    if (!output.target.buffer) throw new Error("Export produced no video.");
+    if (!output.target.buffer) throw new Error("A exportação não gerou nenhum vídeo.");
     signal.throwIfAborted();
     downloadBlob(
       new Blob([output.target.buffer], { type: "video/mp4" }),

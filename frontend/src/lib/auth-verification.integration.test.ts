@@ -61,5 +61,5 @@ it("reports delivery failures from the configured sender without exposing tokens
     user: { id: "user-1", email: "failure@example.com", name: "Grace", emailVerified: false, createdAt: new Date(), updatedAt: new Date() },
     url: "https://example.com/api/auth/verify-email?token=secret-token",
     token: "secret-token",
-  })).rejects.toThrow("Verification email delivery failed (503)");
+  })).rejects.toThrow("Falha ao enviar o e-mail de verificação (503)");
 });

@@ -64,7 +64,7 @@ describe("/api/social/callback/[provider]", () => {
     const response = await GET(request, context);
 
     const location = new URL(response.headers.get("location") as string);
-    expect(location.searchParams.get("error")).toMatch(/session expired/i);
+    expect(location.searchParams.get("error")).toMatch(/sessão expirou/i);
     expect(fetchBackend).not.toHaveBeenCalled();
   });
 

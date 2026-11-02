@@ -15,7 +15,7 @@ const presentations: Record<string, { label: string; badge: string; border: stri
 
 export const metadata: Metadata = {
   title: "Status do serviço",
-  description: "Status atual dos serviços e incidentes do SupoClip.",
+  description: "Status atual dos serviços e incidentes do Kortes.",
   robots: { index: false, follow: true },
 };
 
@@ -30,7 +30,7 @@ export default async function StatusPage() {
         <div className="mx-auto flex h-16 max-w-3xl items-center justify-between px-6">
           <Link href="/" className="flex items-center gap-2.5">
             <Image src="/logo.png" alt="" width={24} height={24} className="rounded-lg" />
-            <span className="font-display text-lg font-bold">SupoClip</span>
+            <span className="font-display text-lg font-bold">Kortes</span>
           </Link>
           <span className="text-sm text-muted-foreground">Status do serviço</span>
         </div>
@@ -40,7 +40,7 @@ export default async function StatusPage() {
         <h1 className="font-display text-3xl font-bold tracking-tight sm:text-4xl">
           Status do serviço
         </h1>
-        <p className="mt-3 text-muted-foreground">Atualizações sobre a infraestrutura e serviços do SupoClip.</p>
+        <p className="mt-3 text-muted-foreground">Atualizações sobre a infraestrutura e serviços do Kortes.</p>
 
         {!statuses?.length && (
           <p role="status" className="mt-8 rounded-2xl border bg-background p-6 text-muted-foreground">
@@ -74,7 +74,7 @@ export default async function StatusPage() {
 
         <Link href="/" className="mt-8 inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground">
           <ArrowLeft aria-hidden="true" className="size-4" />
-          Voltar ao SupoClip
+          Voltar ao Kortes
         </Link>
       </div>
     </main>

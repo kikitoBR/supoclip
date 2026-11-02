@@ -182,7 +182,7 @@ export function replaceWords(
   const rows = words.length + 1,
     cols = tokens.length + 1;
   if (rows * cols > 1_000_000)
-    throw new Error("Edit this long transcript one word at a time.");
+    throw new Error("Edite esta transcrição longa uma palavra por vez.");
   const table = Array.from({ length: rows }, () => new Uint16Array(cols));
   for (let i = words.length - 1; i >= 0; i--)
     for (let j = tokens.length - 1; j >= 0; j--)

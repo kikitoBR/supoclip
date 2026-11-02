@@ -177,7 +177,7 @@ export default function ApiKeysPage() {
             <h1 className="font-display text-3xl font-bold tracking-tight">Agentes &amp; API</h1>
             <p className="mt-2 text-muted-foreground">
               Permita que Claude, Cursor e outros agentes de IA criem clipes para você através do{" "}
-              <span className="font-medium text-foreground">servidor MCP do SupoClip</span>, ou chame a API REST
+              <span className="font-medium text-foreground">servidor MCP do Kortes</span>, ou chame a API REST
               diretamente do seu próprio código. Trate suas chaves como senhas; elas concedem acesso total à sua conta.
             </p>
           </div>

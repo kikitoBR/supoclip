@@ -12,7 +12,7 @@ export async function GET() {
     return NextResponse.json({ announcements }, { headers: { "Cache-Control": "no-store" } });
   } catch (error) {
     console.error("Failed to load managed announcements:", error);
-    return NextResponse.json({ error: "Unable to load announcements" }, { status: 500 });
+    return NextResponse.json({ error: "Não foi possível carregar os avisos" }, { status: 500 });
   }
 }
 
@@ -26,6 +26,6 @@ export async function POST(request: Request) {
     return NextResponse.json({ announcement }, { status: 201 });
   } catch (error) {
     console.error("Failed to create announcement:", error);
-    return NextResponse.json({ error: "Unable to save announcement" }, { status: 500 });
+    return NextResponse.json({ error: "Não foi possível salvar o aviso" }, { status: 500 });
   }
 }

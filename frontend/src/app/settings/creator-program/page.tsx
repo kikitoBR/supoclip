@@ -35,7 +35,7 @@ const AUDIENCE_SIZES = [
 
 const TERMS = [
   "Identifique publicações patrocinadas adequadamente (por exemplo #publi ou #ad).",
-  "Não anuncie o nome do SupoClip em links patrocinados nem publique seu cupom em sites de cupons e descontos.",
+  "Não anuncie o nome do Kortes em links patrocinados nem publique seu cupom em sites de cupons e descontos.",
   "Não utilize seu próprio cupom de desconto.",
   "Podemos encerrar o programa ou remover um criador a qualquer momento.",
 ];
@@ -180,8 +180,8 @@ export default function CreatorProgramPage() {
       <div className="mb-8">
         <h1 className="font-display text-3xl font-bold tracking-tight">Programa de criadores</h1>
         <p className="mt-2 text-muted-foreground">
-          Produz vídeos sobre o SupoClip? Tenha seu próprio cupom: seu público ganha{" "}
-          <span className="font-medium text-foreground">20% de desconto nos primeiros 3 meses</span>, e você ganha o SupoClip Pro gratuitamente.{" "}
+          Produz vídeos sobre o Kortes? Tenha seu próprio cupom: seu público ganha{" "}
+          <span className="font-medium text-foreground">20% de desconto nos primeiros 3 meses</span>, e você ganha o Kortes Pro gratuitamente.{" "}
           <Link href="/affiliate" className="underline underline-offset-4 hover:text-foreground">Como funciona</Link>
         </p>
       </div>
@@ -291,12 +291,12 @@ export default function CreatorProgramPage() {
           </div>
 
           <div>
-            <Label htmlFor="video-url">Um vídeo que você fez sobre o SupoClip <span className="font-normal text-muted-foreground">(opcional)</span></Label>
+            <Label htmlFor="video-url">Um vídeo que você fez sobre o Kortes <span className="font-normal text-muted-foreground">(opcional)</span></Label>
             <Input id="video-url" type="url" value={videoUrl} onChange={(event) => setVideoUrl(event.target.value)} placeholder="https://" className="mt-1.5" />
           </div>
 
           <div>
-            <Label htmlFor="plan">Como você pretende promover o SupoClip? <span className="font-normal text-muted-foreground">(opcional)</span></Label>
+            <Label htmlFor="plan">Como você pretende promover o Kortes? <span className="font-normal text-muted-foreground">(opcional)</span></Label>
             <Textarea id="plan" value={promotionPlan} onChange={(event) => setPromotionPlan(event.target.value)} maxLength={1000} rows={3} className="mt-1.5" />
           </div>
 

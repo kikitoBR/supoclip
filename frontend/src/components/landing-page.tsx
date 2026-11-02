@@ -42,7 +42,7 @@ import {
   type MarketingLink,
 } from "@/lib/marketing-links";
 import { DEMO_CLIPS, DEMO_SOURCE } from "@/lib/demo";
-import { APP_STORE_URL, GITHUB_URL, HOSTED_APP_URL, PRODUCT_HUNT_BADGE_URL, PRODUCT_HUNT_URL } from "@/lib/site";
+import { GITHUB_URL, HOSTED_APP_URL } from "@/lib/site";
 
 function ScrollReveal({
   children,
@@ -228,7 +228,7 @@ export default function LandingPage() {
           <Link href="/" className="flex items-center gap-2.5 group">
             <Image
               src="/logo.png"
-              alt="SupoClip"
+              alt="Kortes"
               width={24}
               height={24}
               className="rounded-lg transition-transform group-hover:scale-105"
@@ -240,7 +240,7 @@ export default function LandingPage() {
                   "var(--font-syne), var(--font-geist-sans), system-ui",
               }}
             >
-              SupoClip
+              Kortes
             </span>
           </Link>
 
@@ -463,7 +463,7 @@ export default function LandingPage() {
                   </a>
                 )}
                 <a
-                  href="https://github.com/FujiwaraChoki/supoclip"
+                  href={GITHUB_URL}
                   target="_blank"
                   rel="noopener noreferrer"
                 >
@@ -471,21 +471,6 @@ export default function LandingPage() {
                     <Github className="w-4 h-4" />
                     Ver Código-fonte
                   </Button>
-                </a>
-                <a
-                  href={APP_STORE_URL}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label="Baixar o SupoClip na App Store"
-                  className="flex items-center"
-                >
-                  <Image
-                    src="/app-store-badge.svg"
-                    alt="Baixar na App Store"
-                    width={135}
-                    height={40}
-                    className="h-12 w-auto"
-                  />
                 </a>
               </div>
 
@@ -506,25 +491,6 @@ export default function LandingPage() {
                   </div>
                 ))}
               </div>
-
-              <a
-                href={PRODUCT_HUNT_URL}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="mt-8 inline-block"
-                style={{
-                  animation: "landing-fade-in-up 0.6s ease-out 0.5s both",
-                }}
-              >
-                {/* PH's dark badge sits with the App Store badge; its light one is brand orange. */}
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={PRODUCT_HUNT_BADGE_URL}
-                  alt="SupoClip - Open-source AI clipper: long videos into viral shorts | Product Hunt"
-                  width={250}
-                  height={54}
-                />
-              </a>
             </div>
 
             {/* Right: Visual */}
@@ -925,7 +891,7 @@ export default function LandingPage() {
               Aprenda todo o processo de criação de clipes
             </h2>
             <p className="mx-auto mt-4 max-w-2xl text-sm leading-7 text-muted-foreground">
-              Artigos práticos e detalhados para escolher sua ferramenta de clipes, auto-hospedar o SupoClip
+              Artigos práticos e detalhados para escolher sua ferramenta de clipes, auto-hospedar o Kortes
               e transformar gravações longas em conteúdo curto e viral.
             </p>
           </ScrollReveal>

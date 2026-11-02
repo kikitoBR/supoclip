@@ -10,10 +10,10 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
     if ("error" in parsed) return NextResponse.json({ error: parsed.error }, { status: 400 });
     const { id } = await params;
     const { count } = await getPrismaClient().announcement.updateMany({ where: { id }, data: parsed.data });
-    if (!count) return NextResponse.json({ error: "Announcement not found" }, { status: 404 });
+    if (!count) return NextResponse.json({ error: "Aviso não encontrado" }, { status: 404 });
     return NextResponse.json({ success: true });
   } catch (error) {
     console.error("Failed to update announcement:", error);
-    return NextResponse.json({ error: "Unable to save announcement" }, { status: 500 });
+    return NextResponse.json({ error: "Não foi possível salvar o aviso" }, { status: 500 });
   }
 }

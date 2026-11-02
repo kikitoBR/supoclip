@@ -113,7 +113,7 @@ export default function HomeApp() {
     try {
       setFontLoadError(null);
       const response = await fetch("/api/fonts", { cache: "no-store" });
-      if (!response.ok) throw new Error(`Failed to load fonts (${response.status})`);
+      if (!response.ok) throw new Error(`Não foi possível carregar as fontes (${response.status})`);
       const data = await response.json();
       const fonts: FontOption[] = data.fonts || [];
       setAvailableFonts(fonts);
@@ -771,7 +771,7 @@ function PlanStatusNudge({
       <UpgradeNudge
         className="mt-6"
         title={`Você já cortou todos os ${state.limit} vídeos deste período`}
-        description={nextPlan ? `${refreshes} Ou continue criando com o plano ${nextPlan.name}: ${nextPlan.generationLimit} por mês.` : state.managedByAppStore ? `${refreshes} Você pode alterar seu plano no app SupoClip para iOS.` : refreshes}
+        description={nextPlan ? `${refreshes} Ou continue criando com o plano ${nextPlan.name}: ${nextPlan.generationLimit} por mês.` : state.managedByAppStore ? `${refreshes} Você pode alterar seu plano no app Kortes para iOS.` : refreshes}
         action={nextPlan ? `Assinar ${nextPlan.name}` : undefined}
         onAction={nextPlan ? () => onUpgrade({ kind: "limit" }) : undefined}
       />

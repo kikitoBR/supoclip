@@ -10,7 +10,7 @@ export async function GET() {
       select: { status: true, headline: true, description: true, updatedAt: true },
     });
     if (!component) {
-      return NextResponse.json({ error: "Status unavailable" }, {
+      return NextResponse.json({ error: "Status indisponível" }, {
         status: 503,
         headers: { "Cache-Control": "no-store" },
       });
@@ -28,7 +28,7 @@ export async function GET() {
     return NextResponse.json({ component }, { headers: { "Cache-Control": "no-store" } });
   } catch (error) {
     console.error("Failed to load video download status:", error);
-    return NextResponse.json({ error: "Status unavailable" }, {
+    return NextResponse.json({ error: "Status indisponível" }, {
       status: 503,
       headers: { "Cache-Control": "no-store" },
     });

@@ -7,7 +7,7 @@ import { DataFastIdentity } from "@/components/datafast-identity";
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { FeedbackButton } from "@/components/feedback-button";
-import { APP_STORE_ID, getSiteUrl } from "@/lib/site";
+import { getSiteUrl } from "@/lib/site";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -32,35 +32,32 @@ const isDataFastEnabled = Boolean(dataFastWebsiteId && dataFastDomain);
 
 export const metadata: Metadata = {
   title: {
-    default: "SupoClip – Open-Source AI Video Clipper",
-    template: "%s | SupoClip",
+    default: "Kortes – Cortes de vídeo com IA",
+    template: "%s | Kortes",
   },
   description:
-    "Turn long videos into captioned short-form clips with open-source AI clipping, virality scoring, and face-aware vertical crops.",
+    "Transforme vídeos longos em clipes curtos legendados com IA de código aberto, pontuação de viralidade e enquadramento vertical que acompanha o rosto.",
   metadataBase: new URL(getSiteUrl()),
-  applicationName: "SupoClip",
-  authors: [{ name: "SupoClip Team", url: getSiteUrl() }],
-  creator: "SupoClip Team",
-  publisher: "SupoClip",
-  category: "video software",
+  applicationName: "Kortes",
+  authors: [{ name: "Equipe Kortes", url: getSiteUrl() }],
+  creator: "Equipe Kortes",
+  publisher: "Kortes",
+  category: "software de vídeo",
   icons: {
     icon: "/icon.png",
   },
-  itunes: {
-    appId: APP_STORE_ID,
-  },
   openGraph: {
-    title: "SupoClip – Open-Source AI Video Clipper",
+    title: "Kortes – Cortes de vídeo com IA",
     description:
-      "Turn long videos into captioned short-form clips with open-source AI clipping.",
-    siteName: "SupoClip",
+      "Transforme vídeos longos em clipes curtos legendados com IA de código aberto.",
+    siteName: "Kortes",
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "SupoClip – Open-Source AI Video Clipper",
+    title: "Kortes – Cortes de vídeo com IA",
     description:
-      "Open-source AI clipping, virality scoring, captions, and face-aware vertical crops.",
+      "Cortes com IA de código aberto, pontuação de viralidade, legendas e enquadramento vertical que acompanha o rosto.",
   },
   robots: {
     index: true,
@@ -81,7 +78,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="pt-BR" suppressHydrationWarning>
       <head>
         {isDataFastEnabled ? (
           <>

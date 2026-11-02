@@ -15,7 +15,7 @@ export interface GenerationSummary {
 
 export async function fetchGenerations(): Promise<GenerationSummary[]> {
   const response = await fetch("/api/tasks/", { cache: "no-store" });
-  if (!response.ok) throw new Error(`Failed to fetch tasks: ${response.status}`);
+  if (!response.ok) throw new Error(`Não foi possível carregar as gerações: ${response.status}`);
   const data = await response.json();
   return (data.tasks || []) as GenerationSummary[];
 }

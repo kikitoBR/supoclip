@@ -54,7 +54,7 @@ describe("/api/billing/portal", () => {
 
     expect(response.status).toBe(409);
     await expect(response.json()).resolves.toEqual({
-      error: "Your subscription is managed through the App Store",
+      error: "Sua assinatura é gerenciada pela App Store",
     });
     expect(getStripeClient).not.toHaveBeenCalled();
   });

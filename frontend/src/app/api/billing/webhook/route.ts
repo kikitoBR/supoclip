@@ -29,7 +29,7 @@ async function sendBackendSubscriptionEmail(userId: string, event: SubscriptionE
   if (!response.ok) {
     const detail = await response.text();
     throw new Error(
-      `Backend subscription email failed with ${response.status}: ${detail || "unknown error"}`
+      `Backend subscription email failed with ${response.status}: ${detail || "erro desconhecido"}`
     );
   }
 }
@@ -133,7 +133,7 @@ export async function POST(request: Request) {
 
   const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
   if (!webhookSecret) {
-    return NextResponse.json({ error: "Webhook secret is not configured" }, { status: 500 });
+    return NextResponse.json({ error: "O segredo do webhook não está configurado" }, { status: 500 });
   }
 
   if (!hasAnyConfiguredStripePrice()) {

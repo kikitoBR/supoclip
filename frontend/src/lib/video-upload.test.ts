@@ -35,7 +35,7 @@ describe("S3 video uploads", () => {
       throw new Error(`Unexpected request: ${url}`);
     });
     vi.stubGlobal("fetch", fetchMock);
-    await expect(uploadVideoFile(new File(["abcdef"], "video.mp4"))).rejects.toThrow("Video upload failed");
+    await expect(uploadVideoFile(new File(["abcdef"], "video.mp4"))).rejects.toThrow("O envio do vídeo falhou");
     expect(fetchMock.mock.calls.some(([url]) => url === "/api/upload/abort")).toBe(true);
     expect(fetchMock.mock.calls.some(([url]) => url === "/api/upload/complete")).toBe(false);
   });

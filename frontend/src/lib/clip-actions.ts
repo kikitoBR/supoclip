@@ -20,7 +20,7 @@ export async function requestAction(url: string, method: string, body?: unknown)
     }),
   });
   if (!response.ok) {
-    throw new ApiRequestError(await parseApiError(response, "Could not save changes. Please try again."));
+    throw new ApiRequestError(await parseApiError(response, "Não foi possível salvar as alterações. Tente novamente."));
   }
   return response;
 }

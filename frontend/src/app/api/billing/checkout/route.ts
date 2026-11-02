@@ -8,12 +8,12 @@ import { getServerBillingPlan } from "@/server/billing-plans";
 import { findCreatorOffer, INVALID_CREATOR_CODE, type CreatorOffer } from "@/server/affiliates";
 import type Stripe from "stripe";
 
-const APP_STORE_MANAGED_MESSAGE = "Your subscription is managed through the App Store";
+const APP_STORE_MANAGED_MESSAGE = "Sua assinatura é gerenciada pela App Store";
 const PAID_SUBSCRIPTION_STATUSES = new Set(["active", "trialing"]);
 
 export async function POST(request: Request) {
   if (!monetizationEnabled) {
-    return NextResponse.json({ error: "Not found" }, { status: 404 });
+    return NextResponse.json({ error: "Não encontrado" }, { status: 404 });
   }
 
   const session = await auth.api.getSession({ headers: await headers() });
@@ -37,7 +37,7 @@ export async function POST(request: Request) {
 
   const billingPlan = getServerBillingPlan(requestedPlan);
   if (!billingPlan) {
-    return NextResponse.json({ error: "Unknown billing plan" }, { status: 400 });
+    return NextResponse.json({ error: "Plano de cobrança desconhecido" }, { status: 400 });
   }
 
   const user = await prisma.user.findUnique({
@@ -65,7 +65,7 @@ export async function POST(request: Request) {
     const fallbackUrl = billingPlan.id === "pro" ? process.env.STRIPE_CHECKOUT_URL : null;
     if (!fallbackUrl) {
       return NextResponse.json(
-        { error: `Stripe price is not configured for ${billingPlan.id}` },
+        { error: `O preço do Stripe não está configurado para ${billingPlan.id}` },
         { status: 500 }
       );
     }
@@ -109,10 +109,10 @@ export async function POST(request: Request) {
   if (enteredCode) {
     offer = await findCreatorOffer(prisma, enteredCode);
     if (!offer) {
-      return NextResponse.json({ error: "That creator code isn't valid", code: INVALID_CREATOR_CODE }, { status: 400 });
+      return NextResponse.json({ error: "Esse código de criador não é válido", code: INVALID_CREATOR_CODE }, { status: 400 });
     }
     if (offer.affiliateUserId === session.user.id) {
-      return NextResponse.json({ error: "You can't use your own creator code", code: INVALID_CREATOR_CODE }, { status: 400 });
+      return NextResponse.json({ error: "Você não pode usar o seu próprio código de criador", code: INVALID_CREATOR_CODE }, { status: 400 });
     }
   } else {
     const acquisition = await prisma.userAcquisition.findUnique({
@@ -140,7 +140,7 @@ export async function POST(request: Request) {
   });
 
   if (!checkoutSession.url) {
-    return NextResponse.json({ error: "Unable to create checkout session" }, { status: 500 });
+    return NextResponse.json({ error: "Não foi possível iniciar o pagamento" }, { status: 500 });
   }
 
   return NextResponse.json({ url: checkoutSession.url });
@@ -158,10 +158,10 @@ async function createPlanChangeSession(
   const subscription = await stripe.subscriptions.retrieve(subscriptionId);
   const item = subscription.items.data[0];
   if (!item) {
-    return NextResponse.json({ error: "Subscription has no items" }, { status: 500 });
+    return NextResponse.json({ error: "A assinatura não tem itens" }, { status: 500 });
   }
   if (item.price.id === priceId) {
-    return NextResponse.json({ error: "You're already on this plan" }, { status: 409 });
+    return NextResponse.json({ error: "Você já está neste plano" }, { status: 409 });
   }
 
   const returnUrl = `${appUrl}/settings`;

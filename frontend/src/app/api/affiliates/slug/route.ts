@@ -19,10 +19,10 @@ export async function GET(request: Request) {
     return NextResponse.json({
       slug: check.slug,
       available,
-      ...(available ? {} : { reason: "That code is already taken." }),
+      ...(available ? {} : { reason: "Esse código já está em uso." }),
     });
   } catch (error) {
     console.error("Failed to check affiliate slug:", error);
-    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+    return NextResponse.json({ error: "Erro interno do servidor" }, { status: 500 });
   }
 }

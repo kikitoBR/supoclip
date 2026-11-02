@@ -193,7 +193,7 @@ export function UpgradeDialog({ open, onOpenChange, reason, billing, source }: U
 
           {state?.managedByAppStore ? (
             <p className="mt-6 rounded-xl border bg-muted/40 px-4 py-3 text-sm text-muted-foreground">
-              Sua assinatura é gerenciada pela App Store. Você pode alterar seu plano no app SupoClip para iOS.
+              Sua assinatura é gerenciada pela App Store. Você pode alterar seu plano no app Kortes para iOS.
             </p>
           ) : (
             <div className="mt-6 space-y-2" role="radiogroup" aria-label="Planos">
@@ -218,7 +218,7 @@ export function UpgradeDialog({ open, onOpenChange, reason, billing, source }: U
                 <span className="text-sm font-semibold">Grátis</span>
               </div>
               <p className="mt-2 text-xs leading-relaxed text-muted-foreground">
-                Execute o SupoClip no seu próprio computador ou servidor sem assinatura ou limite mensal de vídeos.
+                Execute o Kortes no seu próprio computador ou servidor sem assinatura ou limite mensal de vídeos.
                 Requer configuração; você fornece a infraestrutura e os serviços de IA que desejar.
               </p>
               <Link

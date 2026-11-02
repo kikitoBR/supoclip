@@ -30,7 +30,7 @@ export async function GET() {
     return NextResponse.json({ attribution, confirmed: isConfirmed(attribution, session.user.createdAt) });
   } catch (error) {
     console.error("Error reading attribution:", error);
-    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+    return NextResponse.json({ error: "Erro interno do servidor" }, { status: 500 });
   }
 }
 
@@ -60,6 +60,6 @@ export async function POST(request: Request) {
     });
   } catch (error) {
     console.error("Error storing attribution:", error);
-    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+    return NextResponse.json({ error: "Erro interno do servidor" }, { status: 500 });
   }
 }

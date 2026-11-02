@@ -116,7 +116,7 @@ export function SubscriptionCancelBanner({
           <DialogHeader>
             <DialogTitle>Por que você está cancelando?</DialogTitle>
             <DialogDescription>
-              Sua resposta vai direto para nossa equipe e nos ajuda a melhorar o SupoClip.
+              Sua resposta vai direto para nossa equipe e nos ajuda a melhorar o Kortes.
             </DialogDescription>
           </DialogHeader>
           <Textarea

@@ -19,7 +19,7 @@ async function proxySocialRequest(
 
   const { path } = await params;
   if (path.length === 0 || !path.every((segment) => SAFE_PATH_SEGMENT.test(segment))) {
-    return NextResponse.json({ detail: "Not found" }, { status: 404 });
+    return NextResponse.json({ detail: "Não encontrado" }, { status: 404 });
   }
 
   const incomingUrl = new URL(request.url);

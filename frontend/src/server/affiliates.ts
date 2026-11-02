@@ -36,13 +36,13 @@ export type SlugCheck = { ok: true; slug: string } | { ok: false; error: string 
 export function validateSlug(raw: unknown): SlugCheck {
   const slug = typeof raw === "string" ? raw.trim().toLowerCase() : "";
   if (slug.length < 3 || slug.length > 20) {
-    return { ok: false, error: "Use 3 to 20 characters." };
+    return { ok: false, error: "Use de 3 a 20 caracteres." };
   }
   if (!SLUG_PATTERN.test(slug) || slug.includes("--")) {
-    return { ok: false, error: "Use letters, numbers and single hyphens, starting and ending with a letter or number." };
+    return { ok: false, error: "Use letras, números e hífens simples, começando e terminando com letra ou número." };
   }
   if (RESERVED_SLUGS.has(slug) || slug.startsWith("supoclip")) {
-    return { ok: false, error: "That code is reserved." };
+    return { ok: false, error: "Esse código é reservado." };
   }
   return { ok: true, slug };
 }
@@ -64,12 +64,12 @@ export type AffiliateApplication = {
 
 function parseUrl(raw: unknown, label: string, required: boolean): { value: string | null } | { error: string } {
   const value = typeof raw === "string" ? raw.trim() : "";
-  if (!value) return required ? { error: `${label} is required.` } : { value: null };
+  if (!value) return required ? { error: `${label} é obrigatório.` } : { value: null };
   try {
     const url = new URL(value);
     if ((url.protocol !== "https:" && url.protocol !== "http:") || value.length > 500) throw new Error();
   } catch {
-    return { error: `${label} must be a full link starting with https://` };
+    return { error: `${label} deve ser um link completo começando com https://` };
   }
   return { value };
 }
@@ -81,21 +81,21 @@ export function parseApplication(body: unknown): { ok: true; application: Affili
   if (!slug.ok) return slug;
 
   const platform = AFFILIATE_PLATFORMS.find((value) => value === input.platform);
-  if (!platform) return { ok: false, error: "Pick the platform you post on." };
+  if (!platform) return { ok: false, error: "Escolha a plataforma em que você publica." };
 
   const audience = AUDIENCE_SIZES.find((value) => value === input.audience_size);
-  if (!audience) return { ok: false, error: "Pick your audience size." };
+  if (!audience) return { ok: false, error: "Escolha o tamanho do seu público." };
 
-  const profile = parseUrl(input.profile_url, "Profile link", true);
+  const profile = parseUrl(input.profile_url, "O link do perfil", true);
   if ("error" in profile) return { ok: false, error: profile.error };
-  const video = parseUrl(input.video_url, "Video link", false);
+  const video = parseUrl(input.video_url, "O link do vídeo", false);
   if ("error" in video) return { ok: false, error: video.error };
 
   const plan = typeof input.promotion_plan === "string" ? input.promotion_plan.trim() : "";
-  if (plan.length > 1000) return { ok: false, error: "Keep your plan under 1000 characters." };
+  if (plan.length > 1000) return { ok: false, error: "Descreva seu plano em menos de 1000 caracteres." };
 
   if (input.accept_terms !== true) {
-    return { ok: false, error: "Please accept the program terms." };
+    return { ok: false, error: "Aceite os termos do programa." };
   }
 
   return {

@@ -2,7 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 
 import { getMarketingLinks } from "@/lib/marketing-links";
-import { APP_STORE_URL, GITHUB_URL } from "@/lib/site";
+import { GITHUB_URL, UPSTREAM_GITHUB_URL } from "@/lib/site";
 
 const linkClassName = "hover:text-foreground transition-colors";
 
@@ -33,9 +33,9 @@ export function SiteFooter() {
       <div className="mx-auto grid max-w-6xl gap-10 sm:grid-cols-2 lg:grid-cols-[1.2fr_1fr_1fr_1fr]">
         <div>
           <Link href="/" className="flex items-center gap-2">
-            <Image src="/logo.png" alt="SupoClip" width={24} height={24} className="rounded-md" />
+            <Image src="/logo.png" alt="Kortes" width={24} height={24} className="rounded-md" />
             <span className="text-sm font-semibold" style={{ fontFamily: "var(--font-syne), system-ui" }}>
-              SupoClip
+              Kortes
             </span>
           </Link>
           <p className="mt-3 max-w-xs text-xs leading-6 text-muted-foreground">
@@ -43,9 +43,13 @@ export function SiteFooter() {
           </p>
           <div className="mt-4 flex gap-4 text-xs text-muted-foreground">
             <a href={GITHUB_URL} target="_blank" rel="noopener noreferrer" className={linkClassName}>GitHub</a>
-            <a href={APP_STORE_URL} target="_blank" rel="noopener noreferrer" className={linkClassName}>App iOS</a>
             <span>&copy; {new Date().getFullYear()}</span>
           </div>
+          <p className="mt-3 text-xs text-muted-foreground">
+            Baseado no{" "}
+            <a href={UPSTREAM_GITHUB_URL} target="_blank" rel="noopener noreferrer" className={linkClassName}>SupoClip</a>
+            {" "}(AGPL-3.0).
+          </p>
         </div>
         {columns.map((column) => (
           <nav key={column.heading} aria-label={`Links de ${column.heading}`}>

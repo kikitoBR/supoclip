@@ -6,7 +6,7 @@ import { monetizationEnabled } from "@/lib/monetization";
 import { getStripeClient } from "@/lib/stripe";
 import Stripe from "stripe";
 
-const APP_STORE_MANAGED_MESSAGE = "Your subscription is managed through the App Store";
+const APP_STORE_MANAGED_MESSAGE = "Sua assinatura é gerenciada pela App Store";
 const PAID_SUBSCRIPTION_STATUSES = new Set(["active", "trialing"]);
 
 function isMissingStripeCustomer(error: unknown): boolean {
@@ -49,7 +49,7 @@ async function createPortalSession(customerId: string) {
 
 export async function POST() {
   if (!monetizationEnabled) {
-    return NextResponse.json({ error: "Not found" }, { status: 404 });
+    return NextResponse.json({ error: "Não encontrado" }, { status: 404 });
   }
 
   const session = await auth.api.getSession({ headers: await headers() });
@@ -105,7 +105,7 @@ export async function POST() {
 
     console.error("Failed to create Stripe billing portal session", error);
     return NextResponse.json(
-      { error: "Unable to open billing portal" },
+      { error: "Não foi possível abrir o portal de cobrança" },
       { status: 500 }
     );
   }

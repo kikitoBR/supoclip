@@ -115,7 +115,7 @@ export function originalVideoHeading(tasks: GenerationSummary[]) {
     const filename = originalFileName(task.source_url);
     if (filename) return filename;
   }
-  return chronological[0] ? uniqueVideoLabel(chronological[0]) : "Untitled video";
+  return chronological[0] ? uniqueVideoLabel(chronological[0]) : "Vídeo sem título";
 }
 
 /**

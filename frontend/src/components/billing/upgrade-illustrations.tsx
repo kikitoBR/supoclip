@@ -136,7 +136,7 @@ export function LengthIllustration({
           />
         </g>
         <g fill="currentColor" fontSize={10}>
-          <text x={x(durationSeconds)} y={-14} textAnchor="middle" className="font-medium">Your video</text>
+          <text x={x(durationSeconds)} y={-14} textAnchor="middle" className="font-medium">Seu vídeo</text>
           <text x={x(currentLimitSeconds)} y={56} textAnchor="middle" fillOpacity={0.6}>{currentLabel}</text>
           <text x={width} y={56} textAnchor="end" fillOpacity={0.6}>{nextLabel}</text>
         </g>
@@ -197,7 +197,7 @@ export function FontIllustration() {
             <span className={index === active ? "relative" : "relative text-muted-foreground"}>{face.name}</span>
           </li>
         ))}
-        <li className="px-2 pt-1 text-xs text-muted-foreground">or your own .ttf</li>
+        <li className="px-2 pt-1 text-xs text-muted-foreground">ou a sua própria .ttf</li>
       </ul>
     </div>
   );

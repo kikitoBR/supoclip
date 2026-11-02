@@ -78,7 +78,7 @@ describe("/api/admin/affiliates/[id]", () => {
 
     expect(response.status).toBe(502);
     await expect(response.json()).resolves.toEqual({
-      error: "Stripe rejected the promotion code: An active promotion code with `code: MAYA` already exists.",
+      error: "O Stripe recusou o código promocional: An active promotion code with `code: MAYA` already exists.",
     });
     expect(affiliate.updateMany).not.toHaveBeenCalled();
   });

@@ -159,7 +159,7 @@ async function sendBackendSubscriptionEmail(userId: string, event: SubscriptionE
   if (!response.ok) {
     const detail = await response.text();
     throw new Error(
-      `Backend subscription email failed with ${response.status}: ${detail || "unknown error"}`
+      `Backend subscription email failed with ${response.status}: ${detail || "erro desconhecido"}`
     );
   }
 }
@@ -340,7 +340,7 @@ export async function POST(request: Request) {
   const expectedAuthHeader = process.env.REVENUECAT_WEBHOOK_AUTH_HEADER;
   if (!expectedAuthHeader) {
     return NextResponse.json(
-      { error: "RevenueCat webhook auth header is not configured" },
+      { error: "O cabeçalho de autenticação do webhook da RevenueCat não está configurado" },
       { status: 503 }
     );
   }
@@ -382,8 +382,8 @@ export async function POST(request: Request) {
     await getPrismaClient()
       .revenueCatWebhookEvent.delete({ where: { id: event.id } })
       .catch(() => {});
-    console.error("RevenueCat webhook handler failed", { eventId: event.id, error });
-    return NextResponse.json({ error: "RevenueCat webhook handler failed" }, { status: 500 });
+    console.error("Falha ao processar o webhook da RevenueCat", { eventId: event.id, error });
+    return NextResponse.json({ error: "Falha ao processar o webhook da RevenueCat" }, { status: 500 });
   }
 
   return NextResponse.json({ ok: true });

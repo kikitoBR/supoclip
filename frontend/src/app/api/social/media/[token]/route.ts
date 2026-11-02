@@ -12,7 +12,7 @@ export async function GET(
 ) {
   const { token } = await params;
   if (!SAFE_TOKEN.test(token)) {
-    return Response.json({ detail: "Media not found" }, { status: 404 });
+    return Response.json({ detail: "Mídia não encontrada" }, { status: 404 });
   }
 
   const upstream = await fetchBackend(`/social/media/${token}`, {

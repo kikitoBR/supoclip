@@ -17,9 +17,9 @@ const VIDEO = {
   uploadDate: "2026-10-09",
 };
 
-const title = "Programa de Criadores SupoClip: Ganhe o Pro Grátis ao Criar Vídeos";
+const title = "Programa de Criadores Kortes: Ganhe o Pro Grátis ao Criar Vídeos";
 const description =
-  "Crie Shorts, Reels, TikToks ou vídeos sobre o SupoClip e ganhe o SupoClip Pro de graça. Seu público ganha 20% de desconto nos primeiros 3 meses com seu código.";
+  "Crie Shorts, Reels, TikToks ou vídeos sobre o Kortes e ganhe o Kortes Pro de graça. Seu público ganha 20% de desconto nos primeiros 3 meses com seu código.";
 
 export const metadata: Metadata = {
   title: { absolute: title },
@@ -29,7 +29,7 @@ export const metadata: Metadata = {
     title,
     description,
     url: `${getSiteUrl()}/affiliate`,
-    siteName: "SupoClip",
+    siteName: "Kortes",
     type: "website",
     images: [{ url: `${getSiteUrl()}${VIDEO.poster}`, width: 1920, height: 1080 }],
     videos: [{ url: `${getSiteUrl()}${VIDEO.src}`, width: 1920, height: 1080, type: "video/mp4" }],
@@ -45,7 +45,7 @@ const steps = [
 
 const rules = [
   "Identifique conteúdos patrocinados de forma clara, por exemplo com #publi ou #ad.",
-  "Não anuncie usando a marca SupoClip em links patrocinados nem poste seu código em sites de cupons ou promoções.",
+  "Não anuncie usando a marca Kortes em links patrocinados nem poste seu código em sites de cupons ou promoções.",
   "Não use o seu próprio código na sua conta.",
   "Podemos encerrar o programa ou desligar um criador participante a qualquer momento.",
 ];
@@ -54,11 +54,11 @@ function getFaqs(proPrice: string) {
   return [
     {
       question: "Eu recebo pagamentos em dinheiro?",
-      answer: `No momento não. Criadores aprovados recebem o SupoClip Pro (normalmente $${proPrice}/mês) de graça enquanto estiverem no programa.`,
+      answer: `No momento não. Criadores aprovados recebem o Kortes Pro (normalmente $${proPrice}/mês) de graça enquanto estiverem no programa.`,
     },
     {
       question: "Há um número mínimo de seguidores?",
-      answer: "Não. Avaliamos a qualidade do que você publica, não apenas a contagem de inscritos. Criadores em crescimento que já produzem conteúdo sobre o SupoClip são muito bem-vindos.",
+      answer: "Não. Avaliamos a qualidade do que você publica, não apenas a contagem de inscritos. Criadores em crescimento que já produzem conteúdo sobre o Kortes são muito bem-vindos.",
     },
     {
       question: "O que o meu público ganha?",
@@ -73,7 +73,7 @@ function getFaqs(proPrice: string) {
       answer: "Você receberá um e-mail com os motivos apontados pela nossa equipe. Você poderá se inscrever novamente após 30 dias.",
     },
     {
-      question: "Preciso ter uma conta no SupoClip?",
+      question: "Preciso ter uma conta no Kortes?",
       answer: "Sim. O programa é vinculado à sua conta, então basta criar uma conta gratuita (ou entrar na sua) antes de enviar a inscrição.",
     },
   ];
@@ -90,14 +90,14 @@ export default function AffiliatePage() {
       {
         "@type": "BreadcrumbList",
         itemListElement: [
-          { "@type": "ListItem", position: 1, name: "SupoClip", item: siteUrl },
+          { "@type": "ListItem", position: 1, name: "Kortes", item: siteUrl },
           { "@type": "ListItem", position: 2, name: "Programa de criadores", item: `${siteUrl}/affiliate` },
         ],
       },
       {
         "@type": "VideoObject",
-        name: "Como funciona o programa de criadores SupoClip",
-        description: "Inscreva-se, escolha seu código e seu público ganha 20% de desconto nos primeiros 3 meses. Criadores aprovados ganham o SupoClip Pro de graça.",
+        name: "Como funciona o programa de criadores Kortes",
+        description: "Inscreva-se, escolha seu código e seu público ganha 20% de desconto nos primeiros 3 meses. Criadores aprovados ganham o Kortes Pro de graça.",
         thumbnailUrl: `${siteUrl}${VIDEO.poster}`,
         contentUrl: `${siteUrl}${VIDEO.src}`,
         uploadDate: VIDEO.uploadDate,
@@ -120,8 +120,8 @@ export default function AffiliatePage() {
       <header className="border-b bg-background/95">
         <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-6">
           <Link href="/" className="flex items-center gap-2.5">
-            <Image src="/logo.png" alt="SupoClip" width={24} height={24} className="rounded-lg" />
-            <span className="text-lg font-bold tracking-tight">SupoClip</span>
+            <Image src="/logo.png" alt="Kortes" width={24} height={24} className="rounded-lg" />
+            <span className="text-lg font-bold tracking-tight">Kortes</span>
           </Link>
           <nav className="flex items-center gap-2" aria-label="Navegação principal">
             <Link href="/demo"><Button variant="ghost" size="sm">Demonstração</Button></Link>
@@ -134,11 +134,11 @@ export default function AffiliatePage() {
         <div className="mx-auto max-w-5xl px-6 py-14 md:py-20">
           <Badge variant="secondary">Programa de criadores</Badge>
           <h1 className="mt-5 max-w-4xl text-4xl font-extrabold tracking-tight sm:text-5xl" style={{ fontFamily: "var(--font-syne), var(--font-geist-sans), system-ui" }}>
-            Crie vídeos sobre o SupoClip. Ganhe o Pro de graça.
+            Crie vídeos sobre o Kortes. Ganhe o Pro de graça.
           </h1>
           <p className="mt-6 max-w-3xl text-lg leading-8 text-muted-foreground">
             Posta Shorts, Reels ou TikToks sobre cortes de vídeo, podcasts ou criação de conteúdo? Tenha seu próprio código.
-            Seu público economiza no SupoClip e você ganha o plano Pro enquanto estiver no programa.
+            Seu público economiza no Kortes e você ganha o plano Pro enquanto estiver no programa.
           </p>
           <div className="mt-8 flex flex-wrap items-center gap-3">
             <Link href={APPLY_HREF}><Button size="lg">Inscreva-se agora <ArrowRight className="h-4 w-4" /></Button></Link>
@@ -167,7 +167,7 @@ export default function AffiliatePage() {
           <div className="mt-8 grid gap-4 md:grid-cols-2">
             <div className="rounded-2xl border p-6">
               <Gift className="h-5 w-5" />
-              <h3 className="mt-4 text-lg font-semibold">Você ganha o SupoClip Pro, grátis</h3>
+              <h3 className="mt-4 text-lg font-semibold">Você ganha o Kortes Pro, grátis</h3>
               <p className="mt-2 text-sm leading-6 text-muted-foreground">
                 O Pro custa normalmente ${proPrice}/mês{pro ? ` e inclui ${pro.generationLimit} vídeos por mês` : ""}. Criadores
                 aprovados têm acesso gratuito enquanto estiverem participando do programa.
@@ -219,9 +219,9 @@ export default function AffiliatePage() {
         </section>
 
         <section className="mt-16 rounded-2xl border bg-foreground p-6 text-background md:p-8">
-          <h2 className="text-2xl font-bold tracking-tight">Já publica conteúdos sobre o SupoClip?</h2>
+          <h2 className="text-2xl font-bold tracking-tight">Já publica conteúdos sobre o Kortes?</h2>
           <p className="mt-2 max-w-xl text-sm leading-6 text-background/70">
-            Inscreva-se informando o link do seu perfil e o código desejado. Se você já gravou vídeos sobre o SupoClip, não se esqueça de incluí-los!
+            Inscreva-se informando o link do seu perfil e o código desejado. Se você já gravou vídeos sobre o Kortes, não se esqueça de incluí-los!
           </p>
           <div className="mt-6">
             <Link href={APPLY_HREF}><Button variant="secondary">Inscreva-se agora <ArrowRight className="h-4 w-4" /></Button></Link>

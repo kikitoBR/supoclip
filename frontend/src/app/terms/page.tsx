@@ -9,18 +9,18 @@ const LAST_UPDATED = "2 de julho de 2026";
 const CONTACT_EMAIL = "support@supoclip.com";
 
 export const metadata: Metadata = {
-  title: "Termos de Serviço | SupoClip",
+  title: "Termos de Serviço | Kortes",
   description:
-    "Os termos que regem o seu uso dos aplicativos SupoClip e do serviço hospedado de cortes de vídeo, incluindo assinaturas adquiridas na web ou na App Store.",
+    "Os termos que regem o seu uso dos aplicativos Kortes e do serviço hospedado de cortes de vídeo, incluindo assinaturas adquiridas na web ou na App Store.",
   alternates: {
     canonical: `${getSiteUrl()}/terms`,
   },
   openGraph: {
-    title: "Termos de Serviço do SupoClip",
-    description: "Os termos que regem o seu uso do SupoClip.",
+    title: "Termos de Serviço do Kortes",
+    description: "Os termos que regem o seu uso do Kortes.",
     type: "website",
     url: `${getSiteUrl()}/terms`,
-    siteName: "SupoClip",
+    siteName: "Kortes",
   },
 };
 
@@ -44,12 +44,12 @@ export default function TermsOfServicePage() {
       <header className="border-b bg-background/95">
         <div className="mx-auto flex h-16 max-w-3xl items-center justify-between px-6">
           <Link href="/" className="flex items-center gap-2.5">
-            <Image src="/logo.png" alt="SupoClip" width={24} height={24} className="rounded-lg" />
+            <Image src="/logo.png" alt="Kortes" width={24} height={24} className="rounded-lg" />
             <span
               className="text-lg font-bold tracking-tight"
               style={{ fontFamily: "var(--font-syne), var(--font-geist-sans), system-ui" }}
             >
-              SupoClip
+              Kortes
             </span>
           </Link>
           <a href={HOSTED_APP_URL} target="_blank" rel="noopener noreferrer">
@@ -76,13 +76,13 @@ export default function TermsOfServicePage() {
           <Section title="Acordo">
             <p>
               Estes Termos de Serviço (&ldquo;Termos&rdquo;) regem o uso dos aplicativos e do serviço
-              hospedado SupoClip (&ldquo;Serviço&rdquo;), que transformam vídeos longos em clipes curtos
+              hospedado Kortes (&ldquo;Serviço&rdquo;), que transformam vídeos longos em clipes curtos
               e legendados. Ao criar uma conta ou usar o Serviço, você concorda com estes Termos.
               Se você não concordar, não use o Serviço.
             </p>
             <p>
-              O SupoClip também está disponível como software de código aberto que você pode auto-hospedar.
-              Estes Termos se aplicam ao serviço hospedado operado pelo SupoClip; instâncias auto-hospedadas
+              O Kortes também está disponível como software de código aberto que você pode auto-hospedar.
+              Estes Termos se aplicam ao serviço hospedado operado pelo Kortes; instâncias auto-hospedadas
               são regidas pela licença de código aberto aplicável e pelos termos do próprio operador.
             </p>
           </Section>
@@ -146,7 +146,7 @@ export default function TermsOfServicePage() {
 
           <Section title="Propriedade Intelectual">
             <p>
-              O Serviço, incluindo software, design e marca, é de propriedade do SupoClip ou de seus licenciadores.
+              O Serviço, incluindo software, design e marca, é de propriedade do Kortes ou de seus licenciadores.
               Os componentes de código aberto são licenciados sob suas respectivas licenças. Estes Termos não concedem
               a você nenhum direito de utilizar nossas marcas registradas.
             </p>
@@ -164,7 +164,7 @@ export default function TermsOfServicePage() {
 
           <Section title="Limitação de Responsabilidade">
             <p>
-              Na extensão máxima permitida pela legislação aplicável, o SupoClip não será responsável por danos indiretos,
+              Na extensão máxima permitida pela legislação aplicável, o Kortes não será responsável por danos indiretos,
               incidentais, especiais, consequenciais ou punitivos, nem por perda de lucros, dados ou reputação.
               Nossa responsabilidade total por reclamações relacionadas ao Serviço é limitada ao valor pago por você nos
               doze meses anteriores ao fato que originou a reclamação.
@@ -202,7 +202,7 @@ export default function TermsOfServicePage() {
           </Link>
           <span className="mx-2">&middot;</span>
           <Link href="/" className="underline hover:text-foreground">
-            Voltar ao SupoClip
+            Voltar ao Kortes
           </Link>
         </div>
       </article>

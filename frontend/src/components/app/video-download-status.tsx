@@ -54,9 +54,9 @@ export function VideoDownloadStatus() {
           cache: "no-store",
           signal: request.signal,
         });
-        if (!response.ok) throw new Error("Status unavailable");
+        if (!response.ok) throw new Error("Status indisponível");
         const data: { component?: unknown } = await response.json();
-        if (!isServiceStatus(data.component)) throw new Error("Invalid status response");
+        if (!isServiceStatus(data.component)) throw new Error("Resposta de status inválida");
         if (active && !request.signal.aborted) {
           setComponent(data.component);
         }

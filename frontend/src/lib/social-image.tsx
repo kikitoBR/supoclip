@@ -167,13 +167,13 @@ export async function createSocialImageResponse() {
               lineHeight: 1,
             }}
           >
-            Supo
+            Kor
             <span
               style={{
                 color: "#6b6b67",
               }}
             >
-              Clip
+              tes
             </span>
           </div>
 
@@ -187,7 +187,7 @@ export async function createSocialImageResponse() {
               lineHeight: 1,
             }}
           >
-            Turn long videos into viral-ready shorts
+            Transforme vídeos longos em cortes prontos para viralizar
           </div>
 
           <div
@@ -197,7 +197,7 @@ export async function createSocialImageResponse() {
               marginTop: 8,
             }}
           >
-            {["AI-Powered", "Auto Subtitles", "9:16 Vertical", "Open Source"].map(
+            {["Com IA", "Legendas automáticas", "Vertical 9:16", "Código Aberto"].map(
               (label) => (
                 <div
                   key={label}

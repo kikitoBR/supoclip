@@ -84,7 +84,7 @@ async function requestUploadAuthorization(file: File): Promise<UploadAuthorizati
 
 export async function uploadVideoFile(file: File): Promise<string> {
   if (file.size > MAX_VIDEO_UPLOAD_BYTES) {
-    throw new Error("Uploaded file is too large. Please upload a video under 12 GB.");
+    throw new Error("O arquivo é grande demais. Envie um vídeo com menos de 12 GB.");
   }
 
   const uploadAuthorization = await requestUploadAuthorization(file);
@@ -107,7 +107,7 @@ export async function uploadVideoFile(file: File): Promise<string> {
   if (!uploadResponse.ok) {
     const fallbackMessage =
       uploadResponse.status === 413
-        ? "Uploaded file is too large. Please upload a video under 12 GB."
+        ? "O arquivo é grande demais. Envie um vídeo com menos de 12 GB."
         : `Upload error: ${uploadResponse.status}`;
     const uploadError = await parseApiError(uploadResponse, fallbackMessage);
     throw new Error(formatSupportMessage(uploadError));
@@ -115,7 +115,7 @@ export async function uploadVideoFile(file: File): Promise<string> {
 
   const uploadResult = await uploadResponse.json();
   if (typeof uploadResult.video_path !== "string" || !uploadResult.video_path) {
-    throw new Error("Upload finished without a video path. Please try again.");
+    throw new Error("O envio terminou sem o caminho do vídeo. Tente novamente.");
   }
 
   return uploadResult.video_path;
@@ -151,21 +151,21 @@ async function uploadVideoFileToS3(file: File, authorization: S3UploadAuthorizat
                 body: JSON.stringify({ ...payload, partNumbers: [part.partNumber] }),
                 signal: controller.signal,
               });
-              if (!refreshed.ok) throw new Error("Video upload authorization could not be refreshed.");
+              if (!refreshed.ok) throw new Error("Não foi possível renovar a autorização de envio do vídeo.");
               const result = await refreshed.json();
               const freshPart = result.parts?.find((item: { partNumber: number; url: string }) => item.partNumber === part.partNumber);
-              if (!freshPart?.url) throw new Error("Video upload authorization could not be refreshed.");
+              if (!freshPart?.url) throw new Error("Não foi possível renovar a autorização de envio do vídeo.");
               partUrl = freshPart.url;
               continue;
             }
-            if (response.status < 500) throw new Error("Video upload failed. Please try again.");
+            if (response.status < 500) throw new Error("O envio do vídeo falhou. Tente novamente.");
           } catch (error) {
             if (controller.signal.aborted || attempt === 2) throw error;
           }
         }
         const etag = response?.headers.get("ETag");
         if (!response?.ok || !etag) {
-          throw new Error("Video upload failed. Please try again.");
+          throw new Error("O envio do vídeo falhou. Tente novamente.");
         }
         completedParts.push({ partNumber: part.partNumber, etag });
       } catch (error) {
@@ -191,12 +191,12 @@ async function uploadVideoFileToS3(file: File, authorization: S3UploadAuthorizat
       }
     }
     if (!response?.ok) {
-      if (!response) throw new Error("Video upload could not be completed.");
-      throw new Error(formatSupportMessage(await parseApiError(response, "Video upload could not be completed.")));
+      if (!response) throw new Error("Não foi possível concluir o envio do vídeo.");
+      throw new Error(formatSupportMessage(await parseApiError(response, "Não foi possível concluir o envio do vídeo.")));
     }
     const result = await response.json();
     if (typeof result.video_path !== "string" || !result.video_path) {
-      throw new Error("Upload finished without a video path. Please try again.");
+      throw new Error("O envio terminou sem o caminho do vídeo. Tente novamente.");
     }
     return result.video_path;
   } catch (error) {
@@ -221,7 +221,7 @@ export async function uploadVideoFileViaProxy(file: File): Promise<string> {
   if (!uploadResponse.ok) {
     const fallbackMessage =
       uploadResponse.status === 413
-        ? "Uploaded file is too large. Please upload a video under 12 GB."
+        ? "O arquivo é grande demais. Envie um vídeo com menos de 12 GB."
         : `Upload error: ${uploadResponse.status}`;
     const uploadError = await parseApiError(uploadResponse, fallbackMessage);
     throw new Error(formatSupportMessage(uploadError));
@@ -229,7 +229,7 @@ export async function uploadVideoFileViaProxy(file: File): Promise<string> {
 
   const uploadResult = await uploadResponse.json();
   if (typeof uploadResult.video_path !== "string" || !uploadResult.video_path) {
-    throw new Error("Upload finished without a video path. Please try again.");
+    throw new Error("O envio terminou sem o caminho do vídeo. Tente novamente.");
   }
 
   return uploadResult.video_path;

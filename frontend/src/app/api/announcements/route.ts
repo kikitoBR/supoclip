@@ -13,6 +13,6 @@ export async function GET() {
     return NextResponse.json({ announcements }, { headers: { "Cache-Control": "no-store" } });
   } catch (error) {
     console.error("Failed to load announcements:", error);
-    return NextResponse.json({ error: "Unable to load announcements" }, { status: 500 });
+    return NextResponse.json({ error: "Não foi possível carregar os avisos" }, { status: 500 });
   }
 }

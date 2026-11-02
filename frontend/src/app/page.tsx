@@ -1,39 +1,39 @@
 import type { Metadata } from "next";
 
 import { HomeRouter } from "@/components/home-router";
-import { APP_STORE_URL, getSiteUrl } from "@/lib/site";
+import { GITHUB_URL, getSiteUrl } from "@/lib/site";
 
 const siteUrl = getSiteUrl();
 
 export const metadata: Metadata = {
   title: {
-    absolute: "SupoClip – Open-Source AI Video Clipper for Shorts",
+    absolute: "Kortes – Cortes de vídeo com IA para Shorts e Reels",
   },
   description:
-    "Turn long videos into captioned YouTube Shorts, TikToks, and Reels with open-source AI clipping, virality scoring, and face-aware 9:16 crops.",
+    "Transforme vídeos longos em YouTube Shorts, TikToks e Reels legendados com IA de código aberto, pontuação de viralidade e cortes 9:16 que acompanham o rosto.",
   alternates: {
     canonical: siteUrl,
   },
   keywords: [
-    "AI video clipper",
-    "open-source video clipper",
-    "YouTube Shorts clipper",
-    "long video to shorts",
-    "AI clip maker",
+    "cortes de vídeo com IA",
+    "cortador de vídeo de código aberto",
+    "criar YouTube Shorts",
+    "vídeo longo para shorts",
+    "gerador de clipes com IA",
   ],
   openGraph: {
-    title: "SupoClip – Open-Source AI Video Clipper for Shorts",
+    title: "Kortes – Cortes de vídeo com IA para Shorts e Reels",
     description:
-      "Turn long videos into captioned YouTube Shorts, TikToks, and Reels with open-source AI clipping.",
+      "Transforme vídeos longos em YouTube Shorts, TikToks e Reels legendados com IA de código aberto.",
     url: siteUrl,
-    siteName: "SupoClip",
+    siteName: "Kortes",
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "SupoClip – Open-Source AI Video Clipper for Shorts",
+    title: "Kortes – Cortes de vídeo com IA para Shorts e Reels",
     description:
-      "Open-source AI clipping, virality scoring, captions, and face-aware vertical crops.",
+      "Cortes com IA de código aberto, pontuação de viralidade, legendas e enquadramento vertical que acompanha o rosto.",
   },
 };
 
@@ -41,56 +41,40 @@ const structuredData = [
   {
     "@context": "https://schema.org",
     "@type": "Organization",
-    name: "SupoClip",
+    name: "Kortes",
     url: siteUrl,
     logo: `${siteUrl}/logo.png`,
-    sameAs: ["https://github.com/FujiwaraChoki/supoclip", APP_STORE_URL],
+    sameAs: [GITHUB_URL],
   },
   {
     "@context": "https://schema.org",
     "@type": "SoftwareApplication",
-    name: "SupoClip",
+    name: "Kortes",
     applicationCategory: "MultimediaApplication",
     operatingSystem: "Web, Docker",
     url: siteUrl,
     description:
-      "An open-source AI video clipper for finding highlights, creating vertical crops, adding word-synced captions, and exporting short-form videos.",
+      "Cortador de vídeo com IA de código aberto que encontra os melhores momentos, cria cortes verticais, adiciona legendas sincronizadas palavra a palavra e exporta vídeos curtos.",
     featureList: [
-      "AI-assisted clip discovery and virality scoring",
-      "Face-aware 9:16 vertical cropping",
-      "Word-synced animated captions",
-      "YouTube Shorts, TikTok, and Instagram Reels exports",
-      "Open-source self-hosting",
+      "Descoberta de momentos com IA e pontuação de viralidade",
+      "Corte vertical 9:16 que acompanha o rosto",
+      "Legendas animadas sincronizadas palavra a palavra",
+      "Exportação para YouTube Shorts, TikTok e Instagram Reels",
+      "Hospedagem própria com código aberto",
     ],
     offers: {
       "@type": "Offer",
       price: "0",
       priceCurrency: "USD",
-      category: "Self-hosted open-source edition",
-    },
-  },
-  {
-    "@context": "https://schema.org",
-    "@type": "MobileApplication",
-    name: "SupoClip",
-    applicationCategory: "MultimediaApplication",
-    operatingSystem: "iOS",
-    url: APP_STORE_URL,
-    installUrl: APP_STORE_URL,
-    description:
-      "The SupoClip iOS app: clip long videos into captioned vertical shorts from your iPhone.",
-    offers: {
-      "@type": "Offer",
-      price: "0",
-      priceCurrency: "USD",
+      category: "Edição auto-hospedada de código aberto",
     },
   },
   {
     "@context": "https://schema.org",
     "@type": "WebSite",
-    name: "SupoClip",
+    name: "Kortes",
     url: siteUrl,
-    description: "Open-source AI video clipping for short-form content.",
+    description: "Cortes de vídeo com IA de código aberto para conteúdo curto.",
   },
 ];
 

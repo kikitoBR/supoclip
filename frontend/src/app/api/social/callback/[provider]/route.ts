@@ -44,7 +44,7 @@ export async function GET(
     const appUrl = new URL(APP_CALLBACK_URL);
     appUrl.searchParams.set("provider", provider);
     if (providerError || !code) {
-      appUrl.searchParams.set("error", providerError || "The platform did not return an authorization code");
+      appUrl.searchParams.set("error", providerError || "A plataforma não retornou um código de autorização");
     } else {
       appUrl.searchParams.set("code", code);
       appUrl.searchParams.set("state", state);
@@ -54,14 +54,14 @@ export async function GET(
 
   if (providerError || !code || !state) {
     return settingsRedirect({
-      error: providerError || "The platform did not return an authorization code",
+      error: providerError || "A plataforma não retornou um código de autorização",
     });
   }
 
   const session = await getServerSession();
   if (!session?.user?.id) {
     return settingsRedirect({
-      error: "Your session expired during the connection. Sign in and try again.",
+      error: "Sua sessão expirou durante a conexão. Entre e tente novamente.",
     });
   }
 

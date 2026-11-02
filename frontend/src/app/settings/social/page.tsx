@@ -164,7 +164,7 @@ function SocialSettingsContent() {
         <h1 className="font-display text-3xl font-bold tracking-tight">Contas sociais</h1>
         <p className="mt-2 text-muted-foreground">
           Conecte as contas onde você publica. Publique clipes diretamente da página do vídeo, agende
-          postagens e permita que o SupoClip aprenda com o desempenho delas.
+          postagens e permita que o Kortes aprenda com o desempenho delas.
         </p>
       </div>
 

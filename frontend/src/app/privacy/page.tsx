@@ -9,18 +9,18 @@ const LAST_UPDATED = "16 de outubro de 2026";
 const CONTACT_EMAIL = "privacy@supoclip.com";
 
 export const metadata: Metadata = {
-  title: "Política de Privacidade | SupoClip",
+  title: "Política de Privacidade | Kortes",
   description:
-    "Como o SupoClip coleta, utiliza, compartilha e protege seus dados ao utilizar o serviço de corte de vídeos SupoClip.",
+    "Como o Kortes coleta, utiliza, compartilha e protege seus dados ao utilizar o serviço de corte de vídeos Kortes.",
   alternates: {
     canonical: `${getSiteUrl()}/privacy`,
   },
   openGraph: {
-    title: "Política de Privacidade do SupoClip",
-    description: "Como o SupoClip cuida dos seus dados.",
+    title: "Política de Privacidade do Kortes",
+    description: "Como o Kortes cuida dos seus dados.",
     type: "website",
     url: `${getSiteUrl()}/privacy`,
-    siteName: "SupoClip",
+    siteName: "Kortes",
   },
 };
 
@@ -44,12 +44,12 @@ export default function PrivacyPolicyPage() {
       <header className="border-b bg-background/95">
         <div className="mx-auto flex h-16 max-w-3xl items-center justify-between px-6">
           <Link href="/" className="flex items-center gap-2.5">
-            <Image src="/logo.png" alt="SupoClip" width={24} height={24} className="rounded-lg" />
+            <Image src="/logo.png" alt="Kortes" width={24} height={24} className="rounded-lg" />
             <span
               className="text-lg font-bold tracking-tight"
               style={{ fontFamily: "var(--font-syne), var(--font-geist-sans), system-ui" }}
             >
-              SupoClip
+              Kortes
             </span>
           </Link>
           <a href={HOSTED_APP_URL} target="_blank" rel="noopener noreferrer">
@@ -75,15 +75,15 @@ export default function PrivacyPolicyPage() {
         <div className="mt-12 space-y-10">
           <Section title="Visão Geral">
             <p>
-              Esta Política de Privacidade explica como o SupoClip (&ldquo;SupoClip,&rdquo; &ldquo;nós,&rdquo;)
+              Esta Política de Privacidade explica como o Kortes (&ldquo;Kortes,&rdquo; &ldquo;nós,&rdquo;)
               coleta, utiliza, compartilha e protege informações quando você usa os aplicativos e o serviço hospedado
-              SupoClip (&ldquo;Serviço&rdquo;), que transformam vídeos longos em clipes curtos e legendados.
+              Kortes (&ldquo;Serviço&rdquo;), que transformam vídeos longos em clipes curtos e legendados.
             </p>
             <p>
-              O SupoClip também está disponível como software de código aberto que você pode auto-hospedar. Se você
+              O Kortes também está disponível como software de código aberto que você pode auto-hospedar. Se você
               utilizar uma instância auto-hospedada operada por você ou por terceiros, esse operador &mdash; e não o
-              SupoClip &mdash; será o responsável pelos dados processados por essa instância. Esta política descreve o
-              serviço hospedado operado diretamente pelo SupoClip.
+              Kortes &mdash; será o responsável pelos dados processados por essa instância. Esta política descreve o
+              serviço hospedado operado diretamente pelo Kortes.
             </p>
           </Section>
 
@@ -124,7 +124,7 @@ export default function PrivacyPolicyPage() {
               A primeira conta que fizer login nesse navegador assume esse registro, que em seguida é removido do navegador para que nenhuma
               outra conta possa utilizá-lo. Se a conta for nova, associamos o registro a ela uma única vez logo após o cadastro. Também
               registramos quando você baixa ou exporta um clipe pela primeira vez. Usamos essas informações para entender quais canais atraem
-              usuários que consideram o SupoClip útil. Se as análises estiverem ativadas, os eventos de cadastro e exportação de clipe enviados
+              usuários que consideram o Kortes útil. Se as análises estiverem ativadas, os eventos de cadastro e exportação de clipe enviados
               ao nosso provedor de análise incluirão os mesmos campos de campanha. Não usamos essas informações para publicidade nem as comercializamos.
               Você pode remover o registro do seu navegador a qualquer momento limpando os dados do site supoclip.com.
             </p>
@@ -145,7 +145,7 @@ export default function PrivacyPolicyPage() {
 
           <Section title="Contas de Redes Sociais Conectadas" id="connected-accounts">
             <p>
-              Você pode conectar uma conta do YouTube, TikTok ou Instagram para que o SupoClip publique clipes para você. A conexão
+              Você pode conectar uma conta do YouTube, TikTok ou Instagram para que o Kortes publique clipes para você. A conexão
               é opcional, é feita diretamente pela tela de login da respectiva plataforma e nunca temos acesso à sua senha daquela rede social.
             </p>
             <p className="font-medium text-foreground">O que acessamos e por quê.</p>
@@ -157,7 +157,7 @@ export default function PrivacyPolicyPage() {
                 <span className="text-foreground">Permissão para upload ou publicação</span> &mdash; para publicar os clipes que você escolher, com o título, legenda, visibilidade e horário programados por você. Nunca publicamos nada que você não tenha solicitado explicitamente.
               </li>
               <li>
-                <span className="text-foreground">Estatísticas de publicações feitas pelo SupoClip</span> (visualizações, curtidas, comentários, compartilhamentos) &mdash; para exibir o desempenho dos seus clipes e, quando houver histórico suficiente, refinar a seleção automática de clipes para seus futuros vídeos.
+                <span className="text-foreground">Estatísticas de publicações feitas pelo Kortes</span> (visualizações, curtidas, comentários, compartilhamentos) &mdash; para exibir o desempenho dos seus clipes e, quando houver histórico suficiente, refinar a seleção automática de clipes para seus futuros vídeos.
               </li>
             </ul>
             <p>
@@ -168,9 +168,9 @@ export default function PrivacyPolicyPage() {
             <p className="font-medium text-foreground">Desconexão e exclusão.</p>
             <p>
               Você pode desconectar uma rede social a qualquer momento na página Redes Sociais. A desconexão remove os tokens armazenados
-              imediatamente, cancela eventuais publicações ainda agendadas para essa conta e solicita a revogação do acesso do SupoClip
+              imediatamente, cancela eventuais publicações ainda agendadas para essa conta e solicita a revogação do acesso do Kortes
               junto à plataforma (quando suportado). Você também pode excluir o histórico de postagens publicadas e suas estatísticas no próprio
-              aplicativo. A exclusão da sua conta SupoClip remove todos esses dados permanentemente. Você também pode revogar a permissão
+              aplicativo. A exclusão da sua conta Kortes remove todos esses dados permanentemente. Você também pode revogar a permissão
               diretamente nas configurações da própria plataforma, como no Google através das{" "}
               <a
                 className="text-foreground underline"
@@ -185,7 +185,7 @@ export default function PrivacyPolicyPage() {
             </p>
             <p className="font-medium text-foreground">YouTube e Google.</p>
             <p>
-              O SupoClip utiliza os Serviços de API do YouTube. Ao conectar uma conta do YouTube, você concorda com os{" "}
+              O Kortes utiliza os Serviços de API do YouTube. Ao conectar uma conta do YouTube, você concorda com os{" "}
               <a className="text-foreground underline" href="https://www.youtube.com/t/terms" target="_blank" rel="noreferrer">
                 Termos de Serviço do YouTube
               </a>
@@ -193,7 +193,7 @@ export default function PrivacyPolicyPage() {
               <a className="text-foreground underline" href="https://policies.google.com/privacy" target="_blank" rel="noreferrer">
                 Política de Privacidade do Google
               </a>
-              . O uso e a transferência para qualquer outro aplicativo de informações recebidas das APIs do Google pelo SupoClip atenderão à{" "}
+              . O uso e a transferência para qualquer outro aplicativo de informações recebidas das APIs do Google pelo Kortes atenderão à{" "}
               <a
                 className="text-foreground underline"
                 href="https://developers.google.com/terms/api-services-user-data-policy"
@@ -288,7 +288,7 @@ export default function PrivacyPolicyPage() {
 
         <div className="mt-14 border-t pt-8 text-sm text-muted-foreground">
           <Link href="/" className="underline hover:text-foreground">
-            Voltar ao SupoClip
+            Voltar ao Kortes
           </Link>
         </div>
       </article>

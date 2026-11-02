@@ -9,19 +9,19 @@ import { HOSTED_APP_URL, blogPosts, getSiteUrl } from "@/lib/blog-posts";
 import { getMarketingLinks } from "@/lib/marketing-links";
 
 export const metadata: Metadata = {
-  title: { absolute: "Blog do SupoClip | Guias de Cortes de Vídeo com IA" },
+  title: { absolute: "Blog do Kortes | Guias de Cortes de Vídeo com IA" },
   description:
-    "Guias práticos, comparações de ferramentas e fluxos de trabalho para criadores transformarem vídeos longos em shorts prontos para postar com o SupoClip.",
+    "Guias práticos, comparações de ferramentas e fluxos de trabalho para criadores transformarem vídeos longos em shorts prontos para postar com o Kortes.",
   alternates: {
     canonical: `${getSiteUrl()}/blog`,
   },
   openGraph: {
-    title: "Blog do SupoClip",
+    title: "Blog do Kortes",
     description:
       "Guias e comparativos para criação de clipes com IA, legendas automáticas, reenquadramento vertical e fluxos de vídeos curtos.",
     type: "website",
     url: `${getSiteUrl()}/blog`,
-    siteName: "SupoClip",
+    siteName: "Kortes",
   },
 };
 
@@ -33,12 +33,12 @@ export default function BlogIndexPage() {
       <header className="border-b bg-background/95">
         <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-6">
           <Link href="/" className="flex items-center gap-2.5">
-            <Image src="/logo.png" alt="SupoClip" width={24} height={24} className="rounded-lg" />
+            <Image src="/logo.png" alt="Kortes" width={24} height={24} className="rounded-lg" />
             <span
               className="text-lg font-bold tracking-tight"
               style={{ fontFamily: "var(--font-syne), var(--font-geist-sans), system-ui" }}
             >
-              SupoClip
+              Kortes
             </span>
           </Link>
           <div className="flex items-center gap-2">
@@ -65,7 +65,7 @@ export default function BlogIndexPage() {
             <a href={HOSTED_APP_URL} target="_blank" rel="noopener noreferrer">
               <Badge variant="outline" className="gap-2">
                 <ExternalLink className="h-3.5 w-3.5" />
-                Testar SupoClip na nuvem
+                Testar Kortes na nuvem
               </Badge>
             </a>
           </div>

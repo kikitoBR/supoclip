@@ -13,6 +13,6 @@ export async function GET(request: Request) {
     return NextResponse.json({ code: offer.code });
   } catch (error) {
     console.error("Failed to look up creator code:", error);
-    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+    return NextResponse.json({ error: "Erro interno do servidor" }, { status: 500 });
   }
 }

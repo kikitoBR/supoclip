@@ -59,7 +59,7 @@ export function ScoreRing({ score, size = 36, className }: { score: number; size
       className={cn("relative inline-flex items-center justify-center", className)}
       style={{ width: size, height: size }}
       role="img"
-      aria-label={`Virality score ${clamped} out of 100`}
+      aria-label={`Pontuação de viralidade ${clamped} de 100`}
     >
       <svg width={size} height={size} className="-rotate-90" aria-hidden>
         <circle cx={size / 2} cy={size / 2} r={radius} fill="none" strokeWidth={stroke} className="stroke-current opacity-20" />

@@ -65,19 +65,19 @@ const faqs = [
     icon: Sparkles,
     question: "Qual é a melhor alternativa gratuita ao OpusClip?",
     answer:
-      "O SupoClip é uma forte alternativa gratuita ao OpusClip se você quer um criador de clipes com IA de código aberto que você pode auto-hospedar, personalizar e executar no seu próprio fluxo.",
+      "O Kortes é uma forte alternativa gratuita ao OpusClip se você quer um criador de clipes com IA de código aberto que você pode auto-hospedar, personalizar e executar no seu próprio fluxo.",
   },
   {
     icon: ShieldCheck,
-    question: "O SupoClip é totalmente gratuito?",
+    question: "O Kortes é totalmente gratuito?",
     answer:
-      "O código-fonte do SupoClip é 100% gratuito e de código aberto, e instâncias auto-hospedadas não têm limites de plano. Você paga apenas pela sua própria infraestrutura e pelos provedores de transcrição ou LLM que configurar. A versão hospedada na nuvem requer assinatura paga.",
+      "O código-fonte do Kortes é 100% gratuito e de código aberto, e instâncias auto-hospedadas não têm limites de plano. Você paga apenas pela sua própria infraestrutura e pelos provedores de transcrição ou LLM que configurar. A versão hospedada na nuvem requer assinatura paga.",
   },
   {
     icon: Captions,
-    question: "O SupoClip adiciona marca d'água?",
+    question: "O Kortes adiciona marca d'água?",
     answer:
-      "Não. O pipeline de renderização do SupoClip não inclui nenhuma marca d'água, tanto no aplicativo na nuvem quanto em instalações auto-hospedadas.",
+      "Não. O pipeline de renderização do Kortes não inclui nenhuma marca d'água, tanto no aplicativo na nuvem quanto em instalações auto-hospedadas.",
   },
 ];
 
@@ -132,7 +132,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
     },
     publisher: {
       "@type": "Organization",
-      name: "SupoClip",
+      name: "Kortes",
       logo: {
         "@type": "ImageObject",
         url: `${siteUrl}/logo.png`,
@@ -167,12 +167,12 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
       <header className="border-b bg-background/95">
         <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-6">
           <Link href="/" className="flex items-center gap-2.5">
-            <Image src="/logo.png" alt="SupoClip" width={24} height={24} className="rounded-lg" />
+            <Image src="/logo.png" alt="Kortes" width={24} height={24} className="rounded-lg" />
             <span
               className="text-lg font-bold tracking-tight"
               style={{ fontFamily: "var(--font-syne), var(--font-geist-sans), system-ui" }}
             >
-              SupoClip
+              Kortes
             </span>
           </Link>
           <div className="flex items-center gap-2">
@@ -206,7 +206,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                 <a href={HOSTED_APP_URL} target="_blank" rel="noopener noreferrer">
                   <Badge variant="outline" className="gap-2">
                     <Play className="h-3.5 w-3.5" />
-                    Testar SupoClip na nuvem
+                    Testar Kortes na nuvem
                   </Badge>
                 </a>
               </div>
@@ -217,7 +217,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                 {post.title}
               </h1>
               <p className="mt-6 max-w-2xl text-lg leading-8 text-muted-foreground">
-                Se você gosta da ideia do OpusClip mas quer uma alternativa gratuita e de código aberto, o SupoClip
+                Se você gosta da ideia do OpusClip mas quer uma alternativa gratuita e de código aberto, o Kortes
                 oferece o fluxo essencial: encontre os melhores momentos em vídeos longos, reenquadre verticalmente,
                 adicione legendas e exporte clipes para Shorts, Reels e TikTok.
               </p>
@@ -266,18 +266,18 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
               </p>
 
               <p>
-                O SupoClip é a melhor alternativa gratuita ao OpusClip para esse criador: alguém que busca
+                O Kortes é a melhor alternativa gratuita ao OpusClip para esse criador: alguém que busca
                 descoberta de clipes com IA, exportações verticais, legendas dinâmicas e controle sobre o
                 sistema subjacente. Você também pode{" "}
                 <a href={HOSTED_APP_URL} target="_blank" rel="noopener noreferrer">
-                  usar o SupoClip hospedado na nuvem
+                  usar o Kortes hospedado na nuvem
                 </a>{" "}
                 em um plano pago se preferir pular qualquer configuração técnica.
               </p>
 
               <h2 id="quick-verdict">Veredito Rápido</h2>
               <p>
-                Escolha o SupoClip se você quer um criador de clipes com IA de código aberto que você pode auto-hospedar.
+                Escolha o Kortes se você quer um criador de clipes com IA de código aberto que você pode auto-hospedar.
                 Escolha o OpusClip se você prefere um serviço totalmente gerenciado e não se importa com limites de plano,
                 marcas d&apos;água e modelo por créditos.
               </p>
@@ -311,9 +311,9 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                 mas para criadores recorrentes isso eleva o custo.
               </p>
 
-              <h2>O que torna o SupoClip diferente</h2>
+              <h2>O que torna o Kortes diferente</h2>
               <p>
-                O SupoClip não é apenas uma casca sobre um editor na nuvem. É uma aplicação completa de código aberto com
+                O Kortes não é apenas uma casca sobre um editor na nuvem. É uma aplicação completa de código aberto com
                 backend FastAPI, frontend Next.js, workers assíncronos, transcrição, pontuação por IA, reenquadramento
                 vertical inteligente com foco no rosto, estilização de legendas e predefinições de exportação.
               </p>
@@ -325,17 +325,17 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                 a opção totalmente local com Whisper + Ollama.
               </p>
 
-              <h2 id="supoclip-vs-opusclip">SupoClip vs OpusClip</h2>
+              <h2 id="supoclip-vs-opusclip">Kortes vs OpusClip</h2>
               <p>
                 O resumo abaixo cobre os pontos essenciais. Para um comparativo linha por linha com referências para cada
-                afirmação, leia <Link href={OPUSCLIP_COMPARISON_HREF}>SupoClip vs OpusClip: uma comparação detalhada</Link>.
+                afirmação, leia <Link href={OPUSCLIP_COMPARISON_HREF}>Kortes vs OpusClip: uma comparação detalhada</Link>.
               </p>
             </div>
 
             <div className="my-8 overflow-hidden rounded-lg border">
               <div className="grid grid-cols-[0.85fr_1fr_1fr] bg-muted/50 text-sm font-semibold">
                 <div className="p-4">Recurso</div>
-                <div className="border-l p-4">SupoClip</div>
+                <div className="border-l p-4">Kortes</div>
                 <div className="border-l p-4">OpusClip</div>
               </div>
               {comparisonRows.map(({ icon: Icon, ...row }) => (
@@ -351,18 +351,18 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
             </div>
 
             <div className={articleBodyClassName}>
-              <h2>Como o SupoClip funciona</h2>
+              <h2>Como o Kortes funciona</h2>
               <ol>
                 <li>Cole uma URL do YouTube ou envie um arquivo de vídeo.</li>
-                <li>O SupoClip transcreve o áudio e encontra os momentos candidatos.</li>
+                <li>O Kortes transcreve o áudio e encontra os momentos candidatos.</li>
                 <li>A IA avalia os clipes quanto à força do gancho, engajamento, valor e potencial de compartilhamento.</li>
                 <li>O estúdio cria clipes verticais, com legendas sincronizadas e reenquadramento facial.</li>
                 <li>Você exporta os vídeos prontos para YouTube Shorts, TikTok, Instagram Reels e outras redes.</li>
               </ol>
 
-              <h2>Quando o SupoClip é a melhor escolha</h2>
+              <h2>Quando o Kortes é a melhor escolha</h2>
               <p>
-                O SupoClip é ideal quando você quer uma alternativa gratuita ao OpusClip com controle total de código.
+                O Kortes é ideal quando você quer uma alternativa gratuita ao OpusClip com controle total de código.
                 É especialmente vantajoso para criadores com um acervo extenso de vídeos longos, agências que desejam
                 personalizar fluxos de corte ou equipes técnicas que querem incorporar IA de vídeo dentro da sua própria infraestrutura.
               </p>
@@ -385,7 +385,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                     className="mt-2 text-2xl font-bold tracking-tight"
                     style={{ fontFamily: "var(--font-syne), var(--font-geist-sans), system-ui" }}
                   >
-                    Comece a criar clipes com o SupoClip.
+                    Comece a criar clipes com o Kortes.
                   </h2>
                 </div>
                 <div className="flex flex-wrap gap-3">
@@ -426,7 +426,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
 
             <Separator className="my-10" />
 
-            <RelatedGuides href={`/blog/${post.slug}`} heading="Guias relacionados do SupoClip" />
+            <RelatedGuides href={`/blog/${post.slug}`} heading="Guias relacionados do Kortes" />
 
             <Separator className="my-10" />
 
@@ -467,7 +467,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                 <ShieldCheck className="h-5 w-5 text-green-600" />
                 <p className="mt-3 text-sm font-semibold">Controle em código aberto</p>
                 <p className="mt-2 text-sm leading-6 text-muted-foreground">
-                  Use o SupoClip quando você quer o fluxo de cortes sem transferir cada decisão para uma plataforma proprietária fechada.
+                  Use o Kortes quando você quer o fluxo de cortes sem transferir cada decisão para uma plataforma proprietária fechada.
                 </p>
               </div>
             </div>

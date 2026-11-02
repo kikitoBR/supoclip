@@ -22,7 +22,7 @@ async function sendPasswordResetEmail(userId: string, url: string) {
   if (!response.ok) {
     const detail = await response.text();
     throw new Error(
-      `Backend password reset email failed with ${response.status}: ${detail || "unknown error"}`
+      `Backend password reset email failed with ${response.status}: ${detail || "erro desconhecido"}`
     );
   }
 }
@@ -67,7 +67,7 @@ export const auth = betterAuth({
       });
       if (!response.ok) {
         // Do not log the verification URL or token.
-        throw new Error(`Verification email delivery failed (${response.status})`);
+        throw new Error(`Falha ao enviar o e-mail de verificação (${response.status})`);
       }
     },
   },

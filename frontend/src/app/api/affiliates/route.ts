@@ -40,7 +40,7 @@ export async function GET() {
     });
   } catch (error) {
     console.error("Failed to load affiliate application:", error);
-    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+    return NextResponse.json({ error: "Erro interno do servidor" }, { status: 500 });
   }
 }
 
@@ -71,7 +71,7 @@ export async function POST(request: Request) {
       );
     }
     if (!(await isSlugAvailable(prisma, application.slug, userId))) {
-      return NextResponse.json({ error: "That code is already taken." }, { status: 409 });
+      return NextResponse.json({ error: "Esse código já está em uso." }, { status: 409 });
     }
 
     const fields = {
@@ -93,7 +93,7 @@ export async function POST(request: Request) {
     } catch (error) {
       // Another applicant claimed the slug between the check and the write.
       if ((error as { code?: string }).code === "P2002") {
-        return NextResponse.json({ error: "That code is already taken." }, { status: 409 });
+        return NextResponse.json({ error: "Esse código já está em uso." }, { status: 409 });
       }
       throw error;
     }
@@ -102,6 +102,6 @@ export async function POST(request: Request) {
     return NextResponse.json({ application: saved, can_apply_at: null }, { status: 201 });
   } catch (error) {
     console.error("Failed to submit affiliate application:", error);
-    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+    return NextResponse.json({ error: "Erro interno do servidor" }, { status: 500 });
   }
 }

@@ -24,7 +24,7 @@ async function requireAdmin() {
   return { session };
 }
 
-const ALREADY_REVIEWED = NextResponse.json({ error: "This application was already reviewed" }, { status: 409 });
+const ALREADY_REVIEWED = NextResponse.json({ error: "Esta inscrição já foi analisada" }, { status: 409 });
 
 /**
  * Review a creator application: `{ action: "approve" | "decline" | "revoke" | "app_store_code_added", reason? }`.
@@ -48,7 +48,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
       select: { id: true, user_id: true, slug: true, status: true, stripe_promotion_code_id: true },
     });
     if (!affiliate) {
-      return NextResponse.json({ error: "Application not found" }, { status: 404 });
+      return NextResponse.json({ error: "Inscrição não encontrada" }, { status: 404 });
     }
     const reviewed = { reviewed_at: new Date(), reviewed_by: adminId };
 
@@ -65,8 +65,8 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
         });
       } catch (error) {
         // e.g. the code already exists in Stripe, or the creator coupon is missing.
-        const message = error instanceof Error ? error.message : "unknown error";
-        return NextResponse.json({ error: `Stripe rejected the promotion code: ${message}` }, { status: 502 });
+        const message = error instanceof Error ? error.message : "erro desconhecido";
+        return NextResponse.json({ error: `O Stripe recusou o código promocional: ${message}` }, { status: 502 });
       }
 
       const { count } = await prisma.affiliate.updateMany({
@@ -106,7 +106,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
         data: { status: "revoked", decline_reason: reason, ...reviewed },
       });
       if (count === 0) {
-        return NextResponse.json({ error: "Only approved creators can be revoked" }, { status: 409 });
+        return NextResponse.json({ error: "Só criadores aprovados podem ser revogados" }, { status: 409 });
       }
 
       // Remove Pro before touching Stripe so a Stripe failure can't leave a revoked creator on free Pro.
@@ -124,14 +124,14 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
         data: { app_store_code_added_at: new Date() },
       });
       if (count === 0) {
-        return NextResponse.json({ error: "Only approved creators have an App Store code" }, { status: 409 });
+        return NextResponse.json({ error: "Só criadores aprovados têm código da App Store" }, { status: 409 });
       }
       return NextResponse.json({ status: "approved" });
     }
 
-    return NextResponse.json({ error: "action must be approve, decline, revoke or app_store_code_added" }, { status: 400 });
+    return NextResponse.json({ error: "action deve ser approve, decline, revoke ou app_store_code_added" }, { status: 400 });
   } catch (error) {
     console.error("Failed to review affiliate application:", error);
-    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+    return NextResponse.json({ error: "Erro interno do servidor" }, { status: 500 });
   }
 }

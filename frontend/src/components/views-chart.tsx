@@ -79,7 +79,7 @@ export function ViewsChart({ days }: { days: DailyViews[] }) {
           width={width}
           height={HEIGHT}
           role="img"
-          aria-label={`Daily new views over ${days.length} days, ${formatMetric(total)} in total`}
+          aria-label={`Novas visualizações por dia em ${days.length} dias, ${formatMetric(total)} no total`}
         >
           {[0, yMax / 2, yMax].map((tick) => {
             const y = PAD.top + plotHeight - (tick / yMax) * plotHeight;
@@ -146,11 +146,11 @@ export function ViewsChart({ days }: { days: DailyViews[] }) {
       )}
 
       <table className="sr-only">
-        <caption>Daily new views</caption>
+        <caption>Novas visualizações por dia</caption>
         <thead>
           <tr>
-            <th>Date</th>
-            <th>Views</th>
+            <th>Data</th>
+            <th>Visualizações</th>
           </tr>
         </thead>
         <tbody>

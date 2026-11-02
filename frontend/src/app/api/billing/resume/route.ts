@@ -9,7 +9,7 @@ import { upsertSubscriptionState } from "@/server/stripe-subscription-sync";
 // Undo a scheduled cancellation so the subscription renews as normal.
 export async function POST() {
   if (!monetizationEnabled) {
-    return NextResponse.json({ error: "Not found" }, { status: 404 });
+    return NextResponse.json({ error: "Não encontrado" }, { status: 404 });
   }
 
   const session = await auth.api.getSession({ headers: await headers() });
@@ -23,7 +23,7 @@ export async function POST() {
   });
 
   if (!user?.stripe_subscription_id || user.subscription_provider === "apple") {
-    return NextResponse.json({ error: "No Stripe subscription to restart" }, { status: 400 });
+    return NextResponse.json({ error: "Nenhuma assinatura do Stripe para reativar" }, { status: 400 });
   }
 
   const stripe = getServerStripeClient();
@@ -31,7 +31,7 @@ export async function POST() {
     let subscription = await stripe.subscriptions.retrieve(user.stripe_subscription_id);
     if (subscription.status === "canceled") {
       return NextResponse.json(
-        { error: "This subscription has already ended. Choose a plan to subscribe again." },
+        { error: "Esta assinatura já terminou. Escolha um plano para assinar de novo." },
         { status: 409 }
       );
     }
@@ -49,6 +49,6 @@ export async function POST() {
     return NextResponse.json({ ok: true });
   } catch (error) {
     console.error("Failed to restart Stripe subscription", error);
-    return NextResponse.json({ error: "Unable to restart subscription" }, { status: 500 });
+    return NextResponse.json({ error: "Não foi possível reativar a assinatura" }, { status: 500 });
   }
 }

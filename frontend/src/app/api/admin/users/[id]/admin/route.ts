@@ -33,7 +33,7 @@ export async function PATCH(
     const { is_admin } = body as { is_admin?: unknown };
 
     if (typeof is_admin !== "boolean") {
-      return NextResponse.json({ error: "is_admin must be a boolean" }, { status: 400 });
+      return NextResponse.json({ error: "is_admin deve ser verdadeiro ou falso" }, { status: 400 });
     }
 
     const updated = await prisma.user.update({
@@ -49,6 +49,6 @@ export async function PATCH(
     return NextResponse.json({ user: updated });
   } catch (error) {
     console.error("Failed to update admin flag:", error);
-    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+    return NextResponse.json({ error: "Erro interno do servidor" }, { status: 500 });
   }
 }

@@ -27,7 +27,7 @@ export async function GET() {
 
     if (!user) {
       return NextResponse.json(
-        { error: "User not found" },
+        { error: "Usuário não encontrado" },
         { status: 404 }
       );
     }
@@ -41,7 +41,7 @@ export async function GET() {
   } catch (error) {
     console.error("Error fetching preferences:", error);
     return NextResponse.json(
-      { error: "Internal server error" },
+      { error: "Erro interno do servidor" },
       { status: 500 }
     );
   }
@@ -75,7 +75,7 @@ export async function PATCH(request: NextRequest) {
 
     if (fontSize !== undefined && (typeof fontSize !== "number" || !Number.isInteger(fontSize) || fontSize < 12 || fontSize > 48)) {
       return NextResponse.json(
-        { error: "Invalid fontSize (must be between 12 and 48)" },
+        { error: "Tamanho de fonte inválido (deve estar entre 12 e 48)" },
         { status: 400 }
       );
     }
@@ -125,7 +125,7 @@ export async function PATCH(request: NextRequest) {
   } catch (error) {
     console.error("Error updating preferences:", error);
     return NextResponse.json(
-      { error: "Internal server error" },
+      { error: "Erro interno do servidor" },
       { status: 500 }
     );
   }
