@@ -24,7 +24,7 @@ from pydantic_ai.providers.openai import OpenAIProvider
 from pydantic_ai.providers.openrouter import OpenRouterProvider
 from pydantic import AliasChoices, BaseModel, Field, field_validator
 
-from .config import Config, get_config
+from .config import Config, env_or_default, get_config
 from .runtime_settings import apply_settings_to_process_env
 
 logger = logging.getLogger(__name__)
@@ -99,8 +99,8 @@ ANALYSIS_WINDOW_CONCURRENCY = 3
 ANALYSIS_WINDOW_SEGMENT_TARGET = "3-5"
 # Wall-clock budget for all windows together. Each window additionally keeps
 # its own TRANSCRIPT_ANALYSIS_TIMEOUT_SECONDS budget once it starts running.
-ANALYSIS_TOTAL_TIMEOUT_SECONDS = int(os.getenv("ANALYSIS_TOTAL_TIMEOUT_SECONDS", "3600"))
-RERANK_TIMEOUT_SECONDS = int(os.getenv("RERANK_TIMEOUT_SECONDS", "600"))
+ANALYSIS_TOTAL_TIMEOUT_SECONDS = int(env_or_default("ANALYSIS_TOTAL_TIMEOUT_SECONDS", "3600"))
+RERANK_TIMEOUT_SECONDS = int(env_or_default("RERANK_TIMEOUT_SECONDS", "600"))
 CANDIDATE_DEDUPE_OVERLAP_RATIO = 0.5
 # How far a model timestamp may sit from a transcript line boundary and still be
 # snapped onto it instead of the whole clip being dropped.

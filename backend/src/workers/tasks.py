@@ -202,7 +202,7 @@ from ..services.social_service import PUBLISH_JOB_TIMEOUT_SECONDS
 class WorkerSettings:
     """Configuration for arq worker."""
 
-    from ..config import Config
+    from ..config import Config, env_or_default
     from arq.connections import RedisSettings
 
     config = Config()
@@ -227,7 +227,7 @@ class WorkerSettings:
 
     # Retry settings
     max_tries = 3  # Retry failed jobs up to 3 times
-    job_timeout = int(os.getenv("WORKER_JOB_TIMEOUT_SECONDS", "36000"))  # Up to 10 hours for long videos
+    job_timeout = int(env_or_default("WORKER_JOB_TIMEOUT_SECONDS", "36000"))  # Up to 10 hours for long videos
 
     # Worker pool settings
     max_jobs = 4  # Process up to 4 jobs simultaneously

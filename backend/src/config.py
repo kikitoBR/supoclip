@@ -10,6 +10,18 @@ LOCAL_OLLAMA_BASE_URL = "http://localhost:11434/v1"
 DOCKER_OLLAMA_BASE_URL = "http://host.docker.internal:11434/v1"
 
 
+def env_or_default(name: str, default: str) -> str:
+    """Read an env var, treating an empty value as unset.
+
+    Hosts such as Coolify pass every variable declared in their UI to every
+    service, so numeric settings left blank arrive as "" instead of missing.
+    """
+    value = os.getenv(name)
+    if value is None or not value.strip():
+        return default
+    return value.strip()
+
+
 class Config:
     def __init__(self):
         self.openai_api_key = self._get_runtime_setting("OPENAI_API_KEY")
@@ -36,7 +48,7 @@ class Config:
         self.rerank_llm = self._get_optional_env("RERANK_LLM") or self.llm
         self.assembly_ai_api_key = self._get_runtime_setting("ASSEMBLY_AI_API_KEY")
         self.assembly_ai_http_timeout_seconds = int(
-            os.getenv("ASSEMBLY_AI_HTTP_TIMEOUT_SECONDS", "900")
+            env_or_default("ASSEMBLY_AI_HTTP_TIMEOUT_SECONDS", "900")
         )
         self.pexels_api_key = self._get_runtime_setting("PEXELS_API_KEY")
         self.apify_api_token = self._get_runtime_setting("APIFY_API_TOKEN")
@@ -53,29 +65,29 @@ class Config:
             "APIFY_YOUTUBE_DOWNLOADER_ACTOR", ""
         ).strip()
         self.apify_run_timeout_seconds = int(
-            os.getenv("APIFY_RUN_TIMEOUT_SECONDS", "3600")
+            env_or_default("APIFY_RUN_TIMEOUT_SECONDS", "3600")
         )
         # Long videos at >1080p don't finish within the Apify run timeout.
         self.apify_long_video_seconds = int(
-            os.getenv("APIFY_LONG_VIDEO_SECONDS", "1800")
+            env_or_default("APIFY_LONG_VIDEO_SECONDS", "1800")
         )
 
-        self.max_video_duration = int(os.getenv("MAX_VIDEO_DURATION", "5400"))
+        self.max_video_duration = int(env_or_default("MAX_VIDEO_DURATION", "5400"))
         # YouTube sources can be longer on paid tiers. Uploads continue to use
         # max_video_duration regardless of plan.
         self.pro_youtube_max_video_duration = int(
-            os.getenv("PRO_YOUTUBE_MAX_VIDEO_DURATION", str(self.max_video_duration))
+            env_or_default("PRO_YOUTUBE_MAX_VIDEO_DURATION", str(self.max_video_duration))
         )
         self.scale_youtube_max_video_duration = int(
-            os.getenv("SCALE_YOUTUBE_MAX_VIDEO_DURATION", "10800")
+            env_or_default("SCALE_YOUTUBE_MAX_VIDEO_DURATION", "10800")
         )
         self.max_video_upload_bytes = int(
-            os.getenv("MAX_VIDEO_UPLOAD_BYTES", "12000000000")
+            env_or_default("MAX_VIDEO_UPLOAD_BYTES", "12000000000")
         )
         self.output_dir = os.getenv("OUTPUT_DIR", "outputs")
 
-        self.max_clips = int(os.getenv("MAX_CLIPS", "10"))
-        self.clip_duration = int(os.getenv("CLIP_DURATION", "30"))  # seconds
+        self.max_clips = int(env_or_default("MAX_CLIPS", "10"))
+        self.clip_duration = int(env_or_default("CLIP_DURATION", "30"))  # seconds
 
         self.temp_dir = os.getenv("TEMP_DIR", "temp")
         self.media_storage = os.getenv("MEDIA_STORAGE", "local").strip().lower()
@@ -88,28 +100,28 @@ class Config:
         self.media_s3_access_key = self._get_optional_env("MEDIA_S3_ACCESS_KEY_ID")
         self.media_s3_secret_key = self._get_optional_env("MEDIA_S3_SECRET_ACCESS_KEY")
         self.media_s3_session_token = self._get_optional_env("MEDIA_S3_SESSION_TOKEN")
-        self.media_url_ttl_seconds = min(3600, max(60, int(os.getenv("MEDIA_URL_TTL_SECONDS", "900"))))
-        self.media_cache_ttl_seconds = max(14400, int(os.getenv("MEDIA_CACHE_TTL_SECONDS", "86400")))
-        self.media_orphan_grace_seconds = max(86400, int(os.getenv("MEDIA_ORPHAN_GRACE_SECONDS", "86400")))
-        self.media_upload_concurrency = max(1, int(os.getenv("MEDIA_UPLOAD_CONCURRENCY", "3")))
-        self.media_upload_daily_limit = max(1, int(os.getenv("MEDIA_UPLOAD_DAILY_LIMIT", "20")))
+        self.media_url_ttl_seconds = min(3600, max(60, int(env_or_default("MEDIA_URL_TTL_SECONDS", "900"))))
+        self.media_cache_ttl_seconds = max(14400, int(env_or_default("MEDIA_CACHE_TTL_SECONDS", "86400")))
+        self.media_orphan_grace_seconds = max(86400, int(env_or_default("MEDIA_ORPHAN_GRACE_SECONDS", "86400")))
+        self.media_upload_concurrency = max(1, int(env_or_default("MEDIA_UPLOAD_CONCURRENCY", "3")))
+        self.media_upload_daily_limit = max(1, int(env_or_default("MEDIA_UPLOAD_DAILY_LIMIT", "20")))
         if self.media_storage == "s3" and not self.media_s3_bucket:
             raise ValueError("MEDIA_S3_BUCKET is required with MEDIA_STORAGE=s3")
 
         # Redis configuration
         self.redis_host = os.getenv("REDIS_HOST", "localhost")
-        self.redis_port = int(os.getenv("REDIS_PORT", "6379"))
+        self.redis_port = int(env_or_default("REDIS_PORT", "6379"))
         self.redis_password = self._get_optional_env("REDIS_PASSWORD")
 
         # Fail-safe: queued tasks should not stay queued forever
         self.queued_task_timeout_seconds = int(
-            os.getenv("QUEUED_TASK_TIMEOUT_SECONDS", "180")
+            env_or_default("QUEUED_TASK_TIMEOUT_SECONDS", "180")
         )
         # Fail-safe: processing tasks whose worker died mid-run should not stay
         # "processing" forever. Default comfortably exceeds arq's job_timeout so
         # a legitimately long job is never falsely swept into "error".
         self.processing_task_timeout_seconds = int(
-            os.getenv("PROCESSING_TASK_TIMEOUT_SECONDS", "14400")
+            env_or_default("PROCESSING_TASK_TIMEOUT_SECONDS", "14400")
         )
 
         self.self_host = self._get_bool_env("SELF_HOST", True)
@@ -119,11 +131,11 @@ class Config:
             "ALLOW_UNSIGNED_BACKEND_AUTH", False
         )
         self.auth_signature_ttl_seconds = int(
-            os.getenv("AUTH_SIGNATURE_TTL_SECONDS", "300")
+            env_or_default("AUTH_SIGNATURE_TTL_SECONDS", "300")
         )
-        self.free_plan_task_limit = int(os.getenv("FREE_PLAN_TASK_LIMIT", "10"))
-        self.pro_plan_task_limit = int(os.getenv("PRO_PLAN_TASK_LIMIT", "50"))
-        self.scale_plan_task_limit = int(os.getenv("SCALE_PLAN_TASK_LIMIT", "300"))
+        self.free_plan_task_limit = int(env_or_default("FREE_PLAN_TASK_LIMIT", "10"))
+        self.pro_plan_task_limit = int(env_or_default("PRO_PLAN_TASK_LIMIT", "50"))
+        self.scale_plan_task_limit = int(env_or_default("SCALE_PLAN_TASK_LIMIT", "300"))
         self.cors_origins = self._get_csv_env(
             "CORS_ORIGINS",
             [
@@ -171,16 +183,16 @@ class Config:
             or self.app_base_url
         ).rstrip("/")
         self.social_metrics_refresh_hours = float(
-            os.getenv("SOCIAL_METRICS_REFRESH_HOURS", "6")
+            env_or_default("SOCIAL_METRICS_REFRESH_HOURS", "6")
         )
         self.social_metrics_max_post_age_days = int(
-            os.getenv("SOCIAL_METRICS_MAX_POST_AGE_DAYS", "60")
+            env_or_default("SOCIAL_METRICS_MAX_POST_AGE_DAYS", "60")
         )
         self.social_performance_min_posts = int(
-            os.getenv("SOCIAL_PERFORMANCE_MIN_POSTS", "3")
+            env_or_default("SOCIAL_PERFORMANCE_MIN_POSTS", "3")
         )
         self.social_publish_max_attempts = int(
-            os.getenv("SOCIAL_PUBLISH_MAX_ATTEMPTS", "3")
+            env_or_default("SOCIAL_PUBLISH_MAX_ATTEMPTS", "3")
         )
         # Who may use social publishing: "all", "admins" (admins plus the
         # allowlist below, for a gated rollout) or "off".
@@ -195,7 +207,7 @@ class Config:
             if email.strip()
         )
         self.default_processing_mode = os.getenv("DEFAULT_PROCESSING_MODE", "fast")
-        self.fast_mode_max_clips = int(os.getenv("FAST_MODE_MAX_CLIPS", "10"))
+        self.fast_mode_max_clips = int(env_or_default("FAST_MODE_MAX_CLIPS", "10"))
         self.fast_mode_transcript_model = os.getenv(
             "FAST_MODE_TRANSCRIPT_MODEL", "universal"
         )

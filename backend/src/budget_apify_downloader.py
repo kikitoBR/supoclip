@@ -19,7 +19,7 @@ from urllib.parse import quote, urljoin, urlsplit
 
 import requests
 
-from .config import get_config
+from .config import env_or_default, get_config
 
 logger = logging.getLogger(__name__)
 ADAPTERS = {"kv_file", "url_objects", "signed_url", "kv_media", "private_s3"}
@@ -452,8 +452,8 @@ def download_budget_apify(video_id: str, temp_dir: Path, quality: str, token: st
     if any(candidate not in providers for candidate in candidates):
         raise BudgetApifyError("Unsupported Apify fallback configuration.")
     try:
-        budget = min(6.0, float(os.getenv("APIFY_DOWNLOAD_MAX_CHARGE_USD", "6")))
-        provider_cap = min(6.0, float(os.getenv("APIFY_FALLBACK_MAX_CHARGE_USD", "6")))
+        budget = min(6.0, float(env_or_default("APIFY_DOWNLOAD_MAX_CHARGE_USD", "6")))
+        provider_cap = min(6.0, float(env_or_default("APIFY_FALLBACK_MAX_CHARGE_USD", "6")))
         if not all(math.isfinite(value) and value > 0 for value in (budget, provider_cap)):
             raise ValueError()
     except ValueError:
