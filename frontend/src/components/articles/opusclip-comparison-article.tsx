@@ -15,103 +15,103 @@ const OPUS_SOURCES = {
 
 const faqs: ArticleFaq[] = [
   {
-    question: "Is Kortes better than OpusClip?",
+    question: "O Kortes é melhor que o OpusClip?",
     answer:
-      "It depends on what you need. Kortes is the stronger fit if you want source access, self-hosting, or your own choice of AI models. OpusClip is the stronger fit if you want a managed product with a free tier to try. We don't claim either produces better clips, because we haven't run a controlled test that would support that.",
+      "Depende do que você precisa. O Kortes combina mais se você quer acesso ao código, auto-hospedagem ou escolher os próprios modelos de IA. O OpusClip combina mais se você quer um produto gerenciado com um plano gratuito para testar. Não afirmamos que nenhum dos dois gera clipes melhores, porque não fizemos um teste controlado que sustente isso.",
   },
   {
-    question: "Does Kortes add a watermark?",
+    question: "O Kortes coloca marca d'água?",
     answer:
-      "No. Kortes's rendering pipeline has no watermark step, in the hosted app or a self-hosted install. OpusClip's help center says free-plan exports can include an OpusClip watermark.",
+      "Não. O processo de renderização do Kortes não tem etapa de marca d'água, nem na versão hospedada nem na instalação própria. A central de ajuda do OpusClip diz que as exportações do plano gratuito podem incluir uma marca d'água do OpusClip.",
   },
   {
-    question: "Does hosted Kortes have a free plan?",
+    question: "A versão hospedada do Kortes tem plano gratuito?",
     answer:
-      "No. The hosted app requires a Pro or Scale subscription to process videos. The free route is self-hosting the open-source code, where there are no plan limits; you pay only for your own infrastructure and any AI providers you configure.",
+      "Não. A versão hospedada exige uma assinatura Pro ou Scale para processar vídeos. O caminho gratuito é hospedar o código aberto você mesmo, sem limites de plano; você paga apenas a sua infraestrutura e os provedores de IA que configurar.",
   },
   {
-    question: "Which one is faster or makes better clips?",
+    question: "Qual é mais rápido ou gera clipes melhores?",
     answer:
-      "We haven't published a controlled test of speed or clip quality, so we don't make that claim. Results depend on your videos and settings; the fair-test steps on this page show how to compare them on your own content.",
+      "Não publicamos um teste controlado de velocidade ou de qualidade dos clipes, então não fazemos essa afirmação. Os resultados dependem dos seus vídeos e configurações; os passos de teste justo desta página mostram como comparar com o seu próprio conteúdo.",
   },
 ];
 
 const toc: Array<[string, string]> = [
-  ["verdict", "Short answer"],
-  ["comparison", "Side by side"],
-  ["pricing", "Pricing model"],
-  ["choose-supoclip", "When Kortes fits"],
-  ["choose-opusclip", "When OpusClip fits"],
-  ["test", "Run your own test"],
-  ["sources", "Sources"],
-  ["faq", "FAQ"],
+  ["verdict", "Resposta curta"],
+  ["comparison", "Lado a lado"],
+  ["pricing", "Modelo de preço"],
+  ["choose-supoclip", "Quando o Kortes combina"],
+  ["choose-opusclip", "Quando o OpusClip combina"],
+  ["test", "Faça o seu teste"],
+  ["sources", "Fontes"],
+  ["faq", "Perguntas frequentes"],
 ];
 
 export function OpusClipComparisonArticle({ post }: { post: BlogPost }) {
   const [pro, scale] = getPublicBillingPlans();
   const rows: Array<[string, React.ReactNode, React.ReactNode]> = [
     [
-      "How you run it",
-      <>Hosted app, iOS app, or self-hosted with <a href={source("docker-compose.yml")}>Docker Compose</a></>,
-      "Hosted service",
+      "Como você usa",
+      <>App hospedado ou instalação própria com <a href={source("docker-compose.yml")}>Docker Compose</a></>,
+      "Serviço hospedado",
     ],
     [
-      "Source code",
-      <>Public, <a href={source("LICENSE")}>AGPL-3.0</a></>,
-      "Not covered by the sources below",
+      "Código-fonte",
+      <>Público, <a href={source("LICENSE")}>AGPL-3.0</a></>,
+      "Não coberto pelas fontes abaixo",
     ],
     [
-      "Pricing model",
-      <>Hosted: monthly plans with a fixed number of videos. Self-hosted: no plan limits.</>,
-      <>Plans with credits for processing minutes, plus a free plan (<a href={OPUS_SOURCES.plans}>help center</a>)</>,
+      "Modelo de preço",
+      <>Hospedado: planos mensais com um número fixo de vídeos. Auto-hospedado: sem limites de plano.</>,
+      <>Planos com créditos por minutos de processamento, além de um plano gratuito (<a href={OPUS_SOURCES.plans}>central de ajuda</a>)</>,
     ],
     [
-      "Watermark",
-      <>None; the <a href={`${GITHUB_URL}/tree/main/backend/src/media`}>render pipeline</a> has no watermark step</>,
-      <>Free-plan exports can include one (<a href={OPUS_SOURCES.watermark}>help center</a>)</>,
+      "Marca d'água",
+      <>Nenhuma; o <a href={`${GITHUB_URL}/tree/main/backend/src/media`}>processo de renderização</a> não tem etapa de marca d&apos;água</>,
+      <>As exportações do plano gratuito podem ter uma (<a href={OPUS_SOURCES.watermark}>central de ajuda</a>)</>,
     ],
     [
-      "AI model choice",
-      <>OpenAI, Google, Anthropic, OpenRouter, or local Ollama (<a href={source("docs/configuration.md")}>config</a>)</>,
-      "Not covered by the sources below",
+      "Escolha do modelo de IA",
+      <>OpenAI, Google, Anthropic, OpenRouter ou Ollama local (<a href={source("docs/configuration.md")}>configuração</a>)</>,
+      "Não coberto pelas fontes abaixo",
     ],
     [
-      "Transcription",
-      "AssemblyAI, local Whisper, or YouTube captions",
-      "Not covered by the sources below",
+      "Transcrição",
+      "AssemblyAI, Whisper local ou legendas do YouTube",
+      "Não coberto pelas fontes abaixo",
     ],
     [
-      "Automation",
-      <>REST API with per-user keys and an <a href={source("mcp/README.md")}>MCP server</a></>,
-      "Not covered by the sources below",
+      "Automação",
+      <>API REST com chaves por usuário e um <a href={source("mcp/README.md")}>servidor MCP</a></>,
+      "Não coberto pelas fontes abaixo",
     ],
   ];
 
   return (
     <ArticleShell post={post} breadcrumb="Kortes vs OpusClip" toc={toc} faqs={faqs}>
       <p>
-        OpusClip helped define AI clipping: upload a long video, get short vertical clips back. Kortes does the same
-        job as an open-source project you can use hosted or run yourself. This comparison sticks to what each product
-        documents. Kortes claims link to our source code. OpusClip claims link to OpusClip&apos;s own help center.
-        Where a source doesn&apos;t cover something, the table says so rather than guessing.
+        O OpusClip ajudou a definir os cortes com IA: você envia um vídeo longo e recebe clipes verticais curtos. O Kortes faz
+        o mesmo trabalho como um projeto de código aberto que você pode usar hospedado ou rodar você mesmo. Esta comparação se
+        limita ao que cada produto documenta. As afirmações sobre o Kortes apontam para o nosso código. As afirmações sobre o
+        OpusClip apontam para a central de ajuda do próprio OpusClip. Quando uma fonte não cobre algo, a tabela diz isso em vez de adivinhar.
       </p>
       <p>
-        This page doesn&apos;t rate clip quality, caption accuracy, or processing speed. To compare those, see{" "}
-        <a href="#test">how to run your own test</a>.
+        Esta página não avalia a qualidade dos clipes, a precisão das legendas nem a velocidade de processamento. Para comparar isso, veja{" "}
+        <a href="#test">como fazer o seu próprio teste</a>.
       </p>
 
-      <h2 id="verdict">The short answer</h2>
+      <h2 id="verdict">A resposta curta</h2>
       <ul>
-        <li><strong>Choose Kortes</strong> if you want to self-host, inspect or modify the code, pick your own AI models (including fully local ones), or export without a watermark.</li>
-        <li><strong>Choose OpusClip</strong> if you want a managed product you never have to deploy, and want to start on a free plan.</li>
+        <li><strong>Escolha o Kortes</strong> se você quer hospedar por conta própria, inspecionar ou modificar o código, escolher os seus modelos de IA (inclusive 100% locais) ou exportar sem marca d&apos;água.</li>
+        <li><strong>Escolha o OpusClip</strong> se você quer um produto gerenciado que nunca precise instalar e quer começar num plano gratuito.</li>
       </ul>
 
-      <h2 id="comparison">Side by side</h2>
+      <h2 id="comparison">Lado a lado</h2>
       <div className="overflow-x-auto rounded-lg border">
         <table className="w-full min-w-[600px] text-left text-sm leading-6">
-          <caption className="sr-only">Kortes and OpusClip comparison with sources</caption>
+          <caption className="sr-only">Comparação entre Kortes e OpusClip com fontes</caption>
           <thead className="bg-muted">
-            <tr><th scope="col" className="p-3">Area</th><th scope="col" className="p-3">Kortes</th><th scope="col" className="p-3">OpusClip</th></tr>
+            <tr><th scope="col" className="p-3">Área</th><th scope="col" className="p-3">Kortes</th><th scope="col" className="p-3">OpusClip</th></tr>
           </thead>
           <tbody>
             {rows.map(([area, supoclip, opusclip]) => (
@@ -125,57 +125,57 @@ export function OpusClipComparisonArticle({ post }: { post: BlogPost }) {
         </table>
       </div>
       <p className="text-sm">
-        &ldquo;Not covered by the sources below&rdquo; means the cited OpusClip help-center articles don&apos;t address it. It
-        doesn&apos;t mean OpusClip lacks the feature. Check <a href="https://www.opus.pro/">opus.pro</a> for anything not listed here.
+        &ldquo;Não coberto pelas fontes abaixo&rdquo; significa que os artigos citados da central de ajuda do OpusClip não tratam do assunto.
+        Não quer dizer que o OpusClip não tenha o recurso. Consulte o <a href="https://www.opus.pro/">opus.pro</a> para o que não estiver listado aqui.
       </p>
 
-      <h2 id="pricing">Pricing model: credits vs. plans vs. your own infrastructure</h2>
+      <h2 id="pricing">Modelo de preço: créditos, planos ou a sua própria infraestrutura</h2>
       <p>
-        OpusClip&apos;s <a href={OPUS_SOURCES.plans}>plans and credits article</a> describes paid plans that use credits for
-        processing minutes, plus a free plan. Its <a href={OPUS_SOURCES.watermark}>watermark article</a> says free-plan exports can
-        carry an OpusClip watermark. Plan prices and credit amounts change, so check OpusClip&apos;s current pricing page
-        instead of relying on numbers copied into a blog post.
+        O <a href={OPUS_SOURCES.plans}>artigo de planos e créditos</a> do OpusClip descreve planos pagos que usam créditos por
+        minutos de processamento, além de um plano gratuito. O <a href={OPUS_SOURCES.watermark}>artigo sobre marca d&apos;água</a> diz que as
+        exportações do plano gratuito podem ter uma marca d&apos;água do OpusClip. Preços e quantidades de créditos mudam, então confira a
+        página de preços atual do OpusClip em vez de confiar em números copiados para um artigo de blog.
       </p>
       <p>
-        Kortes offers two routes. The hosted app has <strong>{pro.name}</strong> at ${pro.priceMonthly}/month for{" "}
-        {pro.generationLimit} videos and <strong>{scale.name}</strong> at ${scale.priceMonthly}/month for {scale.generationLimit} videos.
-        There is no free hosted plan; processing requires a subscription. The self-hosted route is free software with no plan
-        limits. You pay for the server and any AI APIs you configure, and the{" "}
-        <Link href={SELF_HOSTING_GUIDE_HREF}>self-hosting guide</Link> shows a fully local setup with no per-request AI fees.
+        O Kortes oferece dois caminhos. A versão hospedada tem o <strong>{pro.name}</strong> por US${pro.priceMonthly}/mês para{" "}
+        {pro.generationLimit} vídeos e o <strong>{scale.name}</strong> por US${scale.priceMonthly}/mês para {scale.generationLimit} vídeos.
+        Não há plano hospedado gratuito; o processamento exige uma assinatura. O caminho auto-hospedado é software livre, sem limites
+        de plano. Você paga o servidor e as APIs de IA que configurar, e o{" "}
+        <Link href={SELF_HOSTING_GUIDE_HREF}>guia de auto-hospedagem</Link> mostra uma configuração 100% local, sem taxas de IA por requisição.
       </p>
 
-      <h2 id="choose-supoclip">When Kortes is the better fit</h2>
+      <h2 id="choose-supoclip">Quando o Kortes combina mais</h2>
       <ul>
-        <li><strong>You need control over where video goes.</strong> Self-hosting keeps the app, database, and rendered clips on your infrastructure. With Whisper and Ollama, transcription and clip selection run locally too.</li>
-        <li><strong>You have a large back catalog.</strong> Self-hosted installs have no monthly video cap. Throughput depends on your hardware and provider limits.</li>
-        <li><strong>You want to change how clips are chosen.</strong> The selection prompt, scoring, caption templates, and rendering are all in the repository.</li>
-        <li><strong>You&apos;re building clipping into another tool.</strong> API keys, a REST API, and an MCP server let scripts and AI agents create and download clips.</li>
+        <li><strong>Você precisa controlar para onde o vídeo vai.</strong> A auto-hospedagem mantém o app, o banco de dados e os clipes renderizados na sua infraestrutura. Com Whisper e Ollama, a transcrição e a seleção de clipes também rodam localmente.</li>
+        <li><strong>Você tem um acervo grande.</strong> Instalações próprias não têm limite mensal de vídeos. A vazão depende do seu hardware e dos limites dos provedores.</li>
+        <li><strong>Você quer mudar como os clipes são escolhidos.</strong> O prompt de seleção, a pontuação, os modelos de legenda e a renderização estão todos no repositório.</li>
+        <li><strong>Você está integrando os cortes a outra ferramenta.</strong> Chaves de API, uma API REST e um servidor MCP permitem que scripts e agentes de IA criem e baixem clipes.</li>
       </ul>
 
-      <h2 id="choose-opusclip">When OpusClip is the better fit</h2>
+      <h2 id="choose-opusclip">Quando o OpusClip combina mais</h2>
       <ul>
-        <li><strong>You don&apos;t want to operate anything.</strong> Self-hosting means managing Docker, provider keys, updates, and backups.</li>
-        <li><strong>You want to try before paying.</strong> OpusClip documents a free plan (with a possible watermark). Hosted Kortes has no free tier.</li>
-        <li><strong>You rely on features not covered here.</strong> If a specific OpusClip workflow matters to you, confirm it on opus.pro and test whether Kortes covers it before switching.</li>
+        <li><strong>Você não quer operar nada.</strong> Hospedar por conta própria significa cuidar do Docker, das chaves dos provedores, das atualizações e dos backups.</li>
+        <li><strong>Você quer testar antes de pagar.</strong> O OpusClip documenta um plano gratuito (com possível marca d&apos;água). A versão hospedada do Kortes não tem plano gratuito.</li>
+        <li><strong>Você depende de recursos não cobertos aqui.</strong> Se um fluxo específico do OpusClip é importante para você, confirme no opus.pro e teste se o Kortes atende antes de trocar.</li>
       </ul>
 
-      <h2 id="test">How to run your own fair test</h2>
-      <p>The comparison that matters most is one on your own content:</p>
+      <h2 id="test">Como fazer o seu próprio teste justo</h2>
+      <p>A comparação que mais importa é a feita com o seu próprio conteúdo:</p>
       <ol>
-        <li>Pick two or three recordings that represent your channel: one easy (single speaker), one hard (multiple speakers, screen shares).</li>
-        <li>Run each through both tools with default settings, and note the time from submission to finished clips.</li>
-        <li>Shuffle the clips and review them without knowing which tool made each. Score whether each clip makes sense without context, has a clear hook, frames the speaker correctly, and has accurate captions.</li>
-        <li>Count the edits each clip needs before you&apos;d post it. Editing time is a cost the subscription price doesn&apos;t show.</li>
+        <li>Escolha duas ou três gravações que representem o seu canal: uma fácil (uma pessoa falando) e uma difícil (várias pessoas, compartilhamento de tela).</li>
+        <li>Rode cada uma nas duas ferramentas com as configurações padrão e anote o tempo entre o envio e os clipes prontos.</li>
+        <li>Embaralhe os clipes e revise sem saber qual ferramenta fez cada um. Avalie se cada clipe faz sentido sem contexto, tem um gancho claro, enquadra bem quem fala e tem legendas precisas.</li>
+        <li>Conte quantas edições cada clipe precisa antes de você publicar. O tempo de edição é um custo que o preço da assinatura não mostra.</li>
       </ol>
       <p>
-        Want to see Kortes output first? The <Link href="/demo">demo page</Link> shows real clips next to links to the
-        original timestamps.
+        Quer ver resultados do Kortes primeiro? A <Link href="/demo">página de demonstração</Link> mostra clipes reais com links para os
+        trechos originais.
       </p>
 
-      <h2 id="sources">Sources</h2>
+      <h2 id="sources">Fontes</h2>
       <ul>
-        <li>OpusClip help center: <a href={OPUS_SOURCES.plans}>Plans and credits</a> and <a href={OPUS_SOURCES.watermark}>Watermark</a>. Plans can change; confirm current details on <a href="https://www.opus.pro/">opus.pro</a>.</li>
-        <li>Kortes: <a href={GITHUB_URL}>public repository</a>, including <a href={source("docker-compose.yml")}>docker-compose.yml</a>, <a href={source("docs/configuration.md")}>configuration docs</a>, and <a href={source("backend/src/services/billing_service.py")}>billing rules</a>. Hosted prices are from the pricing section of supoclip.com.</li>
+        <li>Central de ajuda do OpusClip: <a href={OPUS_SOURCES.plans}>Planos e créditos</a> e <a href={OPUS_SOURCES.watermark}>Marca d&apos;água</a>. Os planos podem mudar; confirme os detalhes atuais no <a href="https://www.opus.pro/">opus.pro</a>.</li>
+        <li>Kortes: <a href={GITHUB_URL}>repositório público</a>, incluindo o <a href={source("docker-compose.yml")}>docker-compose.yml</a>, a <a href={source("docs/configuration.md")}>documentação de configuração</a> e as <a href={source("backend/src/services/billing_service.py")}>regras de cobrança</a>. Os preços da versão hospedada vêm da seção de preços do Kortes.</li>
       </ul>
     </ArticleShell>
   );

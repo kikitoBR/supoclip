@@ -126,7 +126,7 @@ export default function PrivacyPolicyPage() {
               registramos quando você baixa ou exporta um clipe pela primeira vez. Usamos essas informações para entender quais canais atraem
               usuários que consideram o Kortes útil. Se as análises estiverem ativadas, os eventos de cadastro e exportação de clipe enviados
               ao nosso provedor de análise incluirão os mesmos campos de campanha. Não usamos essas informações para publicidade nem as comercializamos.
-              Você pode remover o registro do seu navegador a qualquer momento limpando os dados do site supoclip.com.
+              Você pode remover o registro do seu navegador a qualquer momento limpando os dados deste site.
             </p>
           </Section>
 

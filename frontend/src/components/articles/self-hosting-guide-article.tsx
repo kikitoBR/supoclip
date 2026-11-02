@@ -9,73 +9,73 @@ const docs = (path: string) => `${GITHUB_URL}/blob/main/${path}`;
 
 const faqs: ArticleFaq[] = [
   {
-    question: "Is self-hosted Kortes free?",
+    question: "O Kortes auto-hospedado é gratuito?",
     answer:
-      "The code is free under AGPL-3.0 and self-host mode has no generation limits or paywall. You still pay for your own hardware or server, and for any cloud transcription or LLM usage you configure. A Whisper + Ollama setup avoids per-request AI fees but needs enough local compute.",
+      "O código é gratuito sob a AGPL-3.0, e o modo auto-hospedado não tem limite de gerações nem cobrança. Você ainda paga o seu hardware ou servidor e qualquer uso de transcrição ou LLM na nuvem que configurar. Uma configuração com Whisper + Ollama evita taxas de IA por requisição, mas precisa de capacidade de processamento local suficiente.",
   },
   {
-    question: "Can Kortes run without any cloud AI services?",
+    question: "O Kortes funciona sem nenhum serviço de IA na nuvem?",
     answer:
-      "Yes, for clip analysis. Set TRANSCRIPTION_PROVIDER=whisper to transcribe locally and LLM=ollama:<model> to select clips with a local model. Downloading YouTube links still needs internet access; uploaded files do not. Optional B-roll uses the Pexels API.",
+      "Sim, para a análise dos clipes. Defina TRANSCRIPTION_PROVIDER=whisper para transcrever localmente e LLM=ollama:<modelo> para escolher os clipes com um modelo local. Baixar links do YouTube ainda exige internet; arquivos enviados, não. O B-roll opcional usa a API do Pexels.",
   },
   {
-    question: "Do I need a GPU?",
+    question: "Preciso de GPU?",
     answer:
-      "No. The .env.example template sets BACKEND_CPU_ONLY=true, which installs CPU-only PyTorch. CPU-only Whisper transcription is slower than a cloud API, so long videos take longer on modest hardware.",
+      "Não. O modelo .env.example define BACKEND_CPU_ONLY=true, que instala o PyTorch só para CPU. A transcrição com Whisper em CPU é mais lenta que uma API na nuvem, então vídeos longos demoram mais em hardware modesto.",
   },
   {
-    question: "Does it work on Apple Silicon?",
+    question: "Funciona em Apple Silicon?",
     answer:
-      "Yes, with a caveat: the backend and worker images run as linux/amd64 under emulation. BACKEND_CPU_ONLY=true avoids NVIDIA downloads, but it does not enable Apple GPU acceleration.",
+      "Sim, com uma ressalva: as imagens do backend e do worker rodam como linux/amd64 em emulação. BACKEND_CPU_ONLY=true evita os downloads da NVIDIA, mas não ativa a aceleração da GPU da Apple.",
   },
   {
-    question: "How do I keep my instance private?",
+    question: "Como deixo a minha instância privada?",
     answer:
-      "Create your account, then set DISABLE_SIGN_UP=true and recreate the frontend container. Compose binds every port to 127.0.0.1, so nothing is public until you add a reverse proxy.",
+      "Crie a sua conta, depois defina DISABLE_SIGN_UP=true e recrie o container do frontend. O Compose liga todas as portas a 127.0.0.1, então nada fica público até você adicionar um proxy reverso.",
   },
 ];
 
 const toc: Array<[string, string]> = [
-  ["stack", "What you run"],
-  ["requirements", "Requirements"],
-  ["install", "Install"],
-  ["local", "Fully local AI"],
-  ["verify", "Verify"],
-  ["production", "Production checklist"],
-  ["upgrade", "Upgrades & backups"],
-  ["faq", "FAQ"],
+  ["stack", "O que você roda"],
+  ["requirements", "Requisitos"],
+  ["install", "Instalação"],
+  ["local", "IA 100% local"],
+  ["verify", "Verificação"],
+  ["production", "Checklist de produção"],
+  ["upgrade", "Atualizações e backups"],
+  ["faq", "Perguntas frequentes"],
 ];
 
 export function SelfHostingGuideArticle({ post }: { post: BlogPost }) {
   return (
-    <ArticleShell post={post} breadcrumb="Self-host Kortes" toc={toc} faqs={faqs}>
+    <ArticleShell post={post} breadcrumb="Hospedar o Kortes" toc={toc} faqs={faqs}>
       <p>
-        Kortes is the open-source AI video clipper behind the hosted app at supoclip.com. The same repository
-        ships a Docker Compose stack you can run on a laptop, a home server, or a VPS. This guide follows that stack
-        exactly as it exists in the <a href={GITHUB_URL}>repository</a>. Where a step depends on your provider or
-        hardware, we say so instead of guessing.
+        O Kortes é um cortador de vídeo com IA de código aberto. O repositório traz uma configuração de Docker Compose
+        que você pode rodar num notebook, num servidor em casa ou numa VPS. Este guia segue essa configuração
+        exatamente como ela está no <a href={GITHUB_URL}>repositório</a>. Quando um passo depende do seu provedor ou
+        hardware, dizemos isso em vez de adivinhar.
       </p>
       <p>
-        Prefer not to run infrastructure? The <Link href="/sign-up">hosted app</Link> runs the same pipeline. Still
-        deciding between tools? Read our <Link href={OPUSCLIP_COMPARISON_HREF}>Kortes vs OpusClip comparison</Link> first.
+        Prefere não cuidar de infraestrutura? O <Link href="/sign-up">app hospedado</Link> roda o mesmo processo. Ainda
+        escolhendo entre ferramentas? Leia antes a nossa <Link href={OPUSCLIP_COMPARISON_HREF}>comparação entre Kortes e OpusClip</Link>.
       </p>
 
-      <h2 id="stack">What you are running</h2>
+      <h2 id="stack">O que você está rodando</h2>
       <p>
-        <code>docker compose up</code> starts these containers, all defined in <a href={docs("docker-compose.yml")}>docker-compose.yml</a>:
+        <code>docker compose up</code> inicia estes containers, todos definidos no <a href={docs("docker-compose.yml")}>docker-compose.yml</a>:
       </p>
       <div className="overflow-x-auto rounded-lg border">
         <table className="w-full min-w-[520px] text-left text-sm leading-6">
-          <caption className="sr-only">Services in the Kortes Docker Compose stack</caption>
-          <thead className="bg-muted"><tr><th scope="col" className="p-3">Service</th><th scope="col" className="p-3">Role</th><th scope="col" className="p-3">Host port</th></tr></thead>
+          <caption className="sr-only">Serviços do Docker Compose do Kortes</caption>
+          <thead className="bg-muted"><tr><th scope="col" className="p-3">Serviço</th><th scope="col" className="p-3">Função</th><th scope="col" className="p-3">Porta no host</th></tr></thead>
           <tbody>
             {[
-              ["frontend", "Next.js web app, auth, and API proxy", "FRONTEND_PORT (3107 in .env.example; 3001 if unset)"],
-              ["backend", "FastAPI API; docs at /docs", "8000"],
-              ["worker", "ARQ worker: download, transcribe, analyze, render", "none"],
-              ["postgres", "PostgreSQL 15: users, tasks, clips", "none"],
-              ["redis", "Redis 7: job queue and live progress", "6379"],
-              ["mcp", "MCP server for AI clients (optional to keep running)", "9100"],
+              ["frontend", "App web em Next.js, autenticação e proxy da API", "FRONTEND_PORT (3107 no .env.example; 3001 se não definida)"],
+              ["backend", "API em FastAPI; documentação em /docs", "8000"],
+              ["worker", "Worker ARQ: baixa, transcreve, analisa e renderiza", "nenhuma"],
+              ["postgres", "PostgreSQL 15: usuários, tarefas e clipes", "nenhuma"],
+              ["redis", "Redis 7: fila de trabalhos e progresso ao vivo", "6379"],
+              ["mcp", "Servidor MCP para clientes de IA (opcional)", "9100"],
             ].map(([service, role, port]) => (
               <tr key={service} className="border-t"><th scope="row" className="p-3 align-top font-mono text-xs">{service}</th><td className="p-3 align-top text-muted-foreground">{role}</td><td className="p-3 align-top text-muted-foreground">{port}</td></tr>
             ))}
@@ -83,94 +83,94 @@ export function SelfHostingGuideArticle({ post }: { post: BlogPost }) {
         </table>
       </div>
       <p>
-        Every published port is bound to <code>127.0.0.1</code>, so a fresh install is reachable only from the machine
-        itself. Generated clips, uploads, Postgres, and Redis are stored in named Docker volumes, so they survive container restarts.
-        If you don&apos;t use MCP, stop that container with <code>docker compose stop mcp</code>.
+        Todas as portas publicadas ficam ligadas a <code>127.0.0.1</code>, então uma instalação nova só é acessível pela
+        própria máquina. Clipes gerados, envios, Postgres e Redis ficam em volumes nomeados do Docker e sobrevivem a reinícios dos containers.
+        Se você não usa o MCP, pare esse container com <code>docker compose stop mcp</code>.
       </p>
 
-      <h2 id="requirements">Requirements</h2>
+      <h2 id="requirements">Requisitos</h2>
       <ul>
-        <li><strong>Docker</strong> with Compose v2 (<code>docker compose</code>) or the standalone <code>docker-compose</code>, plus Git.</li>
+        <li><strong>Docker</strong> com Compose v2 (<code>docker compose</code>) ou o <code>docker-compose</code> avulso, além do Git.</li>
         <li>
-          <strong>A transcription source</strong>, set with <code>TRANSCRIPTION_PROVIDER</code>:
-          <code>assemblyai</code> (default, needs <code>ASSEMBLY_AI_API_KEY</code>), <code>whisper</code> (local, no key),
-          or <code>youtube_captions</code> (YouTube links only).
+          <strong>Uma fonte de transcrição</strong>, definida em <code>TRANSCRIPTION_PROVIDER</code>:
+          <code>assemblyai</code> (padrão, precisa de <code>ASSEMBLY_AI_API_KEY</code>), <code>whisper</code> (local, sem chave)
+          ou <code>youtube_captions</code> (só para links do YouTube).
         </li>
         <li>
-          <strong>An LLM for clip selection</strong>, set with <code>LLM=provider:model</code>: OpenAI, Google, Anthropic,
-          OpenRouter (each needs its API key), or a local <code>ollama:</code> model.
+          <strong>Um LLM para escolher os clipes</strong>, definido em <code>LLM=provedor:modelo</code>: OpenAI, Google, Anthropic,
+          OpenRouter (cada um precisa da sua chave de API) ou um modelo local <code>ollama:</code>.
         </li>
-        <li><strong>Optional:</strong> <code>PEXELS_API_KEY</code> for B-roll overlays.</li>
+        <li><strong>Opcional:</strong> <code>PEXELS_API_KEY</code> para sobreposições de B-roll.</li>
       </ul>
       <p>
-        The first image build downloads Python and Node dependencies. The <a href={docs("QUICKSTART.md")}>quick start</a> estimates
-        5–10 minutes; it varies with your connection and CPU.
+        O primeiro build das imagens baixa as dependências de Python e Node. O <a href={docs("QUICKSTART.md")}>guia rápido</a> estima
+        de 5 a 10 minutos; varia com a sua conexão e CPU.
       </p>
 
-      <h2 id="install">Install with Docker Compose</h2>
-      <h3>1. Clone and create your environment file</h3>
+      <h2 id="install">Instalação com Docker Compose</h2>
+      <h3>1. Clone o repositório e crie o arquivo de ambiente</h3>
       <CodeBlock label="terminal">{`
-git clone https://github.com/FujiwaraChoki/supoclip.git
+git clone ${GITHUB_URL}.git
 cd supoclip
 cp .env.example .env
 `}</CodeBlock>
-      <h3>2. Pick providers in <code>.env</code></h3>
+      <h3>2. Escolha os provedores no <code>.env</code></h3>
       <p>
-        The template defaults to <code>LLM=openrouter:anthropic/claude-sonnet-5.5</code>. Processing fails unless you set{" "}
-        <code>OPENROUTER_API_KEY</code> or point <code>LLM</code> at a provider you have a key for. A minimal cloud setup looks like this:
+        O modelo usa <code>LLM=openrouter:anthropic/claude-sonnet-5.5</code> por padrão. O processamento falha a menos que você defina{" "}
+        <code>OPENROUTER_API_KEY</code> ou aponte <code>LLM</code> para um provedor do qual tenha a chave. Uma configuração mínima na nuvem fica assim:
       </p>
       <CodeBlock label=".env">{`
 TRANSCRIPTION_PROVIDER=assemblyai
-ASSEMBLY_AI_API_KEY=your_assemblyai_key
+ASSEMBLY_AI_API_KEY=sua_chave_assemblyai
 
 LLM=google-gla:gemini-3-flash-preview
-GOOGLE_API_KEY=your_google_key
+GOOGLE_API_KEY=sua_chave_google
 
-# Replace every placeholder secret, even for local use
-BETTER_AUTH_SECRET=generate_with_openssl_rand_base64_32
-BACKEND_AUTH_SECRET=generate_another_one
-APP_SETTINGS_ENCRYPTION_KEY=and_another_one
+# Troque todos os segredos de exemplo, mesmo para uso local
+BETTER_AUTH_SECRET=gere_com_openssl_rand_base64_32
+BACKEND_AUTH_SECRET=gere_outro
+APP_SETTINGS_ENCRYPTION_KEY=e_mais_outro
 `}</CodeBlock>
       <p>
-        Generate each secret with <code>openssl rand -base64 32</code>. <code>SELF_HOST=true</code> (the default) keeps billing off and
-        removes per-account generation limits.
+        Gere cada segredo com <code>openssl rand -base64 32</code>. <code>SELF_HOST=true</code> (o padrão) desliga a cobrança e
+        remove os limites de geração por conta.
       </p>
-      <h3>3. Build and start</h3>
+      <h3>3. Construa e inicie</h3>
       <CodeBlock label="terminal">{`
 docker compose up -d --build
-# or: ./start.sh  (checks .env and Docker first, then does the same)
+# ou: ./start.sh  (confere o .env e o Docker antes e depois faz o mesmo)
 `}</CodeBlock>
       <p>
-        Open <code>http://localhost:3107</code>, create an account, and paste a YouTube link or upload a file.
-        API docs are at <code>http://localhost:8000/docs</code>.
+        Abra <code>http://localhost:3107</code>, crie uma conta e cole um link do YouTube ou envie um arquivo.
+        A documentação da API fica em <code>http://localhost:8000/docs</code>.
       </p>
 
-      <h2 id="local">Option: fully local transcription and clip selection</h2>
+      <h2 id="local">Opção: transcrição e seleção de clipes 100% locais</h2>
       <p>
-        To keep transcripts and analysis on your own hardware, combine local Whisper with an Ollama model:
+        Para manter as transcrições e a análise no seu próprio hardware, combine o Whisper local com um modelo do Ollama:
       </p>
       <CodeBlock label=".env">{`
 TRANSCRIPTION_PROVIDER=whisper
 WHISPER_MODEL_SIZE=medium        # tiny | base | small | medium | large | large-v3
 
 LLM=ollama:gpt-oss:20b
-# Empty = http://host.docker.internal:11434/v1 inside the containers.
-# If you set it yourself, keep the /v1 suffix.
+# Vazio = http://host.docker.internal:11434/v1 dentro dos containers.
+# Se você definir, mantenha o sufixo /v1.
 OLLAMA_BASE_URL=
 `}</CodeBlock>
       <p>
-        The worker makes the Ollama calls from inside its container, so Ollama must be reachable from there, not just
-        from your shell. How you get there depends on where Ollama runs:
+        O worker faz as chamadas ao Ollama de dentro do seu container, então o Ollama precisa ser acessível de lá, não só
+        do seu terminal. Como chegar lá depende de onde o Ollama roda:
       </p>
-      <h3>Ollama on the host, with Docker Desktop (macOS, Windows)</h3>
+      <h3>Ollama no host, com Docker Desktop (macOS, Windows)</h3>
       <p>
-        No extra setup. Docker Desktop forwards <code>host.docker.internal</code> to the host, so leave{" "}
-        <code>OLLAMA_BASE_URL</code> empty and pull the model with <code>ollama pull gpt-oss:20b</code>.
+        Nenhuma configuração extra. O Docker Desktop encaminha <code>host.docker.internal</code> para o host, então deixe{" "}
+        <code>OLLAMA_BASE_URL</code> vazio e baixe o modelo com <code>ollama pull gpt-oss:20b</code>.
       </p>
-      <h3>Ollama on the host, with Docker Engine (Linux)</h3>
+      <h3>Ollama no host, com Docker Engine (Linux)</h3>
       <p>
-        Compose maps <code>host.docker.internal</code> to the Docker bridge gateway, but Ollama listens only on{" "}
-        <code>127.0.0.1</code> by default, so the worker&apos;s connection is refused. Make Ollama listen on all interfaces:
+        O Compose aponta <code>host.docker.internal</code> para o gateway da bridge do Docker, mas por padrão o Ollama só escuta em{" "}
+        <code>127.0.0.1</code>, então a conexão do worker é recusada. Faça o Ollama escutar em todas as interfaces:
       </p>
       <CodeBlock label="terminal">{`
 sudo systemctl edit ollama
@@ -180,15 +180,15 @@ sudo systemctl restart ollama
 ollama pull gpt-oss:20b
 `}</CodeBlock>
       <p>
-        That also exposes port 11434 on your network interfaces. Ollama has no authentication, so block that port from
-        outside the machine with your firewall. If your firewall filters traffic from Docker networks, also allow the
-        containers to reach it.
+        Isso também expõe a porta 11434 nas suas interfaces de rede. O Ollama não tem autenticação, então bloqueie essa porta
+        para fora da máquina no firewall. Se o seu firewall filtra o tráfego das redes do Docker, libere também o acesso
+        dos containers.
       </p>
-      <h3>Ollama in its own container</h3>
+      <h3>Ollama no próprio container</h3>
       <p>
-        Add it to the stack with an override file, then point Kortes at the service name instead of the host:
+        Adicione-o à configuração com um arquivo de override e aponte o Kortes para o nome do serviço em vez do host:
       </p>
-      <CodeBlock label="docker-compose.override.yml (merge into any override you already have)">{`
+      <CodeBlock label="docker-compose.override.yml (junte com qualquer override que você já tenha)">{`
 services:
   ollama:
     image: ollama/ollama
@@ -199,93 +199,93 @@ services:
 volumes:
   ollama_models:
 `}</CodeBlock>
-      <CodeBlock label=".env and terminal">{`
+      <CodeBlock label=".env e terminal">{`
 OLLAMA_BASE_URL=http://ollama:11434/v1
 
 docker compose up -d ollama
 docker compose exec ollama ollama pull gpt-oss:20b
-docker compose up -d backend worker   # pick up the new .env value
+docker compose up -d backend worker   # aplica o novo valor do .env
 `}</CodeBlock>
       <p>
-        Whichever setup you choose, test from inside the worker before submitting a video. The check looks for{" "}
-        <code>gpt-oss:20b</code> because that is the model in the example <code>LLM</code> value. If you chose another model,
-        replace it with the exact name after <code>ollama:</code> in your <code>LLM</code> setting. Ollama lists a model pulled
-        without a tag as <code>name:latest</code>, so use that form in the check.
+        Seja qual for a configuração, teste de dentro do worker antes de enviar um vídeo. A verificação procura{" "}
+        <code>gpt-oss:20b</code> porque esse é o modelo do exemplo de <code>LLM</code>. Se você escolheu outro modelo,
+        troque pelo nome exato que vem depois de <code>ollama:</code> na sua configuração de <code>LLM</code>. O Ollama lista um modelo
+        baixado sem tag como <code>nome:latest</code>, então use esse formato na verificação.
       </p>
       <CodeBlock label="terminal">{`
-# Host Ollama:
+# Ollama no host:
 docker compose exec worker curl -s http://host.docker.internal:11434/api/tags | grep -q '"gpt-oss:20b"' && echo "model ready"
-# Ollama container:
+# Ollama em container:
 docker compose exec worker curl -s http://ollama:11434/api/tags | grep -q '"gpt-oss:20b"' && echo "model ready"
 `}</CodeBlock>
       <p>
-        <code>model ready</code> means the worker can reach Ollama and the model you searched for is installed. No
-        output means either the connection failed or the model is missing, so rerun the command without the{" "}
-        <code>grep</code> to see which. Smaller Whisper models trade accuracy for speed,
-        and clip quality depends on the LLM. Compare a local model against a hosted one on a recording you know before
-        switching your whole backlog.
+        <code>model ready</code> significa que o worker alcança o Ollama e que o modelo procurado está instalado. Nenhuma
+        saída significa que a conexão falhou ou que o modelo não existe; rode o comando de novo sem o{" "}
+        <code>grep</code> para ver qual dos dois. Modelos menores do Whisper trocam precisão por velocidade,
+        e a qualidade dos clipes depende do LLM. Compare um modelo local com um hospedado numa gravação que você conhece antes
+        de mudar todo o seu acervo.
       </p>
 
-      <h2 id="verify">Verify the install</h2>
+      <h2 id="verify">Verifique a instalação</h2>
       <CodeBlock label="terminal">{`
-docker compose ps                       # every service should be "healthy"
-curl -f http://localhost:8000/health/db # backend can reach Postgres
-docker compose logs -f worker           # watch a job move through the pipeline
+docker compose ps                       # todos os serviços devem estar "healthy"
+curl -f http://localhost:8000/health/db # o backend alcança o Postgres
+docker compose logs -f worker           # acompanhe um trabalho passando pelo processo
 `}</CodeBlock>
       <ol>
-        <li>Create an account and submit a short video first, so a misconfiguration fails fast.</li>
-        <li>Confirm the task page shows progress updates. If it stays queued, check the worker logs.</li>
-        <li>Play and download a finished clip.</li>
+        <li>Crie uma conta e envie primeiro um vídeo curto, para que um erro de configuração apareça rápido.</li>
+        <li>Confira se a página da tarefa mostra o progresso. Se ficar na fila, veja os logs do worker.</li>
+        <li>Reproduza e baixe um clipe finalizado.</li>
       </ol>
       <p>
-        Stuck tasks are usually a missing provider key or a worker that cannot reach Redis. The{" "}
-        <a href={docs("docs/troubleshooting.md")}>troubleshooting guide</a> covers the common cases.
+        Tarefas travadas costumam ser uma chave de provedor faltando ou um worker que não alcança o Redis. O{" "}
+        <a href={docs("docs/troubleshooting.md")}>guia de solução de problemas</a> cobre os casos mais comuns.
       </p>
 
-      <h2 id="production">Production checklist</h2>
-      <p>The Compose file is tuned for getting started. Before putting it on a public domain:</p>
+      <h2 id="production">Checklist de produção</h2>
+      <p>O arquivo do Compose vem ajustado para começar. Antes de colocá-lo num domínio público:</p>
       <ul>
         <li>
-          <strong>Build the production frontend.</strong> Compose defaults to the hot-reloading <code>development</code> target
-          and mounts <code>frontend/src</code> into the container. Set <code>FRONTEND_BUILD_TARGET=runner</code> and{" "}
-          <code>NODE_ENV=production</code> in <code>.env</code>, then drop the source mounts with the override below.
+          <strong>Construa o frontend de produção.</strong> O Compose usa por padrão o alvo <code>development</code>, com recarregamento automático,
+          e monta <code>frontend/src</code> dentro do container. Defina <code>FRONTEND_BUILD_TARGET=runner</code> e{" "}
+          <code>NODE_ENV=production</code> no <code>.env</code> e remova as montagens do código com o override abaixo.
         </li>
         <li>
-          <strong>Terminate HTTPS at a reverse proxy</strong> (Caddy, nginx, Traefik) in front of the frontend port.
+          <strong>Termine o HTTPS num proxy reverso</strong> (Caddy, nginx, Traefik) na frente da porta do frontend.
         </li>
         <li>
-          <strong>Expose the backend for uploads.</strong> With <code>BACKEND_AUTH_SECRET</code> set, browsers upload video files
-          directly to <code>NEXT_PUBLIC_API_URL</code>. Point that at a public HTTPS backend URL, and add your frontend origin to{" "}
+          <strong>Exponha o backend para os envios.</strong> Com <code>BACKEND_AUTH_SECRET</code> definido, os navegadores enviam os vídeos
+          direto para <code>NEXT_PUBLIC_API_URL</code>. Aponte essa variável para uma URL pública HTTPS do backend e adicione a origem do frontend em{" "}
           <code>CORS_ORIGINS</code>.
         </li>
         <li>
-          <strong>Set your public origin everywhere:</strong> <code>NEXT_PUBLIC_APP_URL</code>, <code>BETTER_AUTH_URL</code>, and{" "}
-          <code>CORS_ORIGINS</code>. <code>NEXT_PUBLIC_*</code> values are baked in at build time, so rebuild the frontend after changing them.
+          <strong>Defina a sua origem pública em todo lugar:</strong> <code>NEXT_PUBLIC_APP_URL</code>, <code>BETTER_AUTH_URL</code> e{" "}
+          <code>CORS_ORIGINS</code>. Os valores <code>NEXT_PUBLIC_*</code> entram no build, então reconstrua o frontend depois de mudá-los.
         </li>
         <li>
-          <strong>Change the database password.</strong> <code>docker-compose.yml</code> hardcodes <code>supoclip_password</code> in
-          four places: <code>POSTGRES_PASSWORD</code> in the <code>postgres</code> service and <code>DATABASE_URL</code> in the{" "}
-          <code>frontend</code>, <code>backend</code>, and <code>worker</code> services. Editing <code>POSTGRES_PASSWORD</code> in{" "}
-          <code>.env</code> alone changes none of them. Override all four, as shown below.
+          <strong>Troque a senha do banco.</strong> O <code>docker-compose.yml</code> fixa <code>supoclip_password</code> em
+          quatro lugares: <code>POSTGRES_PASSWORD</code> no serviço <code>postgres</code> e <code>DATABASE_URL</code> nos serviços{" "}
+          <code>frontend</code>, <code>backend</code> e <code>worker</code>. Mudar só o <code>POSTGRES_PASSWORD</code> no{" "}
+          <code>.env</code> não altera nenhum deles. Sobrescreva os quatro, como mostrado abaixo.
         </li>
-        <li><strong>Set <code>REDIS_PASSWORD</code></strong>; the Redis container enables AUTH when it is non-empty.</li>
-        <li><strong>Close sign-ups</strong> with <code>DISABLE_SIGN_UP=true</code> if the instance is just for your team.</li>
+        <li><strong>Defina <code>REDIS_PASSWORD</code></strong>; o container do Redis ativa a autenticação quando ela não está vazia.</li>
+        <li><strong>Feche os cadastros</strong> com <code>DISABLE_SIGN_UP=true</code> se a instância for só para a sua equipe.</li>
         <li>
-          <strong>Review the limits:</strong> <code>MAX_VIDEO_DURATION</code> (default 5400 s, 90 minutes) and{" "}
-          <code>MAX_VIDEO_UPLOAD_BYTES</code> (about 12 GB).
+          <strong>Revise os limites:</strong> <code>MAX_VIDEO_DURATION</code> (padrão de 5400 s, 90 minutos) e{" "}
+          <code>MAX_VIDEO_UPLOAD_BYTES</code> (cerca de 12 GB).
         </li>
       </ul>
       <CodeBlock label="docker-compose.override.yml (Compose v2.24+)">{`
 services:
   frontend:
-    volumes: !reset []   # the runner image already contains the build
+    volumes: !reset []   # a imagem runner já contém o build
 `}</CodeBlock>
       <p>
-        For the database password, put a new value in <code>POSTGRES_PASSWORD</code> in <code>.env</code>. Generate it with{" "}
-        <code>openssl rand -hex 24</code>, because hex needs no escaping inside a URL. Then point all four settings at it in the
-        same override file:
+        Para a senha do banco, coloque um novo valor em <code>POSTGRES_PASSWORD</code> no <code>.env</code>. Gere-o com{" "}
+        <code>openssl rand -hex 24</code>, porque o formato hexadecimal não precisa de escape numa URL. Depois aponte as quatro configurações para ele no
+        mesmo arquivo de override:
       </p>
-      <CodeBlock label="docker-compose.override.yml (merge into any override you already have)">{`
+      <CodeBlock label="docker-compose.override.yml (junte com qualquer override que você já tenha)">{`
 services:
   postgres:
     environment:
@@ -301,27 +301,27 @@ services:
       DATABASE_URL: postgresql+asyncpg://supoclip:\${POSTGRES_PASSWORD}@postgres:5432/supoclip
 `}</CodeBlock>
       <p>
-        Postgres reads <code>POSTGRES_PASSWORD</code> only when it initializes an empty data volume. On an install that already
-        has a database, changing that variable does not change the actual password. Rotate it inside Postgres first, using
-        the same value as in <code>.env</code>. Then recreate the services so they use the new URLs:
+        O Postgres só lê <code>POSTGRES_PASSWORD</code> quando inicializa um volume de dados vazio. Numa instalação que já
+        tem banco, mudar essa variável não muda a senha de verdade. Troque-a primeiro dentro do Postgres, usando
+        o mesmo valor do <code>.env</code>. Depois recrie os serviços para que usem as novas URLs:
       </p>
-      <CodeBlock label="terminal (existing database)">{`
+      <CodeBlock label="terminal (banco existente)">{`
 docker compose exec -T postgres psql -U supoclip -d supoclip \\
-  -c "ALTER USER supoclip PASSWORD 'your_new_password'"
+  -c "ALTER USER supoclip PASSWORD 'sua_nova_senha'"
 docker compose up -d
 `}</CodeBlock>
       <p>
-        <a href={docs("docs/configuration.md")}>docs/configuration.md</a> lists every variable, and{" "}
-        <a href={docs("docs/setup.md")}>docs/setup.md</a> covers custom ports and public URLs.
+        O <a href={docs("docs/configuration.md")}>docs/configuration.md</a> lista todas as variáveis, e o{" "}
+        <a href={docs("docs/setup.md")}>docs/setup.md</a> explica portas personalizadas e URLs públicas.
       </p>
 
-      <h2 id="upgrade">Upgrades and backups</h2>
+      <h2 id="upgrade">Atualizações e backups</h2>
       <p>
-        <code>init.sql</code> creates the schema only when the Postgres volume is first initialized. After that, nothing
-        updates the schema automatically. If a new version adds files under <code>frontend/prisma/migrations</code> or{" "}
-        <code>backend/migrations</code>, apply them yourself before you restart the app. New code running against the old
-        schema fails on missing columns and tables. Back up first, and stop the app services so they don&apos;t pick up new
-        code early. The development frontend hot-reloads mounted source.
+        O <code>init.sql</code> cria o esquema só quando o volume do Postgres é inicializado pela primeira vez. Depois disso, nada
+        atualiza o esquema automaticamente. Se uma nova versão adicionar arquivos em <code>frontend/prisma/migrations</code> ou{" "}
+        <code>backend/migrations</code>, aplique-os você mesmo antes de reiniciar o app. Código novo rodando com o esquema
+        antigo falha por colunas e tabelas inexistentes. Faça backup antes e pare os serviços do app para que não carreguem o código
+        novo antes da hora. O frontend de desenvolvimento recarrega o código montado automaticamente.
       </p>
       <CodeBlock label="terminal">{`
 docker compose exec -T postgres pg_dump -U supoclip supoclip > supoclip-$(date +%F).sql
@@ -332,29 +332,29 @@ git diff --name-only --diff-filter=A "$old" HEAD -- \\
   'backend/migrations/*.sql' 'frontend/prisma/migrations/*/migration.sql'
 `}</CodeBlock>
       <p>
-        Read each listed file, then apply it in a single transaction. Apply Prisma migrations in timestamp order and backend
-        migrations in number order:
+        Leia cada arquivo listado e aplique-o numa única transação. Aplique as migrações do Prisma em ordem de data e as do
+        backend em ordem numérica:
       </p>
       <CodeBlock label="terminal">{`
 docker compose exec -T postgres psql -U supoclip -d supoclip -v ON_ERROR_STOP=1 -1 \\
-  < frontend/prisma/migrations/<new_migration>/migration.sql
+  < frontend/prisma/migrations/<nova_migracao>/migration.sql
 docker compose up -d --build
 `}</CodeBlock>
       <p>
-        A database created by <code>init.sql</code> has no Prisma migration history. Don&apos;t run{" "}
-        <code>prisma migrate deploy</code> against it: Prisma would replay every migration from the first one and fail on
-        tables that already exist. If you want Prisma to manage migrations from now on, first baseline it with{" "}
-        <code>prisma migrate resolve --applied &lt;migration&gt;</code>, but only for migrations whose changes are already in
-        your schema. Prisma permanently skips any migration you mark as applied, even if its changes are missing.
+        Um banco criado pelo <code>init.sql</code> não tem histórico de migrações do Prisma. Não rode{" "}
+        <code>prisma migrate deploy</code> nele: o Prisma tentaria reaplicar todas as migrações desde a primeira e falharia em
+        tabelas que já existem. Se quiser que o Prisma gerencie as migrações daqui em diante, primeiro marque a base com{" "}
+        <code>prisma migrate resolve --applied &lt;migração&gt;</code>, mas só para migrações cujas mudanças já estão no
+        seu esquema. O Prisma ignora para sempre qualquer migração marcada como aplicada, mesmo que as mudanças estejam faltando.
       </p>
       <p>
-        Back up the <code>clips</code> and <code>uploads</code> volumes too if you need to keep rendered videos. Never run{" "}
-        <code>docker compose down -v</code> on an instance you care about: it deletes every volume, including the database.
+        Faça backup também dos volumes <code>clips</code> e <code>uploads</code> se precisar guardar os vídeos renderizados. Nunca rode{" "}
+        <code>docker compose down -v</code> numa instância importante: isso apaga todos os volumes, inclusive o banco.
       </p>
       <p>
-        Want to customize the output? Drop <code>.ttf</code> fonts into <code>backend/fonts/</code> and <code>.mp4</code>{" "}
-        transitions into <code>backend/transitions/</code>. They appear in the app automatically. For automation, create an
-        API key in Settings and use the <a href={docs("docs/api-reference.md")}>REST API</a> or the bundled MCP server.
+        Quer personalizar o resultado? Coloque fontes <code>.ttf</code> em <code>backend/fonts/</code> e transições <code>.mp4</code>{" "}
+        em <code>backend/transitions/</code>. Elas aparecem no app automaticamente. Para automação, crie uma
+        chave de API em Configurações e use a <a href={docs("docs/api-reference.md")}>API REST</a> ou o servidor MCP incluído.
       </p>
     </ArticleShell>
   );

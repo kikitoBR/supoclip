@@ -1,55 +1,53 @@
-# SupoClip
+# Kortes
 
-> SupoClip is an open-source AI video clipper that turns long videos into captioned, vertical short-form clips for YouTube Shorts, TikTok, Instagram Reels, and similar platforms.
+> Kortes é um cortador de vídeo com IA de código aberto que transforma vídeos longos em clipes curtos, verticais e legendados para YouTube Shorts, TikTok, Instagram Reels e plataformas parecidas.
 
-SupoClip can be used as a hosted web application, as a native iOS app, or self-hosted from its AGPL-3.0 source code. The workflow accepts YouTube URLs and uploaded video files, transcribes the source, proposes promising segments, scores candidate clips, creates face-aware vertical crops, adds word-synced captions, and exports platform-ready videos.
+O Kortes funciona como aplicação web e é baseado no SupoClip, distribuído sob a licença AGPL-3.0. O fluxo aceita links do YouTube e arquivos de vídeo enviados, transcreve o vídeo, sugere os trechos mais promissores, pontua os clipes candidatos, cria cortes verticais que acompanham o rosto, adiciona legendas sincronizadas palavra a palavra e exporta vídeos prontos para cada plataforma.
 
-## Canonical website
+## Site oficial
 
-- [SupoClip](https://www.supoclip.com/): Product overview, features, pricing, and hosted application access.
-- [GitHub repository](https://github.com/FujiwaraChoki/supoclip): Source code, setup instructions, architecture, license, and contribution history.
-- [SupoClip for iOS](https://apps.apple.com/us/app/supoclip/id6784760040): Native iPhone app on the App Store, backed by the hosted service.
+- [Kortes](https://clips.kikito.site/): Apresentação do produto, recursos e acesso à aplicação.
+- [Repositório no GitHub](https://github.com/kikitoBR/supoclip): Código-fonte, instruções de instalação, arquitetura e licença.
+- [Projeto original (SupoClip)](https://github.com/FujiwaraChoki/supoclip): Projeto de código aberto em que o Kortes é baseado.
 
-## Product pages
+## Páginas do produto
 
-- [AI video clipper](https://www.supoclip.com/ai-video-clipper): AI-assisted highlight detection, virality scoring, captions, and exports.
-- [Open-source video clipper](https://www.supoclip.com/open-source-video-clipper): Self-hosting, source access, provider choice, and deployment tradeoffs.
-- [YouTube Shorts clipper](https://www.supoclip.com/youtube-shorts-clipper): Workflow for repurposing long YouTube videos into vertical Shorts.
-- [Demo](https://www.supoclip.com/demo): Real clips generated from a long-form interview, with source timestamps and pipeline steps.
+- [Cortador de vídeo com IA](https://clips.kikito.site/ai-video-clipper): Detecção de destaques com IA, pontuação de viralidade, legendas e exportação.
+- [Cortador de vídeo de código aberto](https://clips.kikito.site/open-source-video-clipper): Auto-hospedagem, acesso ao código, escolha de provedores e prós e contras da instalação.
+- [Cortador de YouTube Shorts](https://clips.kikito.site/youtube-shorts-clipper): Fluxo para transformar vídeos longos do YouTube em Shorts verticais.
+- [Demonstração](https://clips.kikito.site/demo): Clipes reais gerados a partir de uma entrevista longa, com os trechos originais e as etapas do processo.
 
-## Guides and comparisons
+## Guias e comparações
 
-- [SupoClip Blog](https://www.supoclip.com/blog): Product comparisons and practical video-clipping workflows.
-- [Self-host SupoClip with Docker Compose](https://www.supoclip.com/blog/self-host-supoclip-docker): Requirements, environment setup, fully local Whisper + Ollama option, and production checklist.
-- [SupoClip vs OpusClip](https://www.supoclip.com/blog/supoclip-vs-opusclip): Sourced comparison of deployment, pricing model, watermarks, and workflow.
-- [Best free, self-hosted OpusClip alternative](https://www.supoclip.com/blog/best-free-opusclip-alternative): When self-hosting the open-source app beats a credit-based tool.
-- [SupoClip vs supo.live](https://www.supoclip.com/blog/supoclip-vs-supo-live): Open-source control compared with a hosted live-clipping service.
+- [Blog do Kortes](https://clips.kikito.site/blog): Comparações de produtos e fluxos práticos de cortes de vídeo.
+- [Como hospedar o Kortes com Docker Compose](https://clips.kikito.site/blog/self-host-supoclip-docker): Requisitos, configuração do ambiente, opção 100% local com Whisper + Ollama e checklist de produção.
+- [Kortes vs OpusClip](https://clips.kikito.site/blog/supoclip-vs-opusclip): Comparação com fontes sobre instalação, modelo de preço, marca d'água e fluxo.
+- [A melhor alternativa gratuita e auto-hospedada ao OpusClip](https://clips.kikito.site/blog/best-free-opusclip-alternative): Quando hospedar o app de código aberto vale mais que uma ferramenta baseada em créditos.
+- [Kortes vs supo.live](https://clips.kikito.site/blog/supoclip-vs-supo-live): Controle do código aberto comparado a um serviço hospedado de cortes ao vivo.
 
-## Key capabilities
+## Principais recursos
 
-- AI-assisted clip discovery and candidate scoring.
-- YouTube URL and uploaded-file inputs.
-- Face-aware 9:16 vertical reframing.
-- Word-synced animated captions and caption templates.
-- Export presets for YouTube Shorts, TikTok, and Instagram Reels.
-- Hosted web usage, an iOS app, or AGPL-3.0 self-hosting.
-- Support for configured hosted language-model providers or Ollama.
-- Transcription via AssemblyAI (default), local Whisper, or YouTube captions.
-- REST API with per-user API keys, and an MCP server for AI clients.
-- No watermark on exported clips.
+- Descoberta de clipes com IA e pontuação dos candidatos.
+- Entrada por link do YouTube ou por arquivo enviado.
+- Reenquadramento vertical 9:16 que acompanha o rosto.
+- Legendas animadas sincronizadas palavra a palavra e modelos de legenda.
+- Predefinições de exportação para YouTube Shorts, TikTok e Instagram Reels.
+- Uso pela web ou auto-hospedagem sob AGPL-3.0.
+- Suporte a provedores de modelos de linguagem hospedados ou ao Ollama.
+- Transcrição pelo AssemblyAI (padrão), Whisper local ou legendas do YouTube.
+- API REST com chaves por usuário e um servidor MCP para clientes de IA.
+- Sem marca d'água nos clipes exportados.
 
-## Important qualifications
+## Observações importantes
 
-- Virality scores prioritize candidates; they do not guarantee audience performance.
-- The source code is free, but self-hosters provide their own infrastructure and any paid transcription or model-provider usage.
-- The hosted service requires a paid plan (Pro or Scale) to process videos; self-hosted installs have no plan limits.
-- Users should process only videos they own or have permission to repurpose.
-- Product capabilities and pricing can change; use the canonical website and repository for current details.
+- A pontuação de viralidade prioriza candidatos; não garante o desempenho com o público.
+- O código é gratuito, mas quem hospeda fornece a própria infraestrutura e paga qualquer uso de transcrição ou de provedores de modelos.
+- Processe apenas vídeos seus ou que você tenha permissão para reaproveitar.
+- Recursos e preços podem mudar; consulte o site oficial e o repositório para detalhes atualizados.
 
-## Publisher
+## Responsável
 
-- Name: SupoClip Team
-- Website: https://www.supoclip.com/
-- Source: https://github.com/FujiwaraChoki/supoclip
-- Contact: support@supoclip.com
-- Last reviewed: 2026-10-05
+- Nome: Equipe Kortes
+- Site: https://clips.kikito.site/
+- Código-fonte: https://github.com/kikitoBR/supoclip
+- Última revisão: 2026-11-02
