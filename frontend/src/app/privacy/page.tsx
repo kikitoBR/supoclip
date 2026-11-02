@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { HOSTED_APP_URL, getSiteUrl } from "@/lib/blog-posts";
 
 const LAST_UPDATED = "16 de outubro de 2026";
-const CONTACT_EMAIL = "privacy@supoclip.com";
+const CONTACT_EMAIL = "kikitobroficial@gmail.com";
 
 export const metadata: Metadata = {
   title: "Política de Privacidade | Kortes",

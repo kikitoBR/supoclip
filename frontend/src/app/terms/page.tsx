@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { HOSTED_APP_URL, getSiteUrl } from "@/lib/blog-posts";
 
 const LAST_UPDATED = "2 de julho de 2026";
-const CONTACT_EMAIL = "support@supoclip.com";
+const CONTACT_EMAIL = "kikitobroficial@gmail.com";
 
 export const metadata: Metadata = {
   title: "Termos de Serviço | Kortes",
