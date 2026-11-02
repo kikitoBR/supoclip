@@ -109,10 +109,22 @@ class YouTubeDownloader:
         """Get optimal yt-dlp options for high-quality downloads."""
         output_path = self.temp_dir / f"{video_id}.%(ext)s"
 
+        config = get_config()
+        limits = ""
+        if config.ytdlp_max_height:
+            limits += f"[height<=?{config.ytdlp_max_height}]"
+        if config.ytdlp_max_fps:
+            limits += f"[fps<=?{config.ytdlp_max_fps}]"
+        # Best video/audio within the configured cap; the unfiltered selectors
+        # keep a download possible when no format fits the cap.
+        video_format = (
+            f"bestvideo*{limits}+bestaudio/best{limits}/bestvideo*+bestaudio/best"
+            if limits
+            else "bestvideo*+bestaudio/best"
+        )
         opts = {
             "outtmpl": str(output_path),
-            # Use best available video/audio to avoid quality caps from container constraints.
-            "format": "bestvideo*+bestaudio/best",
+            "format": video_format,
             "format_sort": ["res", "fps"],
             "merge_output_format": "mp4",
             "writesubtitles": False,

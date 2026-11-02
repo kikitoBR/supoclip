@@ -65,6 +65,10 @@ class Config:
         # cookies.txt (Netscape format) and/or a proxy let yt-dlp through.
         self.ytdlp_cookies_file = self._get_optional_env("YTDLP_COOKIES_FILE")
         self.ytdlp_proxy = self._get_optional_env("YTDLP_PROXY")
+        # Download cap: clips render at 1080x1920, so larger sources mostly cost
+        # bandwidth, disk and render time. 0 removes the limit.
+        self.ytdlp_max_height = max(0, int(env_or_default("YTDLP_MAX_HEIGHT", "1080")))
+        self.ytdlp_max_fps = max(0, int(env_or_default("YTDLP_MAX_FPS", "60")))
         self.apify_youtube_default_quality = self._normalize_apify_quality(
             os.getenv("APIFY_YOUTUBE_DEFAULT_QUALITY", "1080")
         )
