@@ -283,6 +283,7 @@ def _fetch_video_info_from_web(url: str) -> Dict[str, Any]:
             "Chrome/131.0.0.0 Safari/537.36"
         ),
         "Accept-Language": "en-US,en;q=0.9",
+        "Cookie": "SOCS=CAESEwgDEgk2OTc3MjAzODUaAmVuIAEaBgiA_LyaBg; CONSENT=PENDING+999; PREF=hl=en&gl=US",
     }
     response = requests.get(watch_url, headers=headers, timeout=(5, 10))
     response.raise_for_status()
@@ -297,12 +298,17 @@ def _fetch_video_info_from_web(url: str) -> Dict[str, Any]:
             pass
 
     if duration is None:
-        m_sec = re.search(r'["\']lengthSeconds["\']:\s*["\']?(\d+)["\']?', page_html)
+        m_og_dur = re.search(r'<meta\s+property="og:video:duration"\s+content="(\d+)"', page_html)
+        if m_og_dur:
+            duration = int(m_og_dur.group(1))
+
+    if duration is None:
+        m_sec = re.search(r'\\?["\']lengthSeconds\\?["\']:\s*\\?["\']?(\d+)\\?["\']?', page_html)
         if m_sec:
             duration = int(m_sec.group(1))
 
     if duration is None:
-        m_ms = re.search(r'["\']approxDurationMs["\']:\s*["\']?(\d+)["\']?', page_html)
+        m_ms = re.search(r'\\?["\']approxDurationMs\\?["\']:\s*\\?["\']?(\d+)\\?["\']?', page_html)
         if m_ms:
             duration = int(m_ms.group(1)) // 1000
 

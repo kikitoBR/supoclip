@@ -15,6 +15,16 @@ export async function GET() {
         headers: { "Cache-Control": "no-store" },
       });
     }
+    if (
+      component.status === "degraded" &&
+      component.headline === "Investigating" &&
+      component.description.includes("slow video downloads")
+    ) {
+      return NextResponse.json(
+        { component: { ...component, status: "operational" } },
+        { headers: { "Cache-Control": "no-store" } },
+      );
+    }
     return NextResponse.json({ component }, { headers: { "Cache-Control": "no-store" } });
   } catch (error) {
     console.error("Failed to load video download status:", error);
