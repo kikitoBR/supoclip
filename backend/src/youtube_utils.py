@@ -5,6 +5,7 @@ Optimized for free yt-dlp downloads with optional Apify fallback.
 
 import asyncio
 from datetime import datetime
+import html
 import logging
 import re
 import subprocess
@@ -23,6 +24,7 @@ logger = logging.getLogger(__name__)
 
 YOUTUBE_METADATA_PROVIDER_YTDLP = "yt_dlp"
 YOUTUBE_METADATA_PROVIDER_DATA_API = "youtube_data_api"
+YOUTUBE_METADATA_PROVIDER_WEB = "web"
 YOUTUBE_DOWNLOAD_PROVIDER_YTDLP = "yt_dlp"
 YOUTUBE_DOWNLOAD_PROVIDER_APIFY = "apify"
 YOUTUBE_DATA_API_URL = "https://www.googleapis.com/youtube/v3/videos"
@@ -76,11 +78,6 @@ class YouTubeDownloader:
             "nocheckcertificate": True,
             "prefer_insecure": False,
             "age_limit": None,
-            "extractor_args": {
-                "youtube": {
-                    "player_client": ["android", "ios", "web"]
-                }
-            },
         }
 
         return opts
@@ -92,7 +89,8 @@ def _build_info_options() -> Dict[str, Any]:
         "no_warnings": True,
         "extractaudio": False,
         "skip_download": True,
-        "socket_timeout": 30,
+        "extract_flat": True,
+        "socket_timeout": 15,
         "http_headers": {
             "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36",
             "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
@@ -100,11 +98,6 @@ def _build_info_options() -> Dict[str, Any]:
             "Connection": "keep-alive",
         },
         "nocheckcertificate": True,
-        "extractor_args": {
-            "youtube": {
-                "player_client": ["android", "ios", "web"]
-            }
-        },
     }
     return ydl_opts
 
@@ -277,20 +270,123 @@ def validate_youtube_url(url: str) -> bool:
     return video_id is not None
 
 
+def _fetch_video_info_from_web(url: str) -> Dict[str, Any]:
+    video_id = get_youtube_video_id(url)
+    if not video_id:
+        raise ValueError(f"Invalid YouTube URL: {url}")
+
+    watch_url = f"https://www.youtube.com/watch?v={video_id}"
+    headers = {
+        "User-Agent": (
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+            "AppleWebKit/537.36 (KHTML, like Gecko) "
+            "Chrome/131.0.0.0 Safari/537.36"
+        ),
+        "Accept-Language": "en-US,en;q=0.9",
+    }
+    response = requests.get(watch_url, headers=headers, timeout=(5, 10))
+    response.raise_for_status()
+    page_html = response.text
+
+    duration = None
+    m_dur = re.search(r'<meta\s+itemprop="duration"\s+content="([^"]+)"', page_html)
+    if m_dur:
+        try:
+            duration = _parse_iso8601_duration_to_seconds(m_dur.group(1))
+        except ValueError:
+            pass
+
+    if duration is None:
+        m_sec = re.search(r'["\']lengthSeconds["\']:\s*["\']?(\d+)["\']?', page_html)
+        if m_sec:
+            duration = int(m_sec.group(1))
+
+    if duration is None:
+        m_ms = re.search(r'["\']approxDurationMs["\']:\s*["\']?(\d+)["\']?', page_html)
+        if m_ms:
+            duration = int(m_ms.group(1)) // 1000
+
+    title = None
+    m_title = re.search(r'<meta\s+property="og:title"\s+content="([^"]*)"', page_html) or re.search(
+        r'<meta\s+name="title"\s+content="([^"]*)"', page_html
+    )
+    if m_title:
+        title = html.unescape(m_title.group(1).strip())
+    if not title:
+        m_tag = re.search(r'<title>(.*?)</title>', page_html)
+        if m_tag:
+            title = html.unescape(m_tag.group(1).removesuffix(" - YouTube").strip())
+
+    uploader = None
+    m_up = re.search(r'<link\s+itemprop="name"\s+content="([^"]*)"', page_html) or re.search(
+        r'<meta\s+itemprop="name"\s+content="([^"]*)"', page_html
+    )
+    if m_up:
+        uploader = html.unescape(m_up.group(1).strip())
+
+    thumbnail = f"https://i.ytimg.com/vi/{video_id}/hqdefault.jpg"
+    m_thumb = re.search(r'<meta\s+property="og:image"\s+content="([^"]*)"', page_html)
+    if m_thumb:
+        thumbnail = m_thumb.group(1).strip()
+
+    if not title or not uploader:
+        try:
+            oembed_url = f"https://www.youtube.com/oembed?url=https://www.youtube.com/watch?v={video_id}&format=json"
+            oembed_resp = requests.get(oembed_url, headers={"User-Agent": "Mozilla/5.0"}, timeout=(3, 5))
+            if oembed_resp.status_code == 200:
+                odata = oembed_resp.json()
+                title = title or odata.get("title")
+                uploader = uploader or odata.get("author_name")
+                thumbnail = thumbnail or odata.get("thumbnail_url")
+        except Exception:
+            pass
+
+    if duration is None or duration <= 0:
+        raise ValueError(f"Could not extract video duration from web page for {video_id}")
+
+    normalized = _empty_video_info(video_id)
+    normalized.update(
+        {
+            "title": title or "YouTube Video",
+            "description": "",
+            "duration": duration,
+            "uploader": uploader,
+            "thumbnail": thumbnail,
+        }
+    )
+    return normalized
+
+
 def _fetch_video_info_with_ytdlp(url: str) -> Dict[str, Any]:
     video_id = get_youtube_video_id(url)
     if not video_id:
         raise ValueError(f"Invalid YouTube URL: {url}")
 
-    ydl_opts = _build_info_options()
-    with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-        info = ydl.extract_info(url, download=False)
+    try:
+        ydl_opts = _build_info_options()
+        with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+            info = ydl.extract_info(url, download=False)
+    except Exception as exc:
+        logger.warning(
+            "yt-dlp extract_info failed for %s (%s); trying web scraper fallback",
+            video_id,
+            exc,
+        )
+        return _fetch_video_info_from_web(url)
+
+    duration = info.get("duration")
+    if duration is None or duration <= 0:
+        logger.info(
+            "yt-dlp returned no duration for %s; trying web scraper fallback",
+            video_id,
+        )
+        return _fetch_video_info_from_web(url)
 
     return {
         "id": info.get("id"),
         "title": info.get("title"),
         "description": info.get("description", ""),
-        "duration": info.get("duration"),
+        "duration": duration,
         "uploader": info.get("uploader"),
         "upload_date": info.get("upload_date"),
         "view_count": info.get("view_count"),
@@ -313,23 +409,31 @@ def _fetch_video_info_with_youtube_data_api(url: str) -> Dict[str, Any]:
     if not api_key:
         raise ValueError("Missing YOUTUBE_DATA_API_KEY and GOOGLE_API_KEY")
 
-    response = requests.get(
-        YOUTUBE_DATA_API_URL,
-        params={
-            "part": "snippet,contentDetails,statistics",
-            "id": video_id,
-            "key": api_key,
-            "fields": (
-                "items(id,"
-                "snippet(title,description,channelTitle,publishedAt,"
-                "thumbnails(default(url),medium(url),high(url),standard(url),maxres(url))),"
-                "contentDetails(duration),"
-                "statistics(viewCount,likeCount))"
-            ),
-        },
-        timeout=(10, 30),
-    )
-    response.raise_for_status()
+    try:
+        response = requests.get(
+            YOUTUBE_DATA_API_URL,
+            params={
+                "part": "snippet,contentDetails,statistics",
+                "id": video_id,
+                "key": api_key,
+                "fields": (
+                    "items(id,"
+                    "snippet(title,description,channelTitle,publishedAt,"
+                    "thumbnails(default(url),medium(url),high(url),standard(url),maxres(url))),"
+                    "contentDetails(duration),"
+                    "statistics(viewCount,likeCount))"
+                ),
+            },
+            timeout=(10, 30),
+        )
+        response.raise_for_status()
+    except requests.exceptions.HTTPError as exc:
+        if exc.response is not None and exc.response.status_code == 403:
+            logger.warning(
+                "YouTube Data API returned 403 Forbidden for %s (check if YouTube Data API v3 is enabled for your API key).",
+                video_id,
+            )
+        raise
     payload = response.json()
     items = payload.get("items") or []
     if not items:
@@ -432,6 +536,23 @@ def get_youtube_video_info(
 
     if last_error:
         logger.warning("YouTube video info fetch failed for %s: %s", video_id, last_error)
+
+    # Final resilient fallback: try the web scraper if prior attempts failed
+    try:
+        web_info = _fetch_video_info_from_web(url)
+        if web_info and web_info.get("duration"):
+            logger.info(
+                "Fetched YouTube metadata for %s using final web scraper fallback",
+                video_id,
+            )
+            return web_info
+    except Exception as exc:
+        logger.warning(
+            "Final web scraper fallback failed for %s: %s",
+            video_id,
+            exc,
+        )
+
     return None
 
 
@@ -522,14 +643,13 @@ def _download_youtube_video_with_ytdlp(
         task_id=task_id,
     )
     if not video_info:
-        logger.error(f"Could not retrieve video information for: {url}")
-        return None
+        logger.warning(f"Could not retrieve video information beforehand for: {url}")
+    else:
+        logger.info(f"Video: '{video_info.get('title')}' ({video_info.get('duration')}s)")
 
-    logger.info(f"Video: '{video_info.get('title')}' ({video_info.get('duration')}s)")
-
-    duration = video_info.get("duration", 0)
-    if duration > 3600:
-        logger.warning(f"Video duration ({duration}s) exceeds recommended limit")
+        duration = video_info.get("duration", 0)
+        if duration > 3600:
+            logger.warning(f"Video duration ({duration}s) exceeds recommended limit")
 
     last_error: Optional[str] = None
 

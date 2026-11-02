@@ -8,6 +8,7 @@ from src.youtube_utils import (
     YOUTUBE_DOWNLOAD_PROVIDER_YTDLP,
     YOUTUBE_METADATA_PROVIDER_DATA_API,
     YOUTUBE_METADATA_PROVIDER_YTDLP,
+    _fetch_video_info_from_web,
     _fetch_video_info_with_youtube_data_api,
     _parse_iso8601_duration_to_seconds,
     _pick_best_thumbnail,
@@ -553,3 +554,69 @@ def test_download_youtube_video_with_apify_caps_quality_for_long_videos(
 )
 def test_download_provider_normalization(configured, expected):
     assert Config._normalize_youtube_download_provider(configured) == expected
+
+
+class FakeTextResponse:
+    def __init__(self, text: str, status_code: int = 200):
+        self.text = text
+        self.status_code = status_code
+
+    def raise_for_status(self):
+        if self.status_code >= 400:
+            raise requests.HTTPError(f"status={self.status_code}")
+
+
+def test_fetch_video_info_from_web_parses_html(monkeypatch):
+    sample_html = """
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <meta itemprop="duration" content="PT1H21M55S">
+        <meta property="og:title" content="Test Web Title &amp; More">
+        <meta itemprop="name" content="Flow Games">
+        <meta property="og:image" content="https://i.ytimg.com/vi/abcdefghijk/maxresdefault.jpg">
+    </head>
+    </html>
+    """
+    monkeypatch.setattr(
+        "src.youtube_utils.requests.get",
+        lambda url, headers=None, timeout=None: FakeTextResponse(sample_html),
+    )
+
+    info = _fetch_video_info_from_web("https://www.youtube.com/watch?v=abcdefghijk")
+    assert info["id"] == "abcdefghijk"
+    assert info["duration"] == 4915
+    assert info["title"] == "Test Web Title & More"
+    assert info["uploader"] == "Flow Games"
+    assert info["thumbnail"] == "https://i.ytimg.com/vi/abcdefghijk/maxresdefault.jpg"
+
+
+def test_get_youtube_video_info_falls_back_to_web_when_all_fail(monkeypatch):
+    config = Config()
+    config.youtube_metadata_provider = YOUTUBE_METADATA_PROVIDER_YTDLP
+
+    set_config_override(config)
+    try:
+        monkeypatch.setattr(
+            "src.youtube_utils._fetch_video_info_with_ytdlp",
+            lambda _url: (_ for _ in ()).throw(ValueError("ytdlp failed")),
+        )
+        monkeypatch.setattr(
+            "src.youtube_utils._fetch_video_info_with_youtube_data_api",
+            lambda _url: (_ for _ in ()).throw(ValueError("api failed")),
+        )
+        monkeypatch.setattr(
+            "src.youtube_utils._fetch_video_info_from_web",
+            lambda _url: {
+                "id": "abcdefghijk",
+                "title": "From Web Scraper",
+                "duration": 1200,
+            },
+        )
+
+        result = get_youtube_video_info("https://www.youtube.com/watch?v=abcdefghijk")
+        assert result["title"] == "From Web Scraper"
+        assert result["duration"] == 1200
+    finally:
+        set_config_override(None)
+
