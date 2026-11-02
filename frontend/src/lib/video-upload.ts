@@ -13,7 +13,7 @@ type DirectUploadAuthorization = {
 
 type ProxyUploadAuthorization = {
   directUpload: false;
-  reason: "signed_backend_auth_required";
+  reason: "signed_backend_auth_required" | "public_api_url_not_configured";
 };
 
 type S3UploadAuthorization = {

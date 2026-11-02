@@ -45,6 +45,22 @@ export async function POST(request: Request) {
   const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
   const normalizedApiUrl = apiUrl.replace(/\/$/, "");
 
+  // A loopback API URL only works when the browser runs on the same machine.
+  // Deployments that never exposed the backend publicly upload via the proxy.
+  if (isLoopbackUrl(normalizedApiUrl) && !isLoopbackUrl(request.url)) {
+    return NextResponse.json(
+      {
+        directUpload: false,
+        reason: "public_api_url_not_configured",
+      },
+      {
+        headers: {
+          "Cache-Control": "no-store",
+        },
+      },
+    );
+  }
+
   return NextResponse.json(
     {
       directUpload: true,
@@ -57,4 +73,13 @@ export async function POST(request: Request) {
       },
     },
   );
+}
+
+function isLoopbackUrl(value: string) {
+  try {
+    const hostname = new URL(value).hostname;
+    return hostname === "localhost" || hostname === "[::1]" || hostname.startsWith("127.") || hostname.endsWith(".localhost");
+  } catch {
+    return false;
+  }
 }

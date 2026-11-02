@@ -87,6 +87,19 @@ describe("/api/upload/authorization", () => {
     });
   });
 
+  it("uses the proxy when the public API URL is loopback but the app is not", async () => {
+    vi.stubEnv("BACKEND_AUTH_SECRET", "secret");
+    vi.stubEnv("NEXT_PUBLIC_API_URL", "http://localhost:8000");
+    vi.mocked(auth.api.getSession).mockResolvedValue({ user: { id: "owner" } } as never);
+
+    const response = await POST(new Request("https://clips.example.com/api/upload/authorization", { method: "POST" }));
+
+    await expect(response.json()).resolves.toEqual({
+      directUpload: false,
+      reason: "public_api_url_not_configured",
+    });
+  });
+
   it("keeps uploads available during a frontend-first rollout", async () => {
     vi.stubEnv("BACKEND_AUTH_SECRET", "secret");
     vi.stubEnv("NEXT_PUBLIC_API_URL", "https://api.supoclip.com");

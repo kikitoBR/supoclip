@@ -10,17 +10,28 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const formData = await request.formData();
   const apiUrl =
     process.env.BACKEND_INTERNAL_URL ||
     process.env.NEXT_PUBLIC_API_URL ||
     "http://localhost:8000";
   const normalizedApiUrl = apiUrl.replace(/\/$/, "");
+  // Stream the multipart body straight through: buffering it with
+  // request.formData() holds multi-GB uploads in the Node process memory.
+  const forwardedHeaders: Record<string, string> = {
+    ...buildBackendAuthHeaders(session.user.id),
+    "Content-Type": request.headers.get("content-type") || "application/octet-stream",
+  };
+  const contentLength = request.headers.get("content-length");
+  if (contentLength) {
+    forwardedHeaders["Content-Length"] = contentLength;
+  }
   const upstream = await fetch(`${normalizedApiUrl}/upload`, {
     method: "POST",
-    headers: buildBackendAuthHeaders(session.user.id),
-    body: formData,
-  });
+    headers: forwardedHeaders,
+    body: request.body,
+    // Required by Node's fetch when the body is a stream.
+    duplex: "half",
+  } as RequestInit & { duplex: "half" });
 
   return new Response(upstream.body, {
     status: upstream.status,
