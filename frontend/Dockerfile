@@ -60,6 +60,15 @@ COPY . .
 # Generate Prisma client before building
 RUN pnpm exec prisma generate
 
+# Keep the engine matching this build's CPU (amd64 or arm64) at a fixed path
+# so the runner never loads a binary built for the wrong architecture.
+RUN mkdir -p /app/prisma-engine && \
+    case "$(uname -m)" in \
+      aarch64|arm64) target=linux-arm64-openssl-3.0.x ;; \
+      *) target=debian-openssl-3.0.x ;; \
+    esac && \
+    cp "src/generated/prisma/libquery_engine-${target}.so.node" /app/prisma-engine/libquery_engine.so.node
+
 # Build the Next.js app
 ENV NEXT_TELEMETRY_DISABLED=1
 # Skip linting during build (generated Prisma code has lint warnings)
@@ -119,9 +128,9 @@ COPY --from=builder /app/prisma ./prisma
 # compatibility. Keep the native Prisma engine outside that mount and point
 # Prisma at the immutable copy so authentication cannot lose database access.
 COPY --from=builder --chown=nextjs:nodejs \
-    /app/src/generated/prisma/libquery_engine-debian-openssl-3.0.x.so.node \
-    /app/prisma-engine/libquery_engine-debian-openssl-3.0.x.so.node
-ENV PRISMA_QUERY_ENGINE_LIBRARY=/app/prisma-engine/libquery_engine-debian-openssl-3.0.x.so.node
+    /app/prisma-engine/libquery_engine.so.node \
+    /app/prisma-engine/libquery_engine.so.node
+ENV PRISMA_QUERY_ENGINE_LIBRARY=/app/prisma-engine/libquery_engine.so.node
 
 USER nextjs
 
