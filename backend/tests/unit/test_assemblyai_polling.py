@@ -128,3 +128,55 @@ def test_language_is_detected_unless_configured(
     config = helper.call_args.args[2]
     assert config.language_code == expected_code
     assert config.language_detection is expected_detection
+
+
+def _fallback_config(**overrides):
+    values = dict(
+        assembly_ai_api_key="primary",
+        assembly_ai_fallback_api_keys=["backup", "primary"],
+        assembly_ai_http_timeout_seconds=2,
+        transcription_language="pt",
+    )
+    values.update(overrides)
+    return SimpleNamespace(**values)
+
+
+def _stub_after_transcript(monkeypatch):
+    monkeypatch.setattr(transcription, "_prepare_audio_for_transcription", lambda path: path)
+    monkeypatch.setattr(transcription, "format_transcript_for_analysis", lambda transcript: ["[00:00 - 00:01] oi"])
+    monkeypatch.setattr(transcription, "cache_transcript_data", lambda path, transcript: None)
+
+
+def test_rejected_key_falls_back_to_next_account(monkeypatch, tmp_path):
+    _stub_after_transcript(monkeypatch)
+    done = SimpleNamespace(status=transcription.aai.TranscriptStatus.completed, json_response={})
+    used_keys = []
+
+    def submit(transcriber, *args):
+        used_keys.append(transcriber._client._settings.api_key)
+        if len(used_keys) == 1:
+            raise transcription.aai.TranscriptError("account balance is negative", 401)
+        return done
+
+    monkeypatch.setattr(transcription, "_submit_and_wait_for_assemblyai_transcript", submit)
+    result = transcription._get_transcript_with_assemblyai(tmp_path / "video.mp4", "universal", _fallback_config())
+    assert result == "[00:00 - 00:01] oi"
+    assert used_keys == ["primary", "backup"]
+
+
+def test_request_errors_do_not_try_other_accounts(monkeypatch, tmp_path):
+    _stub_after_transcript(monkeypatch)
+    helper = Mock(side_effect=transcription.aai.TranscriptError("unsupported audio", 400))
+    monkeypatch.setattr(transcription, "_submit_and_wait_for_assemblyai_transcript", helper)
+    with pytest.raises(transcription.aai.TranscriptError):
+        transcription._get_transcript_with_assemblyai(tmp_path / "video.mp4", "universal", _fallback_config())
+    helper.assert_called_once()
+
+
+def test_last_key_failure_is_raised(monkeypatch, tmp_path):
+    _stub_after_transcript(monkeypatch)
+    helper = Mock(side_effect=transcription.aai.TranscriptError("rate limited", 429))
+    monkeypatch.setattr(transcription, "_submit_and_wait_for_assemblyai_transcript", helper)
+    with pytest.raises(transcription.aai.TranscriptError):
+        transcription._get_transcript_with_assemblyai(tmp_path / "video.mp4", "universal", _fallback_config())
+    assert helper.call_count == 2

@@ -76,6 +76,21 @@ def _prepare_audio_for_transcription(video_path: Path) -> Path:
     return audio_path
 
 
+# Account-level failures (bad key, no balance, rate limit, outage) that another
+# AssemblyAI account may not share. They are raised before a job exists, so
+# trying the next key cannot pay for the same transcript twice.
+_ASSEMBLYAI_FALLBACK_STATUS_CODES = {401, 402, 403, 429, 500, 502, 503, 504}
+
+
+def _assemblyai_api_keys(runtime_config) -> List[Optional[str]]:
+    """The primary key followed by ASSEMBLY_AI_FALLBACK_API_KEYS, without repeats."""
+    keys = [
+        runtime_config.assembly_ai_api_key,
+        *(getattr(runtime_config, "assembly_ai_fallback_api_keys", None) or []),
+    ]
+    return list(dict.fromkeys(key for key in keys if key)) or [None]
+
+
 def _submit_and_wait_for_assemblyai_transcript(
     transcriber,
     media_path: Path,
@@ -348,7 +363,7 @@ def _get_transcript_with_assemblyai(
     """Get transcript using AssemblyAI with word-level timing for precise subtitles."""
     aai.settings.api_key = runtime_config.assembly_ai_api_key
     aai.settings.http_timeout = runtime_config.assembly_ai_http_timeout_seconds
-    transcriber = aai.Transcriber()
+    api_keys = _assemblyai_api_keys(runtime_config)
 
     # AssemblyAI now requires the plural `speech_models` list; the singular
     # `best`/`nano`/`universal` values were deprecated server-side.
@@ -369,14 +384,39 @@ def _get_transcript_with_assemblyai(
     try:
         logger.info("Starting AssemblyAI transcription")
         transcription_media_path = _prepare_audio_for_transcription(video_path)
-        # Once submitted, a polling timeout must not submit another paid job or
-        # restart the full transcription budget. Retry status GETs above instead.
-        transcript = _submit_and_wait_for_assemblyai_transcript(
-            transcriber,
-            transcription_media_path,
-            config_obj,
-            runtime_config.assembly_ai_http_timeout_seconds,
-        )
+        transcript = None
+        for index, api_key in enumerate(api_keys):
+            # One client per key: the global settings are shared by every job
+            # running in this worker, so switching them would affect other videos.
+            transcriber = aai.Transcriber(
+                client=aai.Client(
+                    settings=aai.Settings(
+                        api_key=api_key,
+                        http_timeout=runtime_config.assembly_ai_http_timeout_seconds,
+                    )
+                )
+            )
+            try:
+                # Once submitted, a polling timeout must not submit another paid job or
+                # restart the full transcription budget. Retry status GETs above instead.
+                transcript = _submit_and_wait_for_assemblyai_transcript(
+                    transcriber,
+                    transcription_media_path,
+                    config_obj,
+                    runtime_config.assembly_ai_http_timeout_seconds,
+                )
+                break
+            except aai.TranscriptError as exc:
+                status_code = getattr(exc, "status_code", None)
+                if index + 1 >= len(api_keys) or status_code not in _ASSEMBLYAI_FALLBACK_STATUS_CODES:
+                    raise
+                logger.warning(
+                    "AssemblyAI key #%d failed (HTTP %s: %s); trying fallback key #%d",
+                    index + 1,
+                    status_code,
+                    exc,
+                    index + 2,
+                )
 
         if transcript is None:
             raise RuntimeError("AssemblyAI transcription did not return a transcript")

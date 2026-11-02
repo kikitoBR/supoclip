@@ -47,6 +47,9 @@ class Config:
         # Optional separate model for the cross-window candidate rerank pass.
         self.rerank_llm = self._get_optional_env("RERANK_LLM") or self.llm
         self.assembly_ai_api_key = self._get_runtime_setting("ASSEMBLY_AI_API_KEY")
+        # Other AssemblyAI accounts to try, in order, when the primary key is
+        # rejected (invalid, out of balance, rate limited) or the API is down.
+        self.assembly_ai_fallback_api_keys = self._get_csv_env("ASSEMBLY_AI_FALLBACK_API_KEYS", [])
         self.assembly_ai_http_timeout_seconds = int(
             env_or_default("ASSEMBLY_AI_HTTP_TIMEOUT_SECONDS", "900")
         )
