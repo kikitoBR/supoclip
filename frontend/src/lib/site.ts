@@ -1,4 +1,6 @@
 export const SITE_NAME = "Kortes";
+// Server-rendered dates (admin, status) run in the container's UTC clock unless pinned.
+export const APP_TIME_ZONE = "America/Sao_Paulo";
 export const DEFAULT_SITE_URL = "https://clips.kikito.site";
 export const HOSTED_APP_URL = DEFAULT_SITE_URL;
 export const GITHUB_URL = "https://github.com/kikitoBR/supoclip";

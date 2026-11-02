@@ -455,8 +455,9 @@ HOOK TITLES ("hook_title" per segment):
 - Stay grounded: only promise what the clip actually delivers; never invent facts or numbers
 - Do not simply repeat the first spoken words verbatim; reframe them as a headline
 - Plain text only: no hashtags, no emojis, no quotes around the title
-- Write it in the same language as the transcript
-- Good examples: "The $40k mistake I keep seeing", "Why nobody tells you this about VC", "Do this before your next interview"
+- Write it in the same language as the transcript, even though these instructions are in English (a Portuguese transcript gets a Portuguese title)
+- Good examples (English transcript): "The $40k mistake I keep seeing", "Why nobody tells you this about VC"
+- Good examples (Portuguese transcript): "O erro de 40 mil que eu sempre vejo", "Ninguém te conta isso sobre investimento"
 
 COLD-OPEN HOOK ("hook_start_time"/"hook_end_time" per segment, optional):
 - If the segment's most gripping 2-5 second line (punchline, bold claim, shocking number, emotional peak) comes later in the clip, return its MM:SS range; it is replayed as a teaser before the clip starts
@@ -748,6 +749,31 @@ def _performance_history_section(performance_context: str | None) -> str:
     )
 
 
+_LANGUAGE_NAMES = {
+    "pt": "Brazilian Portuguese",
+    "pt_br": "Brazilian Portuguese",
+    "es": "Spanish",
+    "en": "English",
+    "en_us": "English",
+    "en_uk": "English",
+    "fr": "French",
+    "de": "German",
+    "it": "Italian",
+}
+
+
+def _hook_title_language_rule() -> str:
+    """Name the language hook titles must use; the English prompt otherwise leaks into them."""
+    code = get_config().transcription_language
+    name = _LANGUAGE_NAMES.get(code) or (code if code else "")
+    if name:
+        return f'- "hook_title" MUST be written in {name}, never in another language.'
+    return (
+        '- "hook_title" MUST be written in the same language as the spoken transcript. '
+        "Never translate it to English unless the transcript itself is in English."
+    )
+
+
 def build_candidate_rerank_prompt(
     candidates: List[TranscriptSegment], performance_context: str | None = None
 ) -> str:
@@ -844,6 +870,7 @@ JSON-only output requirements:
 - Segment keys: "start_time", "end_time", "text", "relevance_score", "reasoning", "virality", "hook_title".
 - Optional segment keys "hook_start_time"/"hook_end_time": MM:SS range of the strongest 2-5 second line later in the segment (cold-open teaser), or null.
 - "hook_title" is a 3-9 word plain-text headline for the clip, in the transcript's language, grounded in the segment (no hashtags, emojis, or quotes).
+{_hook_title_language_rule()}
 - Virality keys: "hook_score", "engagement_score", "value_score", "shareability_score", "total_score", "hook_type", "virality_reasoning".
 - Do not return segments shorter than {profile['min_accepted']} seconds or longer than {profile['max_accepted']} seconds.
 

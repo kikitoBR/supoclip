@@ -135,3 +135,12 @@ def test_llm_validation_rejects_unsupported_or_incomplete_model_names():
         "ollama:", runtime_config
     )
     assert _get_missing_llm_key_error("ollama:gpt-oss:20b", runtime_config) is None
+
+
+def test_hook_title_language_follows_transcription_language(monkeypatch):
+    monkeypatch.setenv("TRANSCRIPTION_LANGUAGE", "pt")
+    assert "MUST be written in Brazilian Portuguese" in build_transcript_analysis_prompt("x")
+
+    monkeypatch.setenv("TRANSCRIPTION_LANGUAGE", "")
+    prompt = build_transcript_analysis_prompt("x")
+    assert "same language as the spoken transcript" in prompt

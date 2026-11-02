@@ -11,7 +11,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { StatusBadge } from "@/components/app/status-badge";
 import { cn } from "@/lib/utils";
-import { APP_STORE_ID } from "@/lib/site";
+import { APP_STORE_ID, APP_TIME_ZONE } from "@/lib/site";
 import { fetchBackend } from "@/server/backend-api";
 
 const ACTIVE_TASK_STATUSES = ["queued", "processing", "pending"];
@@ -292,7 +292,7 @@ export default async function AdminPage({
                         {affiliate.user.name || "Usuário sem nome"}
                         <Badge variant={affiliate.status === "pending" ? "default" : "outline"} className="capitalize">{affiliate.status === "pending" ? "Pendente" : "Aprovado"}</Badge>
                       </p>
-                      <p className="text-xs text-muted-foreground">{affiliate.user.email} · inscrito em {affiliate.created_at.toLocaleDateString("pt-BR")}</p>
+                      <p className="text-xs text-muted-foreground">{affiliate.user.email} · inscrito em {affiliate.created_at.toLocaleDateString("pt-BR", { timeZone: APP_TIME_ZONE })}</p>
                     </td>
                     <td className={cn(td, "font-mono")}>{affiliate.slug?.toUpperCase()}</td>
                     <td className={td}>
@@ -326,7 +326,7 @@ export default async function AdminPage({
                   <TaskCell id={task.id} title={task.source?.title} />
                   <td className={cn(td, "text-muted-foreground")}>{task.user.email}</td>
                   <td className={td}><StatusBadge status={task.status} /></td>
-                  <td className={cn(td, "whitespace-nowrap text-muted-foreground")}>{task.updated_at.toLocaleString("pt-BR")}</td>
+                  <td className={cn(td, "whitespace-nowrap text-muted-foreground")}>{task.updated_at.toLocaleString("pt-BR", { timeZone: APP_TIME_ZONE })}</td>
                 </tr>
               ))}
             </tbody>
@@ -347,7 +347,7 @@ export default async function AdminPage({
                         {user.name || "Usuário sem nome"}
                         {user.is_admin && <Badge className="bg-foreground text-background">Admin</Badge>}
                       </p>
-                      <p className="text-xs text-muted-foreground">{user.email} · cadastrado em {user.createdAt.toLocaleDateString("pt-BR")}</p>
+                      <p className="text-xs text-muted-foreground">{user.email} · cadastrado em {user.createdAt.toLocaleDateString("pt-BR", { timeZone: APP_TIME_ZONE })}</p>
                     </td>
                     <td className={td}><Badge variant="outline" className="capitalize">{user.plan}</Badge></td>
                     <td className={td}>
@@ -384,7 +384,7 @@ export default async function AdminPage({
                       <TaskCell id={task.id} title={task.source?.title} />
                       <td className={td}><StatusBadge status={task.status} /></td>
                       <td className={cn(td, "tabular-nums")}>{task.generated_clips_ids.length}</td>
-                      <td className={cn(td, "whitespace-nowrap text-muted-foreground")}>{task.created_at.toLocaleString("pt-BR")}</td>
+                      <td className={cn(td, "whitespace-nowrap text-muted-foreground")}>{task.created_at.toLocaleString("pt-BR", { timeZone: APP_TIME_ZONE })}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -405,7 +405,7 @@ export default async function AdminPage({
                   <td className={cn(td, "text-muted-foreground")}>{task.user.email}</td>
                   <td className={td}><StatusBadge status={task.status} /></td>
                   <td className={cn(td, "tabular-nums")}>{task.generated_clips_ids.length}</td>
-                  <td className={cn(td, "whitespace-nowrap text-muted-foreground")}>{task.created_at.toLocaleString("pt-BR")}</td>
+                  <td className={cn(td, "whitespace-nowrap text-muted-foreground")}>{task.created_at.toLocaleString("pt-BR", { timeZone: APP_TIME_ZONE })}</td>
                 </tr>
               ))}
             </tbody>

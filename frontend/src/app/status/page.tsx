@@ -3,6 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import { getPrismaClient } from "@/server/prisma";
+import { APP_TIME_ZONE } from "@/lib/site";
 
 export const dynamic = "force-dynamic";
 
@@ -65,7 +66,7 @@ export default async function StatusPage() {
                   {component.description}
                 </p>
                 <p className="mt-6 text-xs text-muted-foreground">
-                  Última atualização: <time dateTime={component.updatedAt.toISOString()}>{component.updatedAt.toLocaleString("pt-BR", { timeZone: "America/Sao_Paulo", dateStyle: "long", timeStyle: "short" })}</time>
+                  Última atualização: <time dateTime={component.updatedAt.toISOString()}>{component.updatedAt.toLocaleString("pt-BR", { timeZone: APP_TIME_ZONE, dateStyle: "long", timeStyle: "short" })}</time>
                 </p>
               </div>
             </section>

@@ -427,7 +427,7 @@ class TaskService(ClipEditingMixin):
                 ) if total_clips > 0 else 95
                 await update_progress(
                     clip_progress,
-                    f"Creating clip {i + 1}/{total_clips}...",
+                    f"Criando o clipe {i + 1} de {total_clips}...",
                 )
 
                 # Render single clip in thread pool
