@@ -213,6 +213,38 @@ def ffprobe_video_size(video_path: Path) -> Tuple[int, int]:
     return int(width), int(height)
 
 
+def ffprobe_frame_rate(video_path: Path) -> Optional[float]:
+    """The first video stream's average frame rate, or None when unreadable."""
+    try:
+        result = run_ffmpeg_command(
+            [
+                "ffprobe", "-v", "error", "-select_streams", "v:0",
+                "-show_entries", "stream=avg_frame_rate",
+                "-of", "default=noprint_wrappers=1:nokey=1",
+                str(video_path),
+            ],
+            timeout=60,
+        )
+        numerator, _, denominator = result.stdout.strip().partition("/")
+        rate = float(numerator) / float(denominator or 1)
+    except (AttributeError, OSError, TypeError, ValueError, ZeroDivisionError, subprocess.SubprocessError):
+        return None
+    return rate if 1 <= rate <= 1000 else None
+
+
+def output_fps_for(video_path: Path) -> int:
+    """Render rate for a clip: the source rate (24-60 fps), capped by MAX_OUTPUT_FPS.
+
+    Rounding maps 23.976/29.97/59.94 to 24/30/60. Unreadable sources keep the
+    historical OUTPUT_FPS.
+    """
+    cap = get_config().max_output_fps
+    source = ffprobe_frame_rate(video_path)
+    if source is None:
+        return min(OUTPUT_FPS, cap)
+    return max(min(24, cap), min(cap, round(source)))
+
+
 def ffprobe_duration(video_path: Path) -> float:
     result = run_ffmpeg_command(
         [
@@ -334,12 +366,13 @@ def render_ranges_crossfade_ffmpeg(
     if fade <= 0:
         return False
     has_audio = audio_stream is not None
+    fps = output_fps_for(video_path)
 
     parts: List[str] = []
     for idx, (start, end) in enumerate(keep_ranges):
         parts.append(
             f"[0:v]trim=start={start:.3f}:end={end:.3f},setpts=PTS-STARTPTS,"
-            f"fps={OUTPUT_FPS},format=yuv420p,setsar=1[v{idx}]"
+            f"fps={fps},format=yuv420p,setsar=1[v{idx}]"
         )
         if has_audio:
             parts.append(

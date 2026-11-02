@@ -36,6 +36,7 @@ from .ffmpeg import (
     ffprobe_duration,
     ffprobe_has_audio,
     ffprobe_video_size,
+    output_fps_for,
     round_to_even,
     run_ffmpeg_command,
     subtitles_filter_fragment,
@@ -1049,12 +1050,12 @@ def build_layout_plan(
     ]
 
 
-def kenburns_zoom_fragment(duration: float) -> Optional[str]:
+def kenburns_zoom_fragment(duration: float, fps: int = OUTPUT_FPS) -> Optional[str]:
     """Slow linear punch-in fragment producing a 1080x1920 [setsar-ed] stream.
 
     Zooms through a 1.5x supersampled frame so zoompan's integer crop offsets
     stay sub-pixel in the output (no visible stepping). The frame rate is
-    normalised to OUTPUT_FPS *before* zoompan and re-declared on it, because
+    normalised to the output fps *before* zoompan and re-declared on it, because
     zoompan re-times its output at its own fps — matching the two keeps the
     video duration identical and the audio in sync.
     """
@@ -1065,9 +1066,9 @@ def kenburns_zoom_fragment(duration: float) -> Optional[str]:
     )
     return (
         f"scale={KENBURNS_SUPERSAMPLE_W}:{KENBURNS_SUPERSAMPLE_H}:flags=lanczos,"
-        f"fps={OUTPUT_FPS},"
+        f"fps={fps},"
         f"zoompan=z='{z_expr}':x='(iw-iw/zoom)/2':y='(ih-ih/zoom)*0.35'"
-        f":d=1:s=1080x1920:fps={OUTPUT_FPS},{UPSCALE_SHARPEN_FILTER},setsar=1"
+        f":d=1:s=1080x1920:fps={fps},{UPSCALE_SHARPEN_FILTER},setsar=1"
     )
 
 
@@ -1126,12 +1127,13 @@ def build_vertical_filter_plan(
     """
     crop_w, crop_h = compute_vertical_crop_dims(width, height)
     duration = ffprobe_duration(input_path)
+    fps = output_fps_for(input_path)
 
     # Narrow/portrait source: no horizontal room to crop — static fit, with a
     # slow punch-in so the frame still breathes.
     if crop_w >= width:
         sx, sy, sw, sh = detect_optimal_crop_region(input_path, 0, min(duration, 12.0))
-        tail = kenburns_zoom_fragment(duration) or VERTICAL_SCALE_CHAIN
+        tail = kenburns_zoom_fragment(duration, fps) or VERTICAL_SCALE_CHAIN
         return (f"crop={sw}:{sh}:{sx}:{sy},{tail}", "vf")
 
     # One fast decode pass yields both the face track and the scene cuts.
@@ -1181,7 +1183,7 @@ def build_vertical_filter_plan(
         # tracked crop and the compositor path keep the plain chain — they
         # already have motion, and zoompan's re-timing would fight overlays.)
         if not moving:
-            zoom = kenburns_zoom_fragment(duration)
+            zoom = kenburns_zoom_fragment(duration, fps)
             if zoom:
                 return (f"crop={crop_w}:{crop_h}:{static_x}:0,{zoom}", "vf")
         return (crop_chain, "vf")
@@ -1214,6 +1216,7 @@ def render_reframed_clip_ffmpeg(
     """
     width, height = ffprobe_video_size(input_path)
     has_audio = ffprobe_has_audio(input_path)
+    fps = output_fps_for(input_path)
     subs = (
         subtitles_filter_fragment(subtitle_ass_path, fonts_dir)
         if subtitle_ass_path
@@ -1229,7 +1232,7 @@ def render_reframed_clip_ffmpeg(
         command = [
             "ffmpeg", "-y", "-i", str(input_path),
             "-vf", f"{subs},setsar=1",
-            *build_final_video_encode_args(),
+            *build_final_video_encode_args(fps=fps),
             *audio_args,
             "-movflags", "+faststart",
             str(output_path),
@@ -1258,7 +1261,7 @@ def render_reframed_clip_ffmpeg(
             "ffmpeg", "-y", "-i", str(input_path),
             "-filter_complex", video_filter,
             "-map", "[v]", "-map", "0:a?",
-            *build_final_video_encode_args(),
+            *build_final_video_encode_args(fps=fps),
             *audio_args,
             "-movflags", "+faststart",
             str(output_path),
@@ -1275,7 +1278,7 @@ def render_reframed_clip_ffmpeg(
         command = [
             "ffmpeg", "-y", "-i", str(input_path),
             "-vf", video_filter,
-            *build_final_video_encode_args(),
+            *build_final_video_encode_args(fps=fps),
             *audio_args,
             "-movflags", "+faststart",
             str(output_path),
@@ -1298,7 +1301,7 @@ def render_reframed_clip_ffmpeg(
             "ffmpeg", "-y", "-i", str(input_path),
             "-filter_complex", graph,
             "-map", map_label, "-map", "0:a?",
-            *build_final_video_encode_args(),
+            *build_final_video_encode_args(fps=fps),
             *audio_args,
             "-movflags", "+faststart",
             str(output_path),
@@ -1310,7 +1313,7 @@ def render_reframed_clip_ffmpeg(
     command = [
         "ffmpeg", "-y", "-i", str(input_path),
         "-vf", video_filter,
-        *build_final_video_encode_args(),
+        *build_final_video_encode_args(fps=fps),
         *audio_args,
         "-movflags", "+faststart",
         str(output_path),

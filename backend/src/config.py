@@ -69,6 +69,9 @@ class Config:
         # bandwidth, disk and render time. 0 removes the limit.
         self.ytdlp_max_height = max(0, int(env_or_default("YTDLP_MAX_HEIGHT", "1080")))
         self.ytdlp_max_fps = max(0, int(env_or_default("YTDLP_MAX_FPS", "60")))
+        # Clips keep the source frame rate up to this cap (30 restores the old
+        # fixed 30 fps output; higher rates roughly double render time).
+        self.max_output_fps = max(1, int(env_or_default("MAX_OUTPUT_FPS", "60")))
         self.apify_youtube_default_quality = self._normalize_apify_quality(
             os.getenv("APIFY_YOUTUBE_DEFAULT_QUALITY", "1080")
         )

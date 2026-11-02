@@ -325,6 +325,9 @@ async def combine_editor(ctx, task_id: str, clip_id: str, filename: str, job_id:
         width, height = entries[0]["state"]["width"], entries[0]["state"]["height"]
         scale = min(1, 1920 / max(width, height))
         width, height = int(width * scale) // 2 * 2, int(height * scale) // 2 * 2
+        # Keep the fastest input's frame rate (clips follow their source, 24-60 fps).
+        fps = max(round(float(entry["state"].get("fps") or 30)) for entry in entries)
+        fps = max(min(24, get_config().max_output_fps), min(get_config().max_output_fps, fps))
         for i, entry in enumerate(entries):
             source_dir = editor_dir(
                 get_config().temp_dir, task_id, entry["id"], entry["filename"]
@@ -344,7 +347,7 @@ async def combine_editor(ctx, task_id: str, clip_id: str, filename: str, job_id:
             for j, segment in enumerate(document.segments):
                 key = f"{i}_{j}"
                 filters.append(
-                    f"[{i}:v]trim=start={segment.start}:end={segment.end},setpts=PTS-STARTPTS,scale={width}:{height}:force_original_aspect_ratio=decrease,pad={width}:{height}:(ow-iw)/2:(oh-ih)/2,setsar=1,fps=30[v{key}]"
+                    f"[{i}:v]trim=start={segment.start}:end={segment.end},setpts=PTS-STARTPTS,scale={width}:{height}:force_original_aspect_ratio=decrease,pad={width}:{height}:(ow-iw)/2:(oh-ih)/2,setsar=1,fps={fps}[v{key}]"
                 )
                 if entry["state"]["hasAudio"]:
                     filters.append(
