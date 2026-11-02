@@ -35,7 +35,7 @@ async def context(request, db, task_id, clip_id):
     await _require_task_owner(request, service, db, task_id)
     clip = await service.clip_repo.get_clip_by_id(db, clip_id)
     if not clip or clip["task_id"] != task_id:
-        raise HTTPException(404, "Clip not found")
+        raise HTTPException(404, "Clipe não encontrado")
     directory = editor_dir(service.config.temp_dir, task_id, clip_id, clip["filename"])
     await db.close()
     await run_in_thread(MediaStorage().restore_editor, directory, s3_backed=is_s3(clip["file_path"]))
@@ -107,10 +107,10 @@ async def save(
         # mutate task/clip rows, so renders must not block autosave.
         clip = await service.clip_repo.get_clip_by_id(db, clip_id)
         if not clip or clip["task_id"] != task_id:
-            raise HTTPException(404, "Clip not found")
+            raise HTTPException(404, "Clipe não encontrado")
         if payload.get("basis") != clip["filename"]:
             raise HTTPException(
-                409, "The original clip changed. Reopen the editor."
+                409, "O clipe original mudou. Abra o editor de novo."
             )
         directory = editor_dir(
             service.config.temp_dir, task_id, clip_id, clip["filename"]
@@ -126,7 +126,7 @@ async def save(
             or not isinstance(revision, int)
             or revision < 0
         ):
-            raise ValueError("Invalid draft revision")
+            raise ValueError("Revisão do rascunho inválida")
         document = EditDocument.model_validate(payload.get("document"))
         result = await run_in_thread(
             save_document, directory, document, revision, state["duration"]
@@ -180,7 +180,7 @@ async def start_export(
     if state["status"] != "ready":
         raise HTTPException(409, "Prepare the editor preview before exporting")
     if payload.get("basis") != clip["filename"]:
-        raise HTTPException(409, "The original clip changed. Reopen the editor.")
+        raise HTTPException(409, "O clipe original mudou. Abra o editor de novo.")
     preset = payload.get("preset", "tiktok")
     if preset not in {"tiktok", "reels", "shorts"}:
         raise HTTPException(400, "Unknown export preset")
@@ -309,7 +309,7 @@ async def combine(task_id: str, request: Request, db: AsyncSession = Depends(get
     for clip_id in ids:
         clip = await service.clip_repo.get_clip_by_id(db, clip_id)
         if not clip or clip["task_id"] != task_id:
-            raise HTTPException(404, "Clip not found")
+            raise HTTPException(404, "Clipe não encontrado")
         directory = editor_dir(
             service.config.temp_dir, task_id, clip_id, clip["filename"]
         )

@@ -72,7 +72,7 @@ async def test_admin_cannot_read_another_users_finished_task(
     response = await client.get(f"/tasks/{task['id']}", headers=auth_headers)
 
     assert response.status_code == 403
-    assert response.json()["detail"] == "Not authorized for this task"
+    assert response.json()["detail"] == "Sem permissão para esta tarefa"
 
 
 @pytest.mark.asyncio

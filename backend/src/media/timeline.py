@@ -511,7 +511,17 @@ def build_clip_signal_summary(video_path: Path, transcript: str) -> str:
     trigger_pattern = re.compile(
         r"\b(wait|what|no way|seriously|actually|but|however|because|mistake|secret|"
         r"wild|crazy|insane|never|always|nobody|everybody|why|how|haha|laugh|lol|damn|"
-        r"shit|fuck)\b",
+        r"shit|fuck|"
+        # Portuguese equivalents, so pt-BR recordings get the same hints.
+        r"espera|peraí|pera|o quê|que isso|sério|na verdade|mas|porém|porque|por que|"
+        r"erro|segredo|absurdo|loucura|insano|nunca|sempre|ninguém|todo mundo|como|"
+        r"kkk+|hahaha+|rsrs|caramba|nossa|meu deus|cara|porra|caralho)\b",
+        re.IGNORECASE,
+    )
+    story_turn_pattern = re.compile(
+        r"\b(I|we)\s+(thought|realized|found|learned|made|lost|won)\b|"
+        r"\b(eu|a gente|nós)\s+(pensei|achei|percebi|descobri|aprendi|fiz|perdi|ganhei|"
+        r"pensamos|percebemos|descobrimos|aprendemos|fizemos|perdemos|ganhamos)\b",
         re.IGNORECASE,
     )
     candidates: List[Tuple[float, Dict[str, Any], str]] = []
@@ -530,7 +540,7 @@ def build_clip_signal_summary(video_path: Path, transcript: str) -> str:
         if "!" in text:
             score += 1.0
             reasons.append("emphatic delivery")
-        if re.search(r"\b(I|we)\s+(thought|realized|found|learned|made|lost|won)\b", text, re.I):
+        if story_turn_pattern.search(text):
             score += 1.0
             reasons.append("story turn")
         if len(text.split()) <= 8:

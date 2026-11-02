@@ -322,7 +322,7 @@ class ClipRepository:
         ), {"clip_id": clip_id})
         previous = rows.mappings().first()
         if not previous:
-            raise ValueError("Clip not found")
+            raise ValueError("Clipe não encontrado")
         file_path = await persist_clip(db, file_path, previous["task_id"])
         if previous["file_path"] != file_path:
             await queue_clip_delete(db, previous)

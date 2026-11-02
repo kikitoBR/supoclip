@@ -107,6 +107,10 @@ class Config:
         self.media_url_ttl_seconds = min(3600, max(60, int(env_or_default("MEDIA_URL_TTL_SECONDS", "900"))))
         self.media_cache_ttl_seconds = max(14400, int(env_or_default("MEDIA_CACHE_TTL_SECONDS", "86400")))
         self.media_orphan_grace_seconds = max(86400, int(env_or_default("MEDIA_ORPHAN_GRACE_SECONDS", "86400")))
+        # Uploaded source videos are kept while their task exists so clips can be
+        # re-edited. A positive value deletes them once every task using them is
+        # older than this many days; 0 keeps them forever.
+        self.source_video_retention_days = max(0, int(env_or_default("SOURCE_VIDEO_RETENTION_DAYS", "0")))
         self.media_upload_concurrency = max(1, int(env_or_default("MEDIA_UPLOAD_CONCURRENCY", "3")))
         self.media_upload_daily_limit = max(1, int(env_or_default("MEDIA_UPLOAD_DAILY_LIMIT", "20")))
         if self.media_storage == "s3" and not self.media_s3_bucket:
@@ -212,8 +216,9 @@ class Config:
         )
         self.default_processing_mode = os.getenv("DEFAULT_PROCESSING_MODE", "fast")
         self.fast_mode_max_clips = int(env_or_default("FAST_MODE_MAX_CLIPS", "10"))
-        self.fast_mode_transcript_model = os.getenv(
-            "FAST_MODE_TRANSCRIPT_MODEL", "universal"
+        # universal-2 is AssemblyAI's cheaper model; "universal" maps to universal-3-pro.
+        self.fast_mode_transcript_model = env_or_default(
+            "FAST_MODE_TRANSCRIPT_MODEL", "universal-2"
         )
         # Open clips with the AI-picked hook line as a short cold-open teaser.
         self.hook_first_teaser = self._get_bool_env("HOOK_FIRST_TEASER", True)

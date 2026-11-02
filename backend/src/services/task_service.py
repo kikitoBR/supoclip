@@ -389,7 +389,7 @@ class TaskService(ClipEditingMixin):
                     analysis_json=None,
                 )
                 raise ValueError(
-                    "No usable clip segments were selected for this video."
+                    "Nenhum trecho aproveitável foi escolhido para este vídeo."
                 )
 
             await self.cache_repo.upsert_cache(
@@ -493,7 +493,7 @@ class TaskService(ClipEditingMixin):
             )
 
             if not clip_ids:
-                raise ValueError("No clips could be rendered. Please try again.")
+                raise ValueError("Nenhum clipe pôde ser renderizado. Tente novamente.")
 
             # A cancellation committed after the final render must win over completion.
             await check_cancelled()
@@ -502,14 +502,14 @@ class TaskService(ClipEditingMixin):
                 task_id,
                 "completed",
                 progress=100,
-                progress_message="Complete!",
+                progress_message="Concluído!",
                 expected_statuses=["processing"],
             )
             if completed is False:
                 raise TaskCancelled()
 
             if progress_callback:
-                await progress_callback(100, "Complete!", "completed")
+                await progress_callback(100, "Concluído!", "completed")
 
             await self.task_repo.update_task_runtime_metadata(
                 self.db,

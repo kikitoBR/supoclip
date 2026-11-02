@@ -52,12 +52,12 @@ async def submit_feedback(body: FeedbackRequest, request: Request):
     )
 
     if not webhook_url:
-        raise HTTPException(status_code=400, detail="Feedback is not configured")
+        raise HTTPException(status_code=400, detail="O feedback não está configurado")
 
     if body.category not in VALID_CATEGORIES:
         raise HTTPException(
             status_code=422,
-            detail=f"Invalid category. Must be one of: {', '.join(VALID_CATEGORIES)}",
+            detail=f"Categoria inválida. Use uma destas: {', '.join(VALID_CATEGORIES)}",
         )
 
     embed = {
@@ -82,7 +82,7 @@ async def submit_feedback(body: FeedbackRequest, request: Request):
     except httpx.HTTPError as e:
         logger.error("Discord webhook failed: %s", e)
         raise HTTPException(
-            status_code=500, detail="Failed to submit feedback"
+            status_code=500, detail="Não foi possível enviar o feedback"
         ) from e
 
     return {"status": "ok"}

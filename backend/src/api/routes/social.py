@@ -49,7 +49,7 @@ async def _allowed_user_id(
     user_id = _session_user_id(request) if session_only else await _user_id(request, db)
     if not await _service(request, db).has_access(user_id):
         raise HTTPException(
-            status_code=403, detail="Social publishing isn't available on your account yet."
+            status_code=403, detail="A publicação nas redes ainda não está disponível na sua conta."
         )
     return user_id
 
@@ -136,7 +136,7 @@ async def disconnect_all_accounts(request: Request, db: AsyncSession = Depends(g
     """Disconnect (and revoke at the platform) every account; used on account deletion."""
     user_id = _session_user_id(request)
     removed = await _service(request, db).disconnect_all(user_id)
-    return {"message": "Accounts disconnected", "removed": removed}
+    return {"message": "Contas desconectadas", "removed": removed}
 
 
 @router.delete("/connections/{account_id}")
@@ -146,8 +146,8 @@ async def disconnect_account(
     user_id = _session_user_id(request)
     removed = await _service(request, db).disconnect(user_id, account_id)
     if not removed:
-        raise HTTPException(status_code=404, detail="Connected account not found")
-    return {"message": "Account disconnected"}
+        raise HTTPException(status_code=404, detail="Conta conectada não encontrada")
+    return {"message": "Conta desconectada"}
 
 
 # ----------------------------------------------------------------------
@@ -176,7 +176,7 @@ async def create_post(request: Request, db: AsyncSession = Depends(get_db)):
     body = await _json_body(request)
     for field in ("task_id", "clip_id", "social_account_id"):
         if not body.get(field):
-            raise HTTPException(status_code=422, detail=f"{field} is required")
+            raise HTTPException(status_code=422, detail=f"O campo {field} é obrigatório")
     hashtags = body.get("hashtags")
     if isinstance(hashtags, str):
         hashtags = [hashtags]
@@ -262,8 +262,8 @@ async def delete_post(post_id: str, request: Request, db: AsyncSession = Depends
     except SocialError as exc:
         raise _http_error(exc)
     if not deleted:
-        raise HTTPException(status_code=404, detail="Post not found")
-    return {"message": "Post deleted"}
+        raise HTTPException(status_code=404, detail="Publicação não encontrada")
+    return {"message": "Publicação excluída"}
 
 
 # ----------------------------------------------------------------------
@@ -277,7 +277,7 @@ async def get_public_media(
     service = _service(request, db)
     reference = await service.get_public_media_reference(media_token)
     if reference is None:
-        raise HTTPException(status_code=404, detail="Media not found")
+        raise HTTPException(status_code=404, detail="Mídia não encontrada")
     # Release the session before streaming (see get_clip_file in tasks.py).
     await db.close()
     if is_s3(reference):

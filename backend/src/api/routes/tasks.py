@@ -32,7 +32,11 @@ from ...auth_headers import resolve_authenticated_user_id
 from ...workers.job_queue import JobQueue
 from ...workers.progress import ProgressTracker
 from ...config import get_config
-from ...youtube_utils import async_get_youtube_video_info
+from ...youtube_utils import (
+    YOUTUBE_BOT_CHECK_MESSAGE,
+    async_get_youtube_video_info,
+    youtube_blocked_by_bot_check,
+)
 from ...font_registry import is_font_accessible
 from ...clip_cleanup import (
     new_task_cleanup_settings,
@@ -54,18 +58,26 @@ async def _preflight_youtube_source(url: str, duration_limit: int) -> Dict[str, 
         metadata = await asyncio.wait_for(async_get_youtube_video_info(url), timeout=30)
         duration = (metadata or {}).get("duration")
         if isinstance(duration, bool) or not isinstance(duration, (int, float)):
-            raise ValueError("Missing video duration")
+            raise ValueError("Duração do vídeo ausente")
         if not math.isfinite(duration) or duration <= 0:
-            raise ValueError("Invalid video duration")
+            raise ValueError("Duração do vídeo inválida")
     except Exception as exc:
         logger.warning("YouTube preflight check failed for %s: %s", url, exc, exc_info=True)
+        if youtube_blocked_by_bot_check(url):
+            raise HTTPException(
+                status_code=503,
+                detail={
+                    "code": "YOUTUBE_BOT_CHECK",
+                    "message": f"{YOUTUBE_BOT_CHECK_MESSAGE} Nenhuma geração foi usada.",
+                },
+            ) from None
         raise HTTPException(
             status_code=503,
             detail={
                 "code": "VIDEO_METADATA_UNAVAILABLE",
                 "message": (
-                    "We couldn't verify this video's length. Please try again shortly "
-                    "or upload the video file. No generation was used."
+                    "Não foi possível verificar a duração deste vídeo. Tente novamente em instantes "
+                    "ou envie o arquivo do vídeo. Nenhuma geração foi usada."
                 ),
             },
         ) from None
@@ -76,9 +88,9 @@ async def _preflight_youtube_source(url: str, duration_limit: int) -> Dict[str, 
             detail={
                 "code": "VIDEO_TOO_LONG",
                 "message": (
-                    f"This video is {duration / 60:.1f} minutes long. Your plan allows "
-                    f"YouTube videos up to {duration_limit / 60:g} minutes. "
-                    "Choose a shorter video. No generation was used."
+                    f"Este vídeo tem {duration / 60:.1f} minutos. O seu plano permite "
+                    f"vídeos do YouTube de até {duration_limit / 60:g} minutos. "
+                    "Escolha um vídeo mais curto. Nenhuma geração foi usada."
                 ),
                 "duration_seconds": duration,
                 "max_duration_seconds": duration_limit,
@@ -115,9 +127,9 @@ async def _read_json_object(request: Request) -> Dict[str, Any]:
     try:
         payload = await request.json()
     except (ValueError, UnicodeDecodeError):
-        raise HTTPException(status_code=400, detail="Invalid JSON body")
+        raise HTTPException(status_code=400, detail="Corpo JSON inválido")
     if not isinstance(payload, dict):
-        raise HTTPException(status_code=400, detail="Request body must be an object")
+        raise HTTPException(status_code=400, detail="O corpo da requisição deve ser um objeto")
     return payload
 
 
@@ -229,7 +241,7 @@ async def _load_task_for_user(
     user_id = await _get_user_id_from_headers(request, db)
     task = await task_service.task_repo.get_task_by_id(db, task_id)
     if not task:
-        raise HTTPException(status_code=404, detail="Task not found")
+        raise HTTPException(status_code=404, detail="Tarefa não encontrada")
     return user_id, task
 
 
@@ -240,7 +252,7 @@ async def _require_task_owner(
     user_id, task = await _load_task_for_user(request, task_service, db, task_id)
 
     if task.get("user_id") != user_id:
-        raise HTTPException(status_code=403, detail="Not authorized for this task")
+        raise HTTPException(status_code=403, detail="Sem permissão para esta tarefa")
 
     return task
 
@@ -258,7 +270,7 @@ async def _require_task_reader(
     ):
         return task
 
-    raise HTTPException(status_code=403, detail="Not authorized for this task")
+    raise HTTPException(status_code=403, detail="Sem permissão para esta tarefa")
 
 
 PUBLIC_TASK_FIELDS = {
@@ -320,7 +332,7 @@ async def list_tasks(
 
     except Exception as e:
         logger.error(f"Error retrieving user tasks: {e}")
-        raise HTTPException(status_code=500, detail=f"Error retrieving tasks: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Erro ao carregar as tarefas: {str(e)}")
 
 
 @router.post("/")
@@ -333,7 +345,7 @@ async def create_task(request: Request, db: AsyncSession = Depends(get_db)):
 
     raw_source = data.get("source")
     if not isinstance(raw_source, dict) or not isinstance(raw_source.get("url"), str) or not raw_source["url"].strip():
-        raise HTTPException(status_code=400, detail="Source URL is required")
+        raise HTTPException(status_code=400, detail="O link de origem é obrigatório")
     user_id = await _get_user_id_from_headers(request, db)
 
     # Get font options
@@ -362,7 +374,7 @@ async def create_task(request: Request, db: AsyncSession = Depends(get_db)):
         clip_duration = "auto"
     cleanup_settings = new_task_cleanup_settings(data)
     if not raw_source or not raw_source.get("url"):
-        raise HTTPException(status_code=400, detail="Source URL is required")
+        raise HTTPException(status_code=400, detail="O link de origem é obrigatório")
 
     try:
         billing_service = BillingService(db)
@@ -446,7 +458,7 @@ async def create_task(request: Request, db: AsyncSession = Depends(get_db)):
             return {
                 "task_id": task_id,
                 "job_id": job_id,
-                "message": "Task created and queued for processing",
+                "message": "Tarefa criada e colocada na fila de processamento",
             }
 
     except GenerationAllowanceBusy as e:
@@ -466,7 +478,7 @@ async def create_task(request: Request, db: AsyncSession = Depends(get_db)):
         )
     except Exception as e:
         logger.error(f"Error creating task: {e}")
-        raise HTTPException(status_code=500, detail=f"Error creating task: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Erro ao criar a tarefa: {str(e)}")
 
 
 @router.get("/billing/summary")
@@ -484,7 +496,7 @@ async def get_billing_summary(request: Request, db: AsyncSession = Depends(get_d
         logger.error(f"Error retrieving billing summary: {e}")
         raise HTTPException(
             status_code=500,
-            detail=f"Error retrieving billing summary: {str(e)}",
+            detail=f"Erro ao carregar o resumo de cobrança: {str(e)}",
         )
 
 
@@ -494,11 +506,11 @@ async def get_shared_task(share_token: str, db: AsyncSession = Depends(get_db)):
     task_service = TaskService(db)
     task_id = await task_service.task_repo.get_shared_task_id(db, share_token)
     if not task_id:
-        raise HTTPException(status_code=404, detail="Shared result not found")
+        raise HTTPException(status_code=404, detail="Resultado compartilhado não encontrado")
 
     task = await task_service.get_task_with_clips(task_id)
     if not task or task.get("status") != "completed":
-        raise HTTPException(status_code=404, detail="Shared result not found")
+        raise HTTPException(status_code=404, detail="Resultado compartilhado não encontrado")
 
     return _build_public_task(task, share_token)
 
@@ -514,11 +526,11 @@ async def get_shared_clip_file(
     task_service = TaskService(db)
     task_id = await task_service.task_repo.get_shared_task_id(db, share_token)
     if not task_id:
-        raise HTTPException(status_code=404, detail="Shared result not found")
+        raise HTTPException(status_code=404, detail="Resultado compartilhado não encontrado")
 
     clip = await task_service.clip_repo.get_clip_by_id(db, clip_id)
     if not clip or clip.get("task_id") != task_id:
-        raise HTTPException(status_code=404, detail="Clip not found")
+        raise HTTPException(status_code=404, detail="Clipe não encontrado")
 
     if is_s3(clip["file_path"]):
         await db.close()
@@ -526,7 +538,7 @@ async def get_shared_clip_file(
         return RedirectResponse(url, status_code=307, headers={"Cache-Control": "private, no-store"})
     clip_path = Path(clip["file_path"])
     if not clip_path.exists():
-        raise HTTPException(status_code=404, detail="Clip file not found")
+        raise HTTPException(status_code=404, detail="Arquivo do clipe não encontrado")
 
     return FileResponse(
         path=str(clip_path),
@@ -548,7 +560,7 @@ async def get_task(
         task = await task_service.get_task_with_clips(task_id)
 
         if not task:
-            raise HTTPException(status_code=404, detail="Task not found")
+            raise HTTPException(status_code=404, detail="Tarefa não encontrada")
 
         return task
 
@@ -556,7 +568,7 @@ async def get_task(
         raise
     except Exception as e:
         logger.error(f"Error retrieving task: {e}")
-        raise HTTPException(status_code=500, detail=f"Error retrieving task: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Erro ao carregar a tarefa: {str(e)}")
 
 
 @router.get("/{task_id}/clips")
@@ -570,7 +582,7 @@ async def get_task_clips(
         task = await task_service.get_task_with_clips(task_id)
 
         if not task:
-            raise HTTPException(status_code=404, detail="Task not found")
+            raise HTTPException(status_code=404, detail="Tarefa não encontrada")
 
         return {
             "task_id": task_id,
@@ -582,7 +594,7 @@ async def get_task_clips(
         raise
     except Exception as e:
         logger.error(f"Error retrieving clips: {e}")
-        raise HTTPException(status_code=500, detail=f"Error retrieving clips: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Erro ao carregar os clipes: {str(e)}")
 
 
 @router.post("/{task_id}/share")
@@ -594,14 +606,14 @@ async def share_task(
     task = await _require_task_owner(request, task_service, db, task_id)
     if task.get("status") != "completed":
         raise HTTPException(
-            status_code=409, detail="Only completed generations can be shared"
+            status_code=409, detail="Só gerações concluídas podem ser compartilhadas"
         )
 
     share_token = await task_service.task_repo.enable_sharing(
         db, task_id, secrets.token_urlsafe(32)
     )
     if not share_token:
-        raise HTTPException(status_code=404, detail="Task not found")
+        raise HTTPException(status_code=404, detail="Tarefa não encontrada")
 
     return {
         "share_token": share_token,
@@ -617,7 +629,7 @@ async def unshare_task(
     task_service = TaskService(db)
     await _require_task_owner(request, task_service, db, task_id)
     await task_service.task_repo.disable_sharing(db, task_id)
-    return {"message": "Share link disabled"}
+    return {"message": "Link de compartilhamento desativado"}
 
 
 @router.get("/{task_id}/progress")
@@ -690,7 +702,7 @@ async def update_task(
         title = data.get("title")
 
         if not isinstance(title, str) or not title.strip():
-            raise HTTPException(status_code=400, detail="Title is required")
+            raise HTTPException(status_code=400, detail="O título é obrigatório")
 
         task_service = TaskService(db)
 
@@ -699,13 +711,13 @@ async def update_task(
         # Update source title
         await task_service.source_repo.update_source_title(db, task["source_id"], title)
 
-        return {"message": "Task updated successfully", "task_id": task_id}
+        return {"message": "Tarefa atualizada", "task_id": task_id}
 
     except HTTPException:
         raise
     except Exception as e:
         logger.error(f"Error updating task: {e}")
-        raise HTTPException(status_code=500, detail=f"Error updating task: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Erro ao atualizar a tarefa: {str(e)}")
 
 
 @router.delete("/{task_id}")
@@ -720,17 +732,17 @@ async def delete_task(
         # Get task to verify ownership
         task = await task_service.task_repo.get_task_by_id(db, task_id)
         if not task:
-            raise HTTPException(status_code=404, detail="Task not found")
+            raise HTTPException(status_code=404, detail="Tarefa não encontrada")
 
         if task["user_id"] != user_id:
             raise HTTPException(
-                status_code=403, detail="Not authorized to delete this task"
+                status_code=403, detail="Sem permissão para excluir esta tarefa"
             )
 
         # Delete clips and task
         await task_service.delete_task(task_id)
 
-        return {"message": "Task deleted successfully"}
+        return {"message": "Tarefa excluída"}
 
     except HTTPException:
         raise
@@ -738,7 +750,7 @@ async def delete_task(
         raise HTTPException(status_code=400, detail=str(e))
     except Exception as e:
         logger.error(f"Error deleting task: {e}")
-        raise HTTPException(status_code=500, detail=f"Error deleting task: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Erro ao excluir a tarefa: {str(e)}")
 
 
 @router.delete("/{task_id}/clips/{clip_id}")
@@ -753,20 +765,20 @@ async def delete_clip(
         # Verify task ownership
         task = await task_service.task_repo.get_task_by_id(db, task_id)
         if not task:
-            raise HTTPException(status_code=404, detail="Task not found")
+            raise HTTPException(status_code=404, detail="Tarefa não encontrada")
 
         if task["user_id"] != user_id:
             raise HTTPException(
-                status_code=403, detail="Not authorized to delete this clip"
+                status_code=403, detail="Sem permissão para excluir este clipe"
             )
 
         clip = await task_service.clip_repo.get_clip_by_id(db, clip_id)
         if not clip or clip["task_id"] != task_id:
-            raise HTTPException(status_code=404, detail="Clip not found")
+            raise HTTPException(status_code=404, detail="Clipe não encontrado")
 
         await task_service.delete_clip(task_id, clip_id)
 
-        return {"message": "Clip deleted successfully"}
+        return {"message": "Clipe excluído"}
 
     except HTTPException:
         raise
@@ -774,7 +786,7 @@ async def delete_clip(
         raise HTTPException(status_code=400, detail=str(e))
     except Exception as e:
         logger.error(f"Error deleting clip: {e}")
-        raise HTTPException(status_code=500, detail=f"Error deleting clip: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Erro ao excluir o clipe: {str(e)}")
 
 
 @router.get("/{task_id}/clips/{clip_id}/file")
@@ -791,7 +803,7 @@ async def get_clip_file(
         await _require_task_reader(request, task_service, db, task_id)
         clip = await task_service.clip_repo.get_clip_by_id(db, clip_id)
         if not clip or clip.get("task_id") != task_id:
-            raise HTTPException(status_code=404, detail="Clip not found")
+            raise HTTPException(status_code=404, detail="Clipe não encontrado")
 
         if is_s3(clip["file_path"]):
             await db.close()
@@ -799,7 +811,7 @@ async def get_clip_file(
             return RedirectResponse(url, status_code=307, headers={"Cache-Control": "private, no-store"})
         clip_path = Path(clip["file_path"])
         if not clip_path.exists():
-            raise HTTPException(status_code=404, detail="Clip file not found")
+            raise HTTPException(status_code=404, detail="Arquivo do clipe não encontrado")
 
         # Release the DB connection before streaming: FastAPI keeps a
         # `Depends(get_db)` session open for the full response lifetime, and a
@@ -820,7 +832,7 @@ async def get_clip_file(
         raise
     except Exception as e:
         logger.error(f"Error serving clip file: {e}")
-        raise HTTPException(status_code=500, detail=f"Error serving clip file: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Erro ao enviar o arquivo do clipe: {str(e)}")
 
 
 @router.patch("/{task_id}/clips/{clip_id}")
@@ -834,7 +846,7 @@ async def trim_clip(
         end_offset = _finite_number(payload.get("end_offset", 0), "end_offset")
 
         if start_offset < 0 or end_offset < 0:
-            raise HTTPException(status_code=400, detail="Offsets must be non-negative")
+            raise HTTPException(status_code=400, detail="Os deslocamentos não podem ser negativos")
 
         task_service = TaskService(db)
         await _require_task_owner(request, task_service, db, task_id)
@@ -848,7 +860,7 @@ async def trim_clip(
         raise
     except Exception as e:
         logger.error(f"Error trimming clip: {e}")
-        raise HTTPException(status_code=500, detail=f"Error trimming clip: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Erro ao cortar o clipe: {str(e)}")
 
 
 @router.post("/{task_id}/clips/{clip_id}/split")
@@ -874,7 +886,7 @@ async def split_clip(
         raise
     except Exception as e:
         logger.error(f"Error splitting clip: {e}")
-        raise HTTPException(status_code=500, detail=f"Error splitting clip: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Erro ao dividir o clipe: {str(e)}")
 
 
 @router.post("/{task_id}/clips/merge")
@@ -898,7 +910,7 @@ async def merge_clips(
         raise
     except Exception as e:
         logger.error(f"Error merging clips: {e}")
-        raise HTTPException(status_code=500, detail=f"Error merging clips: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Erro ao juntar os clipes: {str(e)}")
 
 
 @router.patch("/{task_id}/clips/{clip_id}/captions")
@@ -920,15 +932,15 @@ async def update_clip_captions(
         if font_size is not None:
             font_size = _finite_number(font_size, "font_size")
             if not math.isfinite(font_size) or not 12 <= font_size <= 72:
-                raise ValueError("Font size must be between 12 and 72")
+                raise ValueError("O tamanho da fonte deve estar entre 12 e 72")
             font_size = int(font_size)
         position_y = payload.get("position_y")
         if position_y is not None:
             position_y = _finite_number(position_y, "position_y")
             if not math.isfinite(position_y) or not 0.1 <= position_y <= 0.85:
-                raise ValueError("Caption position must be between 0.1 and 0.85")
+                raise ValueError("A posição da legenda deve estar entre 0.1 e 0.85")
         if position not in {"top", "middle", "bottom"}:
-            raise ValueError("Invalid caption position")
+            raise ValueError("Posição de legenda inválida")
 
         task_service = TaskService(db)
         await _require_task_owner(request, task_service, db, task_id)
@@ -949,7 +961,7 @@ async def update_clip_captions(
     except Exception as e:
         logger.error(f"Error updating captions: {e}")
         raise HTTPException(
-            status_code=500, detail=f"Error updating captions: {str(e)}"
+            status_code=500, detail=f"Erro ao atualizar as legendas: {str(e)}"
         )
 
 
@@ -968,7 +980,7 @@ async def regenerate_clip(
         updated_clip = await task_service.trim_clip(
             task_id, clip_id, start_offset, end_offset
         )
-        return {"clip": updated_clip, "message": "Clip regenerated successfully"}
+        return {"clip": updated_clip, "message": "Clipe gerado novamente"}
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
     except HTTPException:
@@ -976,7 +988,7 @@ async def regenerate_clip(
     except Exception as e:
         logger.error(f"Error regenerating clip: {e}")
         raise HTTPException(
-            status_code=500, detail=f"Error regenerating clip: {str(e)}"
+            status_code=500, detail=f"Erro ao gerar o clipe de novo: {str(e)}"
         )
 
 
@@ -998,7 +1010,7 @@ async def apply_task_settings(
         await _require_task_owner(request, task_service, db, task_id)
         task_record = await task_service.task_repo.get_task_by_id(db, task_id)
         if not task_record:
-            raise HTTPException(status_code=404, detail="Task not found")
+            raise HTTPException(status_code=404, detail="Tarefa não encontrada")
 
         # Cleanup fields the request omits keep the task's stored values, so a
         # styling-only update can't silently switch pause/filler cleanup off.
@@ -1008,7 +1020,7 @@ async def apply_task_settings(
             font_family, task_record["user_id"]
         ):
             raise HTTPException(
-                status_code=400, detail="Selected font is not available"
+                status_code=400, detail="A fonte escolhida não está disponível"
             )
         task = await task_service.update_task_settings(
             task_id,
@@ -1039,7 +1051,7 @@ async def apply_task_settings(
             ),
             db=db,
         )
-        return {"task": task, "message": "Task settings updated"}
+        return {"task": task, "message": "Configurações da tarefa atualizadas"}
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
     except HTTPException:
@@ -1047,7 +1059,7 @@ async def apply_task_settings(
     except Exception as e:
         logger.error(f"Error updating task settings: {e}")
         raise HTTPException(
-            status_code=500, detail=f"Error updating task settings: {str(e)}"
+            status_code=500, detail=f"Erro ao atualizar as configurações da tarefa: {str(e)}"
         )
 
 
@@ -1066,14 +1078,14 @@ async def export_clip(
         if preset_name not in EXPORT_PRESETS:
             raise HTTPException(
                 status_code=400,
-                detail=f"Invalid preset. Use one of: {', '.join(EXPORT_PRESETS.keys())}",
+                detail=f"Predefinição inválida. Use uma destas: {', '.join(EXPORT_PRESETS.keys())}",
             )
 
         task_service = TaskService(db)
         await _require_task_reader(request, task_service, db, task_id)
         clip = await task_service.clip_repo.get_clip_by_id(db, clip_id)
         if not clip or clip.get("task_id") != task_id:
-            raise HTTPException(status_code=404, detail="Clip not found")
+            raise HTTPException(status_code=404, detail="Clipe não encontrado")
 
         from pathlib import Path
 
@@ -1099,7 +1111,7 @@ async def export_clip(
         raise
     except Exception as e:
         logger.error(f"Error exporting clip: {e}")
-        raise HTTPException(status_code=500, detail=f"Error exporting clip: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Erro ao exportar o clipe: {str(e)}")
 
 
 @router.post("/{task_id}/cancel")
@@ -1112,7 +1124,7 @@ async def cancel_task(
         task = await _require_task_owner(request, task_service, db, task_id)
 
         if task.get("status") in ["completed", "error", "cancelled"]:
-            return {"message": f"Task already in terminal state: {task.get('status')}"}
+            return {"message": f"A tarefa já foi finalizada: {task.get('status')}"}
 
         runtime_config = get_config()
         redis_client = redis.Redis(
@@ -1135,12 +1147,12 @@ async def cancel_task(
             expected_statuses=["queued", "processing"],
         )
 
-        return {"message": "Task cancellation requested"}
+        return {"message": "Cancelamento da tarefa solicitado"}
     except HTTPException:
         raise
     except Exception as e:
         logger.error(f"Error cancelling task: {e}")
-        raise HTTPException(status_code=500, detail=f"Error cancelling task: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Erro ao cancelar a tarefa: {str(e)}")
 
 
 @router.get("/metrics/performance")
@@ -1156,7 +1168,7 @@ async def get_performance_metrics(
         raise
     except Exception as e:
         logger.error(f"Error loading performance metrics: {e}")
-        raise HTTPException(status_code=500, detail=f"Error loading metrics: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Erro ao carregar as métricas: {str(e)}")
 
 
 @router.post("/{task_id}/resume")
@@ -1171,11 +1183,11 @@ async def resume_task(
         async with task_run_guard(db, task_id):
             task = await task_service.task_repo.get_task_by_id(db, task_id)
             if task.get("status") == "queued":
-                return {"message": "Task already queued"}
+                return {"message": "A tarefa já está na fila"}
             if task.get("status") not in ["cancelled", "error"]:
                 raise HTTPException(
                     status_code=400,
-                    detail="Only cancelled/error/queued tasks can be resumed",
+                    detail="Só tarefas canceladas, com erro ou na fila podem ser retomadas",
                 )
 
             source_url = task.get("source_url")
@@ -1205,7 +1217,7 @@ async def resume_task(
                 clip_duration = "auto"
 
             if not source_url or not source_type:
-                raise HTTPException(status_code=400, detail="Task source URL is missing")
+                raise HTTPException(status_code=400, detail="O link de origem da tarefa está ausente")
 
             async with generation_allowance_guard(
                 db, task["user_id"], enabled=get_config().monetization_enabled
@@ -1266,7 +1278,7 @@ async def resume_task(
                     )
                     raise
 
-                return {"message": "Task resumed", "job_id": job_id}
+                return {"message": "Tarefa retomada", "job_id": job_id}
     except GenerationAllowanceBusy as e:
         raise HTTPException(status_code=409, detail=str(e), headers={"Retry-After": "1"})
     except BillingLimitExceeded as e:
@@ -1284,7 +1296,7 @@ async def resume_task(
         raise
     except Exception as e:
         logger.error(f"Error resuming task: {e}")
-        raise HTTPException(status_code=500, detail=f"Error resuming task: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Erro ao retomar a tarefa: {str(e)}")
 
 
 @router.get("/dead-letter/list")

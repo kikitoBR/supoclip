@@ -1119,8 +1119,8 @@ async def _run_transcript_analysis(
                             getattr(error, "status_code", None),
                         )
                         raise RuntimeError(
-                            "The AI analysis service is temporarily unavailable after "
-                            "several attempts. Please try again shortly."
+                            "O serviço de análise com IA está indisponível depois de "
+                            "várias tentativas. Tente novamente em instantes."
                         ) from None
 
                     delay = 5 * 2 ** (attempt - 1) + random.uniform(0, 1)
@@ -1138,7 +1138,7 @@ async def _run_transcript_analysis(
     except TimeoutError:
         logger.error("AI analysis exceeded the %ss time budget", timeout_seconds)
         raise RuntimeError(
-            "The AI analysis service took too long to respond. Please try again shortly."
+            "O serviço de análise com IA demorou demais para responder. Tente novamente em instantes."
         ) from None
 
 
@@ -1450,7 +1450,7 @@ async def _analyze_transcript_windows(
         if errors:
             raise errors[0]
         raise RuntimeError(
-            "The AI analysis service took too long to respond. Please try again shortly."
+            "O serviço de análise com IA demorou demais para responder. Tente novamente em instantes."
         )
     return analyses
 

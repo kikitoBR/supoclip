@@ -59,7 +59,7 @@ async def _write_upload_to_disk(
                 written += len(chunk)
                 if written > max_bytes:
                     raise HTTPException(
-                        status_code=413, detail="Uploaded file is too large"
+                        status_code=413, detail="O arquivo enviado é grande demais"
                     )
 
                 await destination.write(chunk)
@@ -87,8 +87,8 @@ async def get_available_fonts_route(
     except HTTPException:
         raise
     except Exception as e:
-        logger.error(f"Error retrieving fonts: {str(e)}")
-        raise HTTPException(status_code=500, detail=f"Error retrieving fonts: {str(e)}")
+        logger.error(f"Erro ao carregar as fontes: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Erro ao carregar as fontes: {str(e)}")
 
 
 @router.get("/fonts/{font_name}")
@@ -103,7 +103,7 @@ async def get_font_file(
         font_path = find_font_path(font_name, user_id=user_id)
 
         if not font_path:
-            raise HTTPException(status_code=404, detail="Font not found")
+            raise HTTPException(status_code=404, detail="Fonte não encontrada")
 
         media_type = "font/ttf" if font_path.suffix.lower() == ".ttf" else "font/otf"
 
@@ -119,7 +119,7 @@ async def get_font_file(
         raise
     except Exception as e:
         logger.error(f"Error serving font {font_name}: {str(e)}")
-        raise HTTPException(status_code=500, detail=f"Error serving font: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Erro ao enviar a fonte: {str(e)}")
 
 
 @router.post("/fonts/upload")
@@ -140,17 +140,17 @@ async def upload_font(
         if not paid_access:
             raise HTTPException(
                 status_code=403,
-                detail="Custom font uploads are available for paid plans only",
+                detail="O envio de fontes personalizadas está disponível só nos planos pagos",
             )
 
         if not uploaded_file.filename:
-            raise HTTPException(status_code=400, detail="Missing file name")
+            raise HTTPException(status_code=400, detail="Nome do arquivo ausente")
 
         uploaded_filename = uploaded_file.filename or "font.ttf"
         extension = Path(uploaded_filename).suffix.lower()
         if extension not in SUPPORTED_FONT_EXTENSIONS:
             raise HTTPException(
-                status_code=400, detail="Only .ttf and .otf fonts are supported"
+                status_code=400, detail="Só são aceitas fontes .ttf e .otf"
             )
 
         user_fonts_dir = get_user_fonts_dir(user_id)
@@ -178,15 +178,15 @@ async def upload_font(
                 "format": extension.lstrip("."),
                 "scope": "user",
             },
-            "message": "Font uploaded successfully",
+            "message": "Fonte enviada",
         }
     except HTTPException:
         raise
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
     except Exception as e:
-        logger.error(f"Error uploading font: {str(e)}")
-        raise HTTPException(status_code=500, detail=f"Error uploading font: {str(e)}")
+        logger.error(f"Erro ao enviar a fonte: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Erro ao enviar a fonte: {str(e)}")
 
 
 @router.delete("/fonts/{font_name}")
@@ -201,19 +201,19 @@ async def delete_font(
         if font_path is None:
             if find_font_path(font_name) is not None:
                 raise HTTPException(
-                    status_code=403, detail="Bundled system fonts cannot be deleted"
+                    status_code=403, detail="As fontes do sistema não podem ser excluídas"
                 )
-            raise HTTPException(status_code=404, detail="Custom font not found")
+            raise HTTPException(status_code=404, detail="Fonte personalizada não encontrada")
 
         deleted_name = font_path.stem
         font_path.unlink(missing_ok=True)
         logger.info("Deleted custom font %s for user %s", font_path.name, user_id)
-        return {"font_name": deleted_name, "message": "Font deleted successfully"}
+        return {"font_name": deleted_name, "message": "Fonte excluída"}
     except HTTPException:
         raise
     except Exception as e:
         logger.error("Error deleting font %s: %s", font_name, e)
-        raise HTTPException(status_code=500, detail=f"Error deleting font: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Erro ao excluir a fonte: {str(e)}")
 
 
 @router.get("/transitions")
@@ -241,9 +241,9 @@ async def get_available_transitions():
         return {"transitions": transition_info}
 
     except Exception as e:
-        logger.error(f"Error retrieving transitions: {str(e)}")
+        logger.error(f"Erro ao carregar as transições: {str(e)}")
         raise HTTPException(
-            status_code=500, detail=f"Error retrieving transitions: {str(e)}"
+            status_code=500, detail=f"Erro ao carregar as transições: {str(e)}"
         )
 
 
@@ -297,7 +297,7 @@ async def upload_video(request: Request, db: AsyncSession = Depends(get_db)):
         video_file = cast(Any, form_data.get("video"))
 
         if not getattr(video_file, "filename", None) or not hasattr(video_file, "read"):
-            raise HTTPException(status_code=400, detail="No video file provided")
+            raise HTTPException(status_code=400, detail="Nenhum arquivo de vídeo enviado")
 
         upload = cast(UploadFile, video_file)
         upload_filename = upload.filename or "upload.mp4"
@@ -329,12 +329,12 @@ async def upload_video(request: Request, db: AsyncSession = Depends(get_db)):
                 raise
             finally:
                 video_path.unlink(missing_ok=True)
-            return {"message": "Video uploaded successfully", "video_path": url}
+            return {"message": "Vídeo enviado", "video_path": url}
 
         logger.info(f"✅ Video uploaded successfully to: {video_path}")
 
         return {
-            "message": "Video uploaded successfully",
+            "message": "Vídeo enviado",
             "video_path": f"upload://{unique_filename}",
         }
     except UploadLimitReached as exc:
@@ -343,7 +343,7 @@ async def upload_video(request: Request, db: AsyncSession = Depends(get_db)):
         raise
     except Exception as e:
         logger.error(f"❌ Error uploading video: {str(e)}")
-        raise HTTPException(status_code=500, detail=f"Error uploading video: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Erro ao enviar o vídeo: {str(e)}")
 
 
 @router.post("/upload/authorize")
@@ -357,13 +357,13 @@ async def authorize_upload(request: Request, db: AsyncSession = Depends(get_db))
         payload = await request.json()
         size = payload.get("size")
         if not isinstance(size, int) or isinstance(size, bool):
-            raise ValueError("A file size is required")
+            raise ValueError("O tamanho do arquivo é obrigatório")
         filename = payload.get("filename")
         if not isinstance(filename, str):
-            raise ValueError("A filename is required")
+            raise ValueError("O nome do arquivo é obrigatório")
         content_type = payload.get("contentType") or "application/octet-stream"
         if not isinstance(content_type, str) or len(content_type) > 128:
-            raise ValueError("Invalid content type")
+            raise ValueError("Tipo de conteúdo inválido")
         session_id = await reserve_upload(db, user_id, size, storage.config)
         authorization = {}
         def begin():
@@ -434,6 +434,6 @@ async def abort_upload(request: Request, db: AsyncSession = Depends(get_db)):
                 raise
         if session:
             await finish_upload(db, session.id, 'aborted')
-        return {"message": "Upload cancelled"}
+        return {"message": "Envio cancelado"}
     except (ValueError, TypeError, AttributeError, KeyError) as exc:
         raise HTTPException(400, str(exc)) from None

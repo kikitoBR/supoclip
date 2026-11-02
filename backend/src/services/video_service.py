@@ -12,11 +12,13 @@ import uuid
 
 from ..utils.async_helpers import run_in_thread
 from ..youtube_utils import (
+    YOUTUBE_BOT_CHECK_MESSAGE,
     async_download_youtube_video,
     async_get_youtube_video_info,
     async_get_youtube_video_title,
     cleanup_downloaded_files,
     get_youtube_video_id,
+    youtube_blocked_by_bot_check,
 )
 from ..video_utils import (
     get_video_transcript,
@@ -397,7 +399,7 @@ class VideoService:
             return "youtube"
         if url.startswith(UPLOAD_URL_PREFIX):
             return "video_url"
-        raise ValueError("Only YouTube URLs or upload:// references are supported")
+        raise ValueError("Só são aceitos links do YouTube ou referências upload://")
 
     @staticmethod
     async def process_video_complete(
@@ -439,7 +441,7 @@ class VideoService:
                 raise Exception("Task cancelled")
 
             if progress_callback:
-                await progress_callback(10, "Downloading video...", "processing")
+                await progress_callback(10, "Baixando o vídeo...", "processing")
 
             if source_type == "youtube":
                 video_info = await async_get_youtube_video_info(url, task_id=task_id)
@@ -448,13 +450,15 @@ class VideoService:
                     if duration and duration > duration_limit:
                         mins = duration_limit // 60
                         raise Exception(
-                            f"Video is too long ({duration // 60} min). "
-                            f"Maximum allowed duration is {mins} minutes."
+                            f"O vídeo é longo demais ({duration // 60} min). "
+                            f"A duração máxima permitida é de {mins} minutos."
                         )
 
                 video_path = await VideoService.download_video(url, task_id=task_id)
                 if not video_path:
-                    raise Exception("Failed to download video")
+                    if youtube_blocked_by_bot_check(url):
+                        raise Exception(YOUTUBE_BOT_CHECK_MESSAGE)
+                    raise Exception("Não foi possível baixar o vídeo")
             else:
                 video_path = (
                     await run_in_thread(VideoService.resolve_local_video_path, url)
@@ -469,8 +473,8 @@ class VideoService:
             if file_duration and file_duration > duration_limit:
                 mins = duration_limit // 60
                 raise Exception(
-                    f"Video is too long ({int(file_duration) // 60} min). "
-                    f"Maximum allowed duration is {mins} minutes."
+                    f"O vídeo é longo demais ({int(file_duration) // 60} min). "
+                    f"A duração máxima permitida é de {mins} minutos."
                 )
 
             # Step 2: Generate transcript
@@ -478,7 +482,7 @@ class VideoService:
                 raise Exception("Task cancelled")
 
             if progress_callback:
-                await progress_callback(30, "Generating transcript...", "processing")
+                await progress_callback(30, "Gerando a transcrição...", "processing")
 
             transcript = cached_transcript
             # Database text alone cannot recreate timed captions or cleanup.
@@ -507,7 +511,7 @@ class VideoService:
 
             if progress_callback:
                 await progress_callback(
-                    50, "Analyzing content with AI...", "processing"
+                    50, "Analisando o conteúdo com IA...", "processing"
                 )
 
             relevant_parts = None
@@ -561,7 +565,7 @@ class VideoService:
                 raise Exception("Task cancelled")
 
             if progress_callback:
-                await progress_callback(70, "Creating video clips...", "processing")
+                await progress_callback(70, "Criando os clipes...", "processing")
 
             raw_segments = relevant_parts.most_relevant_segments
             segments_json: List[Dict[str, Any]] = []

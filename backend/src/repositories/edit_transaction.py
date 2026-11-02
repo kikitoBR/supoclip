@@ -38,11 +38,11 @@ async def task_edit_transaction(db: AsyncSession, task_id: str, *, processing: b
         )
         status = result.scalar_one_or_none()
         if status is None:
-            raise ValueError("Task not found")
+            raise ValueError("Tarefa não encontrada")
         if processing and status != "processing":
             raise TaskCancelled()
         if not processing and status in {"queued", "processing"}:
-            raise ValueError("Wait for processing to finish before editing this task")
+            raise ValueError("Espere o processamento terminar antes de editar esta tarefa")
         db.info[_EDIT_TASK] = task_id
         yield
         await db.commit()

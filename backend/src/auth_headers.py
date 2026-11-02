@@ -59,26 +59,26 @@ def get_signed_user_id(request: Request, config: Config) -> str:
     signature = request.headers.get(SIGNATURE_HEADER)
 
     if not user_id or not timestamp or not signature:
-        raise HTTPException(status_code=401, detail="Signed authentication required")
+        raise HTTPException(status_code=401, detail="Autenticação assinada necessária")
 
     if not config.backend_auth_secret:
         raise HTTPException(
             status_code=500,
-            detail="Server authentication secret is not configured",
+            detail="O segredo de autenticação do servidor não está configurado",
         )
 
     try:
         timestamp_int = int(timestamp)
     except ValueError as e:
-        raise HTTPException(status_code=401, detail="Invalid auth timestamp") from e
+        raise HTTPException(status_code=401, detail="Horário de autenticação inválido") from e
 
     now = int(time.time())
     if abs(now - timestamp_int) > config.auth_signature_ttl_seconds:
-        raise HTTPException(status_code=401, detail="Expired auth signature")
+        raise HTTPException(status_code=401, detail="Assinatura de autenticação expirada")
 
     expected = _expected_signature(config.backend_auth_secret, user_id, timestamp)
     if not hmac.compare_digest(expected, signature):
-        raise HTTPException(status_code=401, detail="Invalid auth signature")
+        raise HTTPException(status_code=401, detail="Assinatura de autenticação inválida")
 
     return user_id
 
@@ -94,12 +94,12 @@ def get_authenticated_user_id(request: Request, config: Config) -> str:
     if config.allow_unsigned_backend_auth:
         user_id = request.headers.get(USER_ID_HEADER)
         if not user_id:
-            raise HTTPException(status_code=401, detail="User authentication required")
+            raise HTTPException(status_code=401, detail="Autenticação do usuário necessária")
         return user_id
 
     raise HTTPException(
         status_code=503,
-        detail="Server authentication is not configured",
+        detail="A autenticação do servidor não está configurada",
     )
 
 
@@ -122,7 +122,7 @@ async def resolve_authenticated_user_id(
 
         user_id = await ApiKeyRepository.resolve_user_id(db, hash_api_key(raw_key))
         if not user_id:
-            raise HTTPException(status_code=401, detail="Invalid or revoked API key")
+            raise HTTPException(status_code=401, detail="Chave de API inválida ou revogada")
         return user_id
 
     return get_authenticated_user_id(request, config)

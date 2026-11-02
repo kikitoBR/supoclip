@@ -342,10 +342,10 @@ class SocialService:
     ) -> Dict[str, Any]:
         task = await self.task_repo.get_task_by_id(self.db, task_id)
         if not task or task.get("user_id") != user_id:
-            raise SocialNotFound("Task not found")
+            raise SocialNotFound("Tarefa não encontrada")
         clip = await self.clip_repo.get_clip_by_id(self.db, clip_id)
         if not clip or clip.get("task_id") != task_id:
-            raise SocialNotFound("Clip not found")
+            raise SocialNotFound("Clipe não encontrado")
         clip_file = clip.get("file_path") or ""
         try:
             clip_exists = await self._media_exists(clip_file)
@@ -358,7 +358,7 @@ class SocialService:
 
         account = await self.repo.get_user_account(self.db, user_id, social_account_id)
         if not account or account.get("revoked_at"):
-            raise SocialNotFound("Connected account not found")
+            raise SocialNotFound("Conta conectada não encontrada")
         if account.get("status") == "reauth_required":
             raise SocialValidationError(
                 f"Reconnect your {account['provider']} account before publishing."
@@ -436,7 +436,7 @@ class SocialService:
                 self.db,
                 post_id,
                 status="failed",
-                error_message="Could not queue the post. Try again.",
+                error_message="Não foi possível colocar a publicação na fila. Tente novamente.",
             )
 
     async def list_posts(
@@ -455,7 +455,7 @@ class SocialService:
     async def get_post(self, user_id: str, post_id: str) -> Dict[str, Any]:
         post = await self.repo.get_user_post(self.db, user_id, post_id)
         if not post:
-            raise SocialNotFound("Post not found")
+            raise SocialNotFound("Publicação não encontrada")
         post["metrics_history"] = await self.repo.list_metrics_history(self.db, post_id)
         return post
 
@@ -464,7 +464,7 @@ class SocialService:
         if not await self.repo.cancel_post(self.db, user_id, post_id):
             post = await self.repo.get_user_post(self.db, user_id, post_id)
             if not post:
-                raise SocialNotFound("Post not found")
+                raise SocialNotFound("Publicação não encontrada")
             raise SocialValidationError(
                 f"Only scheduled or queued posts can be cancelled (status is {post['status']})."
             )
@@ -475,7 +475,7 @@ class SocialService:
     async def retry_post(self, user_id: str, post_id: str) -> Dict[str, Any]:
         post = await self.repo.get_user_post(self.db, user_id, post_id)
         if not post:
-            raise SocialNotFound("Post not found")
+            raise SocialNotFound("Publicação não encontrada")
         if post["status"] not in {"failed", "cancelled"}:
             raise SocialValidationError("Only failed or cancelled posts can be retried.")
         if not post.get("social_account_id"):
@@ -621,7 +621,7 @@ class SocialService:
                 self.db,
                 post_id,
                 status="failed",
-                error_message="The connected account was removed before publishing.",
+                error_message="A conta conectada foi removida antes da publicação.",
             )
             return await self.repo.get_post(self.db, post_id) or post
 
@@ -750,7 +750,7 @@ class SocialService:
                 self.db,
                 post["id"],
                 status="failed",
-                error_message="Lost track of the pending upload.",
+                error_message="O envio pendente foi perdido.",
             )
             return await self.repo.get_post(self.db, post["id"]) or post
         # Do not reset updated_at on transient polling failures: it bounds the
@@ -761,7 +761,7 @@ class SocialService:
         ):
             await self.repo.update_post(
                 self.db, post["id"], status="failed",
-                error_message="Could not confirm the upload within 45 minutes. Retry to check its status again.",
+                error_message="Não foi possível confirmar o envio em 45 minutos. Tente de novo para verificar o status.",
             )
             return await self.repo.get_post(self.db, post["id"]) or post
         try:
@@ -820,7 +820,7 @@ class SocialService:
                     self.db,
                     post_id,
                     status="failed",
-                    error_message="Could not queue the scheduled post.",
+                    error_message="Não foi possível colocar a publicação agendada na fila.",
                 )
         if post_ids:
             logger.info("Dispatched %s scheduled social posts", len(post_ids))
@@ -830,7 +830,7 @@ class SocialService:
         self, post: Dict[str, Any], *, user_id: Optional[str] = None
     ) -> Dict[str, Any]:
         if user_id is not None and post.get("user_id") != user_id:
-            raise SocialNotFound("Post not found")
+            raise SocialNotFound("Publicação não encontrada")
         if post["status"] != "published" or not post.get("external_post_id"):
             raise SocialValidationError("Metrics are only available for published posts.")
         account_id = post.get("social_account_id")

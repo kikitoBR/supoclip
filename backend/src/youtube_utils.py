@@ -32,6 +32,37 @@ YOUTUBE_DOWNLOAD_PROVIDER_YTDLP = "yt_dlp"
 YOUTUBE_DOWNLOAD_PROVIDER_APIFY = "apify"
 YOUTUBE_DATA_API_URL = "https://www.googleapis.com/youtube/v3/videos"
 
+YOUTUBE_BOT_CHECK_MESSAGE = (
+    "O YouTube bloqueou o acesso do servidor a este vídeo. Os cookies do YouTube "
+    "provavelmente expiraram: exporte cookies novos e atualize o arquivo de "
+    "YTDLP_COOKIES_FILE, ou envie o arquivo do vídeo."
+)
+_BOT_CHECK_MARKERS = ("sign in to confirm", "not a bot", "--cookies")
+_BOT_CHECK_MEMORY_SECONDS = 3600
+_recent_bot_checks: Dict[str, float] = {}
+
+
+def _note_bot_check(video_id: Optional[str], error: Any) -> None:
+    """Remember that YouTube answered this video with its bot check.
+
+    The reason is otherwise lost behind the fallback providers, and callers
+    only see that metadata or the download came back empty.
+    """
+    text = str(error).lower()
+    if video_id and any(marker in text for marker in _BOT_CHECK_MARKERS):
+        _recent_bot_checks[video_id] = time.time()
+        logger.warning(
+            "YouTube bot check for %s; refresh the cookies file (YTDLP_COOKIES_FILE)",
+            video_id,
+        )
+
+
+def youtube_blocked_by_bot_check(url: str) -> bool:
+    """Whether YouTube recently refused this video with its bot check."""
+    video_id = get_youtube_video_id(url)
+    noted_at = _recent_bot_checks.get(video_id) if video_id else None
+    return bool(noted_at and time.time() - noted_at < _BOT_CHECK_MEMORY_SECONDS)
+
 
 def _ytdlp_cookies_copy(source: Path) -> Path:
     """Return a private, writable copy of the configured cookies file.
@@ -407,6 +438,7 @@ def _fetch_video_info_with_ytdlp(url: str) -> Dict[str, Any]:
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
             info = ydl.extract_info(url, download=False)
     except Exception as exc:
+        _note_bot_check(video_id, exc)
         logger.warning(
             "yt-dlp extract_info failed for %s (%s); trying web scraper fallback",
             video_id,
@@ -734,6 +766,7 @@ def _download_youtube_video_with_ytdlp(
 
         except yt_dlp.utils.DownloadError as e:
             last_error = str(e)
+            _note_bot_check(video_id, e)
             logger.warning("Download attempt %s failed: %s", attempt + 1, e)
             if attempt < max_retries - 1:
                 wait_time = 2**attempt

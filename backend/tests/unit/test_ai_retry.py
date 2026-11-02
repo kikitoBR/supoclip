@@ -50,7 +50,7 @@ async def test_exhausted_overload_is_bounded_and_has_safe_error(monkeypatch, ret
     agent = SimpleNamespace(run=AsyncMock(side_effect=error))
     monkeypatch.setattr(ai, "get_transcript_agent", lambda: agent)
 
-    with pytest.raises(RuntimeError, match="temporarily unavailable") as caught:
+    with pytest.raises(RuntimeError, match="indisponível depois de") as caught:
         await ai.get_most_relevant_parts_by_transcript("transcript")
 
     assert agent.run.await_count == 3

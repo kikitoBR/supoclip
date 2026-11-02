@@ -220,7 +220,7 @@ async def test_process_task_fails_when_no_clip_segments_are_selected():
         "task-1",
         "error",
         progress=0,
-        progress_message="No usable clip segments were selected for this video.",
+        progress_message="Nenhum trecho aproveitável foi escolhido para este vídeo.",
         expected_statuses=["queued", "processing"],
     )
     service.clip_repo.create_clip.assert_not_awaited()
@@ -585,10 +585,10 @@ async def test_process_task_fails_when_every_clip_render_fails(tmp_path):
         for call in service.task_repo.update_task_status.await_args_list
     )
     assert not any(call.args[2] == "completed" for call in callback.await_args_list)
-    callback.assert_any_await(0, "No clips could be rendered. Please try again.", "error")
+    callback.assert_any_await(0, "Nenhum clipe pôde ser renderizado. Tente novamente.", "error")
     service.task_repo.update_task_status.assert_any_await(
         service.db, "task-1", "error", progress=0,
-        progress_message="No clips could be rendered. Please try again.",
+        progress_message="Nenhum clipe pôde ser renderizado. Tente novamente.",
         expected_statuses=["queued", "processing"],
     )
 
@@ -610,7 +610,7 @@ async def test_process_task_keeps_successful_output_when_one_render_fails(tmp_pa
     service.clip_repo.create_clip.assert_awaited_once()
     service.task_repo.update_task_status.assert_any_await(
         service.db, "task-1", "completed", progress=100,
-        progress_message="Complete!", expected_statuses=["processing"],
+        progress_message="Concluído!", expected_statuses=["processing"],
     )
 
 

@@ -257,7 +257,7 @@ def sanitize_font_stem(file_name: str) -> str:
     raw_stem = Path(file_name).stem
     safe_stem = re.sub(r"[^A-Za-z0-9_-]", "-", raw_stem).strip("-")
     if not safe_stem:
-        raise ValueError("Invalid font file name")
+        raise ValueError("Nome de arquivo de fonte inválido")
     return safe_stem
 
 

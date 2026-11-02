@@ -139,7 +139,7 @@ async def prepare_editor(ctx, task_id: str, clip_id: str, filename: str):
                 or clip["task_id"] != task_id
                 or clip["filename"] != filename
             ):
-                raise ValueError("The original clip changed. Reopen the editor.")
+                raise ValueError("O clipe original mudou. Abra o editor de novo.")
             ranges = await run_in_thread(service._get_clip_source_ranges, clip)
             source_url, source_type = task.get("source_url"), task.get("source_type")
             mode = task.get("processing_mode") or service.config.default_processing_mode
@@ -162,7 +162,7 @@ async def prepare_editor(ctx, task_id: str, clip_id: str, filename: str):
                     source = await run_in_thread(service.video_service.resolve_local_video_path, source_url)
             if not source or not source.exists():
                 raise ValueError(
-                    "The original source is unavailable. Restore the source file to edit this clip."
+                    "O vídeo original não está disponível. Restaure o arquivo original para editar este clipe."
                 )
             directory.mkdir(parents=True, exist_ok=True)
             clean = directory / "clean.mp4"
@@ -179,7 +179,7 @@ async def prepare_editor(ctx, task_id: str, clip_id: str, filename: str):
                 extend_to_sentence=False,
             )
             if not rendered:
-                raise ValueError("Could not prepare the original video")
+                raise ValueError("Não foi possível preparar o vídeo original")
             metadata = await run_in_thread(make_assets, directory)
             transcript = load_cached_transcript_data(source)
             timed = get_words_for_keep_ranges(transcript, ranges) if transcript else []
@@ -266,7 +266,7 @@ async def export_editor(ctx, task_id: str, clip_id: str, filename: str, job_id: 
             service = TaskService(db)
             clip = await service.clip_repo.get_clip_by_id(db, clip_id)
             if not clip or clip["task_id"] != task_id:
-                raise ValueError("Clip no longer exists")
+                raise ValueError("O clipe não existe mais")
         payload = json.loads((directory / f"request-{job_id}.json").read_text())
         if (directory / f"cancel-{job_id}").exists():
             raise InterruptedError()
@@ -426,7 +426,7 @@ async def combine_editor(ctx, task_id: str, clip_id: str, filename: str, job_id:
                         )
                         for entry in entries
                     ):
-                        raise ValueError("An input clip changed while combining")
+                        raise ValueError("Um dos clipes mudou durante a combinação")
                     new_id = await service.clip_repo.create_clip(
                         db,
                         task_id,

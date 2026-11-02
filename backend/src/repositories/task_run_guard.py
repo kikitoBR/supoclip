@@ -36,7 +36,7 @@ def exclusive_task_run(method):
         async with self._task_run_guard(task_id):
             current = await self.task_repo.get_task_by_id(self.db, task_id)
             if not current:
-                raise ValueError("Task not found")
+                raise ValueError("Tarefa não encontrada")
             if current["status"] in {"completed", "cancelled", "error"}:
                 return {"task_id": task_id, "status": current["status"], "skipped": True}
             return await method(self, task_id, *args, **kwargs)

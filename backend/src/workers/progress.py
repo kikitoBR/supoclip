@@ -68,7 +68,7 @@ class ProgressTracker:
             json.dumps(data, default=str),
         )
 
-    async def complete(self, message: str = "Complete!"):
+    async def complete(self, message: str = "Concluído!"):
         """Mark task as completed."""
         await self.update(100, message, "completed")
 

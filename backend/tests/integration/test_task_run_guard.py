@@ -55,7 +55,7 @@ async def test_resume_waits_for_cancelled_worker_and_then_enqueues_only_once(
     assert resumed.json()["job_id"] == "new-job"
     again = await client.post(f"/tasks/{task_id}/resume", headers=auth_headers)
     assert again.status_code == 200
-    assert again.json()["message"] == "Task already queued"
+    assert again.json()["message"] == "A tarefa já está na fila"
     enqueue.assert_awaited_once()
     assert (await TaskRepository.get_task_by_id(db_session, task_id))["status"] == "queued"
 

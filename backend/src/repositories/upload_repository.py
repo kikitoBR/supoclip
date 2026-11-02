@@ -11,7 +11,7 @@ class UploadLimitReached(ValueError):
 
 async def reserve_upload(db, user_id: str, size: int, config):
     if type(size) is not int or not 0 < size <= config.max_video_upload_bytes:
-        raise ValueError("Uploaded file is too large or empty")
+        raise ValueError("O arquivo enviado é grande demais ou está vazio")
     await db.execute(text("SELECT pg_advisory_xact_lock(hashtextextended(:owner, 113463))"), {"owner": user_id})
     counts = (await db.execute(text("""
         SELECT COUNT(*) FILTER (WHERE state IN ('reserved', 'uploading')) AS active,
@@ -38,14 +38,14 @@ async def bind_upload(db, session_id: str, authorization):
 
 async def get_upload(db, user_id: str, payload, *, for_abort=False):
     if not isinstance(payload.get("uploadId"), str) or not isinstance(payload.get("video_path"), str):
-        raise ValueError("An upload ID and video path are required")
+        raise ValueError("O ID do envio e o caminho do vídeo são obrigatórios")
     validity = "" if for_abort else " AND state IN ('uploading', 'completed') AND expires_at > clock_timestamp()"
     row = (await db.execute(text("""
         SELECT id, size FROM media_upload_sessions
         WHERE user_id = :owner AND upload_id = :upload AND video_path = :path
     """ + validity), {"owner": user_id, "upload": payload["uploadId"], "path": payload["video_path"]})).first()
     if row is None:
-        raise ValueError("Upload expired or is unavailable; restart the upload")
+        raise ValueError("O envio expirou ou não está disponível; comece o envio de novo")
     return row
 
 

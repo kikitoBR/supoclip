@@ -148,7 +148,7 @@ async def test_create_task_rejects_non_upload_local_paths(client, db_session, au
     )
 
     assert response.status_code == 404
-    assert response.json()["detail"] == "Only YouTube URLs or upload:// references are supported"
+    assert response.json()["detail"] == "Só são aceitos links do YouTube ou referências upload://"
 
 
 @pytest.mark.asyncio

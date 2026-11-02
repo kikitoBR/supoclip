@@ -45,10 +45,10 @@ async def send_password_reset_email(
     result = await db.execute(select(User).where(User.id == user_id))
     user = result.scalar_one_or_none()
     if not user:
-        raise HTTPException(status_code=404, detail="User not found")
+        raise HTTPException(status_code=404, detail="Usuário não encontrado")
 
     if not user.email:
-        raise HTTPException(status_code=400, detail="User email is missing")
+        raise HTTPException(status_code=400, detail="O e-mail do usuário está ausente")
 
     service = PasswordResetEmailService(config)
 
@@ -59,7 +59,7 @@ async def send_password_reset_email(
     except Exception as exc:
         logger.exception("Failed to send password reset email for user %s", user_id)
         raise HTTPException(
-            status_code=502, detail="Failed to send password reset email"
+            status_code=502, detail="Não foi possível enviar o e-mail de redefinição de senha"
         ) from exc
 
     return {"status": "ok", "provider": "ses", "email": email_result}
@@ -77,7 +77,7 @@ async def send_verification_email(
     result = await db.execute(select(User).where(User.id == user_id))
     user = result.scalar_one_or_none()
     if not user:
-        raise HTTPException(status_code=404, detail="User not found")
+        raise HTTPException(status_code=404, detail="Usuário não encontrado")
     if user.emailVerified:
         return {"status": "ok"}
 
@@ -87,7 +87,7 @@ async def send_verification_email(
         raise HTTPException(status_code=503, detail=str(exc)) from exc
     except Exception as exc:
         logger.exception("Failed to send verification email for user %s", user_id)
-        raise HTTPException(status_code=502, detail="Failed to send verification email") from exc
+        raise HTTPException(status_code=502, detail="Não foi possível enviar o e-mail de verificação") from exc
     return {"status": "ok"}
 
 
@@ -118,7 +118,7 @@ async def send_affiliate_email(
     result = await db.execute(select(User).where(User.id == user_id))
     user = result.scalar_one_or_none()
     if not user:
-        raise HTTPException(status_code=404, detail="User not found")
+        raise HTTPException(status_code=404, detail="Usuário não encontrado")
 
     service = AffiliateEmailService(config)
     try:
@@ -129,7 +129,7 @@ async def send_affiliate_email(
             for admin in admins.scalars().all():
                 await service.send_applied_email(admin.email, user, body.model_dump())
         elif not user.email:
-            raise HTTPException(status_code=400, detail="User email is missing")
+            raise HTTPException(status_code=400, detail="O e-mail do usuário está ausente")
         elif body.event == "approved":
             await service.send_approved_email(user, body.slug)
         else:
@@ -140,6 +140,6 @@ async def send_affiliate_email(
         raise HTTPException(status_code=503, detail=str(exc)) from exc
     except Exception as exc:
         logger.exception("Failed to send affiliate %s email for user %s", body.event, user_id)
-        raise HTTPException(status_code=502, detail="Failed to send affiliate email") from exc
+        raise HTTPException(status_code=502, detail="Não foi possível enviar o e-mail de afiliado") from exc
 
     return {"status": "ok"}

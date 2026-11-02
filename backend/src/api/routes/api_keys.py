@@ -52,11 +52,11 @@ async def create_api_key(request: Request, db: AsyncSession = Depends(get_db)):
     user_result = await db.execute(select(User).where(User.id == user_id))
     user = user_result.scalar_one_or_none()
     if not user:
-        raise HTTPException(status_code=404, detail="User not found")
+        raise HTTPException(status_code=404, detail="Usuário não encontrado")
     if not user.emailVerified:
         raise HTTPException(
             status_code=403,
-            detail="Verify your email address before creating an API key.",
+            detail="Confirme o seu e-mail antes de criar uma chave de API.",
         )
 
     service = ApiKeyService(db)
@@ -66,7 +66,7 @@ async def create_api_key(request: Request, db: AsyncSession = Depends(get_db)):
         raise HTTPException(status_code=409, detail=str(exc))
     except Exception as exc:  # pragma: no cover - defensive
         logger.error("Error creating API key: %s", exc)
-        raise HTTPException(status_code=500, detail="Error creating API key")
+        raise HTTPException(status_code=500, detail="Erro ao criar a chave de API")
 
     try:
         email_service = ApiKeyEmailService(get_config())
@@ -85,7 +85,7 @@ async def create_api_key(request: Request, db: AsyncSession = Depends(get_db)):
             user_id,
         )
 
-    return {"api_key": created, "message": "API key created. Copy it now — it won't be shown again."}
+    return {"api_key": created, "message": "Chave de API criada. Copie agora — ela não será mostrada de novo."}
 
 
 @router.delete("/{key_id}")
@@ -97,5 +97,5 @@ async def revoke_api_key(
     service = ApiKeyService(db)
     revoked = await service.revoke_api_key(user_id, key_id)
     if not revoked:
-        raise HTTPException(status_code=404, detail="API key not found")
-    return {"message": "API key revoked"}
+        raise HTTPException(status_code=404, detail="Chave de API não encontrada")
+    return {"message": "Chave de API revogada"}

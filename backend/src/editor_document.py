@@ -32,7 +32,7 @@ class Segment(Model):
     @model_validator(mode="after")
     def ordered(self):
         if self.end - self.start < 0.04:
-            raise ValueError("Each segment must be at least one frame long")
+            raise ValueError("Cada trecho deve ter pelo menos um quadro")
         return self
 
 
@@ -46,7 +46,7 @@ class Word(Model):
     @model_validator(mode="after")
     def ordered(self):
         if self.end <= self.start:
-            raise ValueError("Caption end must follow its start")
+            raise ValueError("O fim da legenda deve vir depois do início")
         return self
 
 
@@ -91,9 +91,9 @@ class EditDocument(Model):
 
     def validate_duration(self, duration: float):
         if any(s.end > duration + 0.05 for s in self.segments):
-            raise ValueError("An edit extends past the original clip")
+            raise ValueError("Uma edição ultrapassa o clipe original")
         if any(w.end > duration + 0.05 for w in self.words):
-            raise ValueError("A caption extends past the original clip")
+            raise ValueError("Uma legenda ultrapassa o clipe original")
         if len({s.id for s in self.segments}) != len(self.segments) or len(
             {w.id for w in self.words}
         ) != len(self.words):

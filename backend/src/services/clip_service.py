@@ -42,7 +42,7 @@ class ClipEditingMixin:
     async def delete_clip(self, task_id: str, clip_id: str) -> None:
         clip = await self.clip_repo.get_clip_by_id(self.db, clip_id)
         if not clip or clip["task_id"] != task_id:
-            raise ValueError("Clip not found")
+            raise ValueError("Clipe não encontrado")
         await self.clip_repo.delete_clip(self.db, clip_id)
         await self.clip_repo.reorder_task_clips(self.db, task_id)
 
@@ -95,7 +95,7 @@ class ClipEditingMixin:
         """Regenerate all clips in a task using existing segment boundaries."""
         task = await self.task_repo.get_task_by_id(self.db, task_id)
         if not task:
-            raise ValueError("Task not found")
+            raise ValueError("Tarefa não encontrada")
 
         source_url = task.get("source_url")
         source_type = task.get("source_type")
@@ -126,7 +126,7 @@ class ClipEditingMixin:
         )
 
         if not source_url or not source_type:
-            raise ValueError("Task source URL is missing; cannot regenerate clips")
+            raise ValueError("O link de origem da tarefa está ausente; não é possível gerar os clipes de novo")
 
         clips = await self.clip_repo.get_clips_by_task(self.db, task_id)
         if not clips:
@@ -136,12 +136,12 @@ class ClipEditingMixin:
         if source_type == "youtube":
             downloaded = await self.video_service.download_video(source_url)
             if not downloaded:
-                raise ValueError("Failed to download source video for regeneration")
+                raise ValueError("Não foi possível baixar o vídeo original para gerar o clipe de novo")
             video_path = Path(downloaded)
         else:
             video_path = await run_in_thread(self.video_service.resolve_local_video_path, source_url)
             if not video_path.exists():
-                raise ValueError("Source video file no longer exists")
+                raise ValueError("O arquivo do vídeo original não existe mais")
 
         try:
             segments = []
@@ -233,11 +233,11 @@ class ClipEditingMixin:
     ) -> Dict[str, Any]:
         clip = await self.clip_repo.get_clip_by_id(self.db, clip_id)
         if not clip or clip["task_id"] != task_id:
-            raise ValueError("Clip not found")
+            raise ValueError("Clipe não encontrado")
 
         input_path = await run_in_thread(MediaStorage().local_path, clip["file_path"])
         if not input_path.exists():
-            raise ValueError("Clip file not found")
+            raise ValueError("Arquivo do clipe não encontrado")
 
         output_path = await run_in_thread(
             trim_clip_file, input_path, Path(self.config.temp_dir) / "clips", start_offset, end_offset
@@ -247,7 +247,7 @@ class ClipEditingMixin:
         clip_duration = max(0.1, total_source_duration(trimmed_ranges))
         bounds = source_range_bounds(trimmed_ranges)
         if not bounds:
-            raise ValueError("Trimmed clip has no remaining source mapping")
+            raise ValueError("O clipe cortado ficou sem mapeamento de origem")
         start_seconds, end_seconds = bounds
         save_clip_source_ranges(output_path, trimmed_ranges)
         if settings := load_clip_caption_settings(input_path):
@@ -275,11 +275,11 @@ class ClipEditingMixin:
     ) -> Dict[str, Any]:
         clip = await self.clip_repo.get_clip_by_id(self.db, clip_id)
         if not clip or clip["task_id"] != task_id:
-            raise ValueError("Clip not found")
+            raise ValueError("Clipe não encontrado")
 
         input_path = await run_in_thread(MediaStorage().local_path, clip["file_path"])
         if not input_path.exists():
-            raise ValueError("Clip file not found")
+            raise ValueError("Arquivo do clipe não encontrado")
 
         first_path, second_path = await run_in_thread(
             split_clip_file, input_path, Path(self.config.temp_dir) / "clips", split_time
@@ -291,7 +291,7 @@ class ClipEditingMixin:
         first_bounds = source_range_bounds(first_ranges)
         second_bounds = source_range_bounds(second_ranges)
         if not first_bounds or not second_bounds:
-            raise ValueError("Split clip has invalid source mapping")
+            raise ValueError("O clipe dividido tem um mapeamento de origem inválido")
         save_clip_source_ranges(first_path, first_ranges)
         save_clip_source_ranges(second_path, second_ranges)
         if settings := load_clip_caption_settings(input_path):
@@ -336,19 +336,19 @@ class ClipEditingMixin:
         )
 
         await self.clip_repo.reorder_task_clips(self.db, task_id)
-        return {"message": "Clip split successfully"}
+        return {"message": "Clipe dividido"}
 
 
     @serialized_task_edit
     async def merge_clips(self, task_id: str, clip_ids: list[str]) -> Dict[str, Any]:
         if len(clip_ids) < 2 or len(set(clip_ids)) != len(clip_ids):
-            raise ValueError("At least two distinct clips are required to merge")
+            raise ValueError("São necessários pelo menos dois clipes diferentes para juntar")
 
         clips = []
         for clip_id in clip_ids:
             clip = await self.clip_repo.get_clip_by_id(self.db, clip_id)
             if not clip or clip["task_id"] != task_id:
-                raise ValueError("One or more clips not found")
+                raise ValueError("Um ou mais clipes não foram encontrados")
             clips.append(clip)
 
         ordered = sorted(clips, key=lambda c: c.get("clip_order", 0))
@@ -390,7 +390,7 @@ class ClipEditingMixin:
             await self.clip_repo.delete_clip(self.db, clip["id"])
 
         await self.clip_repo.reorder_task_clips(self.db, task_id)
-        return {"message": "Clips merged successfully", "clip_id": first["id"]}
+        return {"message": "Clipes juntados", "clip_id": first["id"]}
 
 
     @serialized_task_edit
@@ -407,15 +407,15 @@ class ClipEditingMixin:
     ) -> Dict[str, Any]:
         clip = await self.clip_repo.get_clip_by_id(self.db, clip_id)
         if not clip or clip["task_id"] != task_id:
-            raise ValueError("Clip not found")
+            raise ValueError("Clipe não encontrado")
 
         input_path = await run_in_thread(MediaStorage().local_path, clip["file_path"])
         if not input_path.exists():
-            raise ValueError("Clip file not found")
+            raise ValueError("Arquivo do clipe não encontrado")
 
         task = await self.task_repo.get_task_by_id(self.db, task_id)
         if not task:
-            raise ValueError("Task not found")
+            raise ValueError("Tarefa não encontrada")
 
         transcript_video_path: Optional[Path] = None
         source_url = task.get("source_url")
@@ -450,14 +450,14 @@ class ClipEditingMixin:
             elif source_url:
                 transcript_video_path = await run_in_thread(self.video_service.resolve_local_video_path, source_url)
         if not transcript_video_path or not transcript_video_path.exists():
-            raise ValueError("The source video is no longer available. Upload it again to edit captions.")
+            raise ValueError("O vídeo original não está mais disponível. Envie de novo para editar as legendas.")
 
         try:
             settings = await self._load_task_source_settings(task_id)
             source_ranges = await run_in_thread(self._get_clip_source_ranges, clip)
             bounds = source_range_bounds(source_ranges)
             if not bounds:
-                raise ValueError("Clip source timing is unavailable")
+                raise ValueError("O tempo de origem do clipe não está disponível")
             output_dir = Path(self.config.temp_dir) / "clips"
             output_dir.mkdir(parents=True, exist_ok=True)
             with tempfile.TemporaryDirectory(prefix="caption_edit_", dir=output_dir) as temporary:
@@ -475,7 +475,7 @@ class ClipEditingMixin:
                     extend_to_sentence=False,
                 )
                 if not rendered:
-                    raise ValueError("Could not prepare the clip for caption editing")
+                    raise ValueError("Não foi possível preparar o clipe para editar as legendas")
                 output_path = await run_in_thread(
                     overlay_custom_captions,
                     clean_path, output_dir, caption_text, position, highlight_words,

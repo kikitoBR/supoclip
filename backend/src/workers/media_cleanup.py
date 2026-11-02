@@ -182,6 +182,43 @@ def modified(path):
         return time.time()
 
 
+async def purge_expired_source_videos(ctx):
+    """Delete uploaded source videos past SOURCE_VIDEO_RETENTION_DAYS.
+
+    Clips stay playable and downloadable; editing or regenerating them needs the
+    source, which is why this is off unless a retention period is configured.
+    """
+    storage = MediaStorage()
+    days = storage.config.source_video_retention_days
+    if days <= 0:
+        return
+    async with AsyncSessionLocal() as db:
+        rows = await db.execute(text("""
+            SELECT s.url FROM sources s JOIN tasks t ON t.source_id = s.id
+            WHERE s.url LIKE 'upload://%'
+            GROUP BY s.url
+            HAVING MAX(COALESCE(t.updated_at, t.created_at)) < clock_timestamp() - make_interval(days => :days)
+               AND BOOL_AND(COALESCE(t.status, '') NOT IN ('queued', 'processing'))
+        """), {"days": days})
+        urls = [row.url for row in rows]
+        await db.rollback()
+        for url in urls:
+            if url.startswith("upload://s3/"):
+                reference = storage.source_reference(url)
+            else:
+                filename = Path(url.removeprefix("upload://")).name
+                path = Path(storage.config.temp_dir) / "uploads" / filename
+                if not path.exists():
+                    continue
+                reference = str(path)
+            try:
+                async with source_guard(db, url):
+                    await run_in_thread(storage.delete, reference)
+                logger.info("Deleted source video past %s-day retention: %s", days, url)
+            except Exception:
+                logger.exception("Could not delete expired source video %s", url)
+
+
 async def cleanup_media(ctx):
     storage = MediaStorage()
     async with AsyncSessionLocal() as db:

@@ -81,7 +81,7 @@ async def test_already_queued_resume_does_not_need_another_slot(resume_context):
     task, repo, billing_guard, queue, _redis = resume_context
     task["status"] = "queued"
     result = await tasks.resume_task("task-1", SimpleNamespace(), db=None)
-    assert result["message"] == "Task already queued"
+    assert result["message"] == "A tarefa já está na fila"
     billing_guard.assert_not_awaited()
     repo.update_task_status.assert_not_awaited()
     queue.assert_not_awaited()

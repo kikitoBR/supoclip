@@ -36,10 +36,10 @@ async def send_subscription_email(
     result = await db.execute(select(User).where(User.id == user_id))
     user = result.scalar_one_or_none()
     if not user:
-        raise HTTPException(status_code=404, detail="User not found")
+        raise HTTPException(status_code=404, detail="Usuário não encontrado")
 
     if not user.email:
-        raise HTTPException(status_code=400, detail="User email is missing")
+        raise HTTPException(status_code=400, detail="O e-mail do usuário está ausente")
 
     service = SubscriptionEmailService(get_config())
 
@@ -55,7 +55,7 @@ async def send_subscription_email(
             "Failed to send %s email for user %s", body.event, user_id
         )
         raise HTTPException(
-            status_code=502, detail="Failed to send subscription email"
+            status_code=502, detail="Não foi possível enviar o e-mail da assinatura"
         ) from exc
 
     return {"status": "ok", "provider": "ses", "email": email_result}

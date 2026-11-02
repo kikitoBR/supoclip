@@ -48,7 +48,7 @@ async def test_admin_cannot_read_another_users_finished_task(monkeypatch, status
         )
 
     assert exc.value.status_code == 403
-    assert exc.value.detail == "Not authorized for this task"
+    assert exc.value.detail == "Sem permissão para esta tarefa"
     is_admin.assert_not_awaited()
 
 

@@ -8,7 +8,7 @@ from typing import Dict, Any, Optional
 import json
 from arq import Retry, cron
 from arq.worker import func
-from .media_cleanup import cleanup_media, sweep_orphaned_media
+from .media_cleanup import cleanup_media, purge_expired_source_videos, sweep_orphaned_media
 from ..repositories.task_run_guard import TaskRunBusy
 
 from ..observability import configure_logging, set_trace_id
@@ -234,6 +234,8 @@ class WorkerSettings:
     cron_jobs = [
         cron(cleanup_media, minute={0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55}, run_at_startup=True),
         cron(sweep_orphaned_media, hour={0, 6, 12, 18}, minute=15),
+        # Daily: drop uploaded sources past SOURCE_VIDEO_RETENTION_DAYS (off by default).
+        cron(purge_expired_source_videos, hour=3, minute=30, timeout=1800),
         # Every minute: promote due scheduled posts and poll async publishes.
         cron(dispatch_scheduled_social_posts, second=0, timeout=300),
         # Hourly: pull audience metrics back for the performance loop.

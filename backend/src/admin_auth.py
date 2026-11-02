@@ -28,7 +28,7 @@ async def require_admin_user(
     )
     row = result.fetchone()
     if not row:
-        raise HTTPException(status_code=401, detail="User not found")
+        raise HTTPException(status_code=401, detail="Usuário não encontrado")
     if not bool(getattr(row, "is_admin", False)):
-        raise HTTPException(status_code=403, detail="Admin access required")
+        raise HTTPException(status_code=403, detail="Acesso de administrador necessário")
     return str(user_id)

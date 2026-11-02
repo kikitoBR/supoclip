@@ -154,12 +154,12 @@ class MediaStorage:
     def validate_source(self, upload_url: str, user_id: str) -> str:
         reference = self.source_reference(upload_url)
         if not self.parse(reference).startswith(self.key("sources", owner_key(user_id)) + "/"):
-            raise ValueError("Uploaded video does not belong to this user")
+            raise ValueError("O vídeo enviado não pertence a este usuário")
         metadata = self.client.head_object(Bucket=self.bucket, Key=self.parse(reference))
         size = metadata["ContentLength"]
         expected = metadata.get("Metadata", {}).get("expected-size")
         if not 0 < size <= self.config.max_video_upload_bytes or (expected and size != int(expected)):
-            raise ValueError("Uploaded video has an invalid size")
+            raise ValueError("O vídeo enviado tem um tamanho inválido")
         return reference
 
     def upload_file(self, path: Path, key: str, **extra) -> str:
@@ -344,7 +344,7 @@ class MediaStorage:
 
     def begin_upload(self, user_id: str, filename: str, size: int, content_type: str, *, authorization=None):
         if not 0 < size <= self.config.max_video_upload_bytes:
-            raise ValueError("Uploaded file is too large or empty")
+            raise ValueError("O arquivo enviado é grande demais ou está vazio")
         extension = self.video_extension(filename, content_type)
         relative = f"{owner_key(user_id)}/{uuid.uuid4().hex}/video{extension}"
         key = self.key("sources", relative)
@@ -368,7 +368,7 @@ class MediaStorage:
     def owned_upload_key(self, video_path: str, user_id: str) -> str:
         key = self.parse(self.source_reference(video_path))
         if not key.startswith(self.key("sources", owner_key(user_id)) + "/"):
-            raise ValueError("Uploaded video does not belong to this user")
+            raise ValueError("O vídeo enviado não pertence a este usuário")
         return key
 
     @staticmethod
@@ -395,7 +395,7 @@ class MediaStorage:
                 or any(type(n) is not int or not 1 <= n <= max_parts for n in numbers)):
             raise ValueError("Invalid multipart part numbers")
         if not isinstance(payload["uploadId"], str) or not payload["uploadId"]:
-            raise ValueError("An upload ID is required")
+            raise ValueError("O ID do envio é obrigatório")
         return {"parts": self.upload_part_urls(key, payload["uploadId"], size, numbers)}
 
     def complete_upload(self, user_id: str, payload: dict, *, size: int | None = None):
@@ -423,7 +423,7 @@ class MediaStorage:
             raise
         except ClientError as exc:
             if exc.response["Error"]["Code"] in {"404", "NoSuchKey", "NotFound"}:
-                raise ValueError("Upload is unavailable; restart the upload") from None
+                raise ValueError("O envio não está disponível; comece o envio de novo") from None
             raise
         return {"video_path": payload["video_path"]}
 

@@ -57,7 +57,7 @@ class BillingService:
             )
             row = result.fetchone()
             if not row:
-                raise ValueError("User not found")
+                raise ValueError("Usuário não encontrado")
 
             return {
                 "plan": (row.plan or "free").lower(),
