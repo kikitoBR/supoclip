@@ -48,6 +48,10 @@ MIN_SEGMENT_SECONDS = 0.4
 SHOT_CONTRADICTION_MARGIN = 0.2
 MAX_FRAMED_SPEAKERS = 4
 MAX_FACE_CLUSTERS = 6
+LIP_ANALYSIS_FPS = 10.0
+LIP_PROC_WIDTH = 1280
+LIP_SCORE_PERCENTILE = 90
+SINGLE_SPEAKER_MIN_RATIO = 1.2
 
 
 def build_speaker_turns(
@@ -529,23 +533,31 @@ def shot_trajectory_pieces(
     width: int,
     height: int,
     crop_w: int,
+    follow_cx: Optional[float] = None,
 ) -> Optional[List[Tuple[float, float, float, float]]]:
     """Smoothly tracked crop for a single-face shot whose subject moves.
 
     Reuses the default tracker (``build_crop_trajectory``) on the shot's
-    dominant face. Returns linear pieces (start, end, x0, x1) covering the
-    shot, or None when the subject is still enough for a static crop.
+    dominant face, or, with ``follow_cx``, on the face that stays closest to
+    that position (a chosen speaker drifting with a handheld camera). Returns
+    linear pieces (start, end, x0, x1) covering the shot, or None when the
+    subject is still enough for a static crop.
     """
     from .reframing import build_crop_trajectory, trajectory_has_movement
 
     start, end = shot
     track: List[Tuple[float, Optional[float], float]] = []
+    last_cx = follow_cx
     for t, faces in face_samples:
         if not start <= t < end:
             continue
+        if follow_cx is not None:
+            near = [f for f in faces if abs(f[0] + f[2] / 2 - last_cx) <= crop_w * 0.3]
+            faces = [min(near, key=lambda f: abs(f[0] + f[2] / 2 - last_cx))] if near else []
         if faces:
             x, _, w, h = max(faces, key=lambda f: f[2] * f[3])
             track.append((t, x + w / 2, (w * h) / float(max(1, width * height))))
+            last_cx = x + w / 2
         else:
             track.append((t, None, 0.0))
     keys = build_crop_trajectory(track, width, crop_w) if len(track) >= 3 else []
@@ -717,6 +729,33 @@ def build_step_x_expression(segments: Sequence[Tuple[float, float, int]]) -> str
     return build_crop_x_expression([(a, b, float(x), float(x)) for a, b, x in segments])
 
 
+def wide_shot_layout(
+    analysis: Dict[str, Any], duration: float, crop_w: int
+) -> Optional[Tuple[List[Tuple[float, float]], List[Tuple[float, float]], List[Dict[str, float]]]]:
+    """(shots, wide shots, face clusters) when two or more faces share the frame."""
+    face_samples = analysis["face_samples"]
+    shots = split_shots(analysis["scene_cuts"], duration)
+    wide_shots = find_wide_shots(face_samples, shots, crop_w)
+    if not wide_shots:
+        return None
+    clusters = cluster_face_positions(face_samples, wide_shots, crop_w)
+    if len(clusters) < 2:
+        return None
+    # Clusters are pooled across wide shots; a shot from another angle (or
+    # after the guests move) may not have faces where the clusters say. Only
+    # shots that actually show faces at two or more cluster positions count.
+    wide_shots = [
+        shot for shot in wide_shots
+        if sum(
+            rate >= WIDE_SHOT_MIN_RATE
+            for rate in wide_shot_cluster_hits(face_samples, shot, clusters, crop_w)
+        ) >= 2
+    ]
+    if not wide_shots:
+        return None
+    return shots, wide_shots, clusters
+
+
 def build_speaker_crop_chain(
     input_path: Path,
     width: int,
@@ -736,28 +775,12 @@ def build_speaker_crop_chain(
     analysis = analyze_speaker_clip(input_path, width, height)
     if not analysis:
         return None
+    layout = wide_shot_layout(analysis, duration, crop_w)
+    if not layout:
+        return None
+    shots, wide_shots, clusters = layout
     face_samples = analysis["face_samples"]
     scene_cuts = analysis["scene_cuts"]
-    shots = split_shots(scene_cuts, duration)
-
-    wide_shots = find_wide_shots(face_samples, shots, crop_w)
-    if not wide_shots:
-        return None
-    clusters = cluster_face_positions(face_samples, wide_shots, crop_w)
-    if len(clusters) < 2:
-        return None
-    # Clusters are pooled across wide shots; a shot from another angle (or
-    # after the guests move) may not have faces where the clusters say. Only
-    # shots that actually show faces at two or more cluster positions count.
-    wide_shots = [
-        shot for shot in wide_shots
-        if sum(
-            rate >= WIDE_SHOT_MIN_RATE
-            for rate in wide_shot_cluster_hits(face_samples, shot, clusters, crop_w)
-        ) >= 2
-    ]
-    if not wide_shots:
-        return None
     activity = build_speaker_activity(analysis, clusters, words, wide_shots, scene_cuts)
     mapping = assign_speakers_to_clusters(activity)
     if not mapping:
@@ -824,6 +847,183 @@ def build_speaker_crop_chain(
         "Speaker framing: %d speaker(s) mapped to faces, %d framing segment(s), "
         "%d tracked shot(s)",
         len(mapping), len(segments), len(tracked),
+    )
+    return (
+        f"crop={crop_w}:{crop_h}:x='{build_crop_x_expression(pieces)}':y=0,"
+        f"{VERTICAL_SCALE_CHAIN}"
+    )
+
+
+def _nearest_face_box(
+    samples: Sequence[Tuple[float, Tuple[float, float, float, float]]], t: float
+) -> Optional[Tuple[float, float, float, float]]:
+    if not samples:
+        return None
+    return min(samples, key=lambda sample: abs(sample[0] - t))[1]
+
+
+def lip_motion_scores(
+    input_path: Path,
+    width: int,
+    height: int,
+    analysis: Dict[str, Any],
+    clusters: Sequence[Dict[str, float]],
+    shots: Sequence[Tuple[float, float]],
+    words: Sequence[Dict[str, Any]],
+    crop_w: int,
+) -> List[float]:
+    """How much each face's lips move while someone talks, head motion removed.
+
+    Each face crop is aligned to the previous frame (phase correlation) before
+    differencing, so turning, nodding or a handheld camera cancel out. The
+    mouth band's change is divided by the upper face's, and the score is a
+    high percentile over speech frames: a talking mouth keeps producing peaks
+    that a listener's never does. Full resolution, because lips span only a
+    few pixels at the coarse grid ``analyze_speaker_clip`` uses.
+    """
+    proc_w = round_to_even(min(LIP_PROC_WIDTH, width))
+    proc_h = round_to_even(max(2, int(round(proc_w * height / width))))
+    scale = proc_w / float(width)
+    face_tracks: List[List[Tuple[float, Tuple[float, float, float, float]]]] = []
+    for cluster in clusters:
+        face_tracks.append([
+            (t, (x * scale, y * scale, w * scale, h * scale))
+            for t, faces in analysis["face_samples"]
+            for x, y, w, h in faces
+            if abs(x + w / 2 - cluster["cx"]) <= crop_w * 0.25
+        ])
+    speech = [(float(w["start"]), float(w["end"])) for w in words]
+    cuts = analysis["scene_cuts"]
+
+    command = [
+        "ffmpeg", "-v", "error", "-an", "-sn",
+        "-i", str(input_path),
+        "-vf", f"fps={LIP_ANALYSIS_FPS:.3f},scale={proc_w}:{proc_h}",
+        "-pix_fmt", "gray", "-f", "rawvideo", "-threads", "0", "-",
+    ]
+    proc = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL)
+    values: List[List[float]] = [[] for _ in clusters]
+    prev = None
+    index = 0
+    try:
+        while True:
+            raw = proc.stdout.read(proc_w * proc_h)
+            if not raw or len(raw) < proc_w * proc_h:
+                break
+            frame = np.frombuffer(raw, dtype=np.uint8).reshape(proc_h, proc_w).astype(np.float32)
+            t = index / LIP_ANALYSIS_FPS
+            index += 1
+            usable = (
+                prev is not None
+                and any(a <= t < b for a, b in shots)
+                and all(abs(t - cut) > 0.25 for cut in cuts)
+                and any(a <= t <= b for a, b in speech)
+            )
+            if usable:
+                for slot, track in enumerate(face_tracks):
+                    box = _nearest_face_box(track, t)
+                    if box is None:
+                        continue
+                    x, y, w, h = box
+                    x0, x1 = max(0, int(x)), min(proc_w, int(x + w))
+                    y0, y1 = max(0, int(y)), min(proc_h, int(y + h))
+                    if (x1 - x0) < 12 or (y1 - y0) < 12:
+                        continue
+                    before, after = prev[y0:y1, x0:x1], frame[y0:y1, x0:x1]
+                    (dx, dy), _ = cv2.phaseCorrelate(before, after)
+                    shift = np.float32([[1, 0, dx], [0, 1, dy]])
+                    aligned = cv2.warpAffine(
+                        before, shift, (x1 - x0, y1 - y0), borderMode=cv2.BORDER_REPLICATE
+                    )
+                    delta = np.abs(aligned - after)
+                    fh, fw = delta.shape
+                    mouth = delta[int(fh * 0.62):int(fh * 0.95), int(fw * 0.25):int(fw * 0.75)].mean()
+                    upper = delta[int(fh * 0.15):int(fh * 0.5), int(fw * 0.15):int(fw * 0.85)].mean()
+                    values[slot].append(float(mouth / (upper + 1.0)))
+            prev = frame
+    finally:
+        try:
+            proc.stdout.close()
+        except Exception:
+            pass
+        proc.wait()
+    return [
+        float(np.percentile(v, LIP_SCORE_PERCENTILE)) if len(v) >= MIN_SPEAKER_SAMPLE_FRAMES else 0.0
+        for v in values
+    ]
+
+
+def pick_talking_face(scores: Sequence[float], min_ratio: float = SINGLE_SPEAKER_MIN_RATIO) -> Optional[int]:
+    """Index of the face whose lips clearly move most, or None when unsure."""
+    if len(scores) < 2:
+        return None
+    order = sorted(range(len(scores)), key=lambda i: scores[i], reverse=True)
+    best, runner_up = scores[order[0]], scores[order[1]]
+    if best <= 0 or best < runner_up * min_ratio:
+        return None
+    return order[0]
+
+
+def build_single_speaker_crop_chain(
+    input_path: Path,
+    width: int,
+    height: int,
+    crop_w: int,
+    crop_h: int,
+    duration: float,
+    words: Sequence[Dict[str, Any]],
+) -> Optional[str]:
+    """ffmpeg -vf chain holding the one person who talks, or None.
+
+    A street interview clip is often a single voice (the interviewee) while
+    the interviewer holds the mic in frame and moves far more. With only one
+    diarized speaker there is nobody to contrast, so the talking face is the
+    one whose lips move most during speech (``lip_motion_scores``). The crop
+    follows that face through each wide shot; other shots keep their own face
+    crop.
+    """
+    if not words or crop_w >= width or duration <= 0:
+        return None
+    analysis = analyze_speaker_clip(input_path, width, height)
+    if not analysis:
+        return None
+    layout = wide_shot_layout(analysis, duration, crop_w)
+    if not layout:
+        return None
+    shots, wide_shots, clusters = layout
+    scores = lip_motion_scores(
+        input_path, width, height, analysis, clusters, wide_shots, words, crop_w
+    )
+    talker = pick_talking_face(scores)
+    if talker is None:
+        logger.info("Single-speaker framing skipped: talking face unclear (%s)", scores)
+        return None
+
+    face_samples = analysis["face_samples"]
+    max_x = max(0, width - crop_w)
+    speaker_cx = clusters[talker]["cx"]
+    held_x = clamp_even(int(speaker_cx - crop_w / 2), 0, max_x)
+    pieces: List[Tuple[float, float, float, float]] = []
+    for shot in shots:
+        start, end = shot
+        if shot in wide_shots:
+            tracked = shot_trajectory_pieces(
+                face_samples, shot, width, height, crop_w, follow_cx=speaker_cx
+            )
+            x = held_x
+        else:
+            tracked = shot_trajectory_pieces(face_samples, shot, width, height, crop_w)
+            centres = [
+                fx + fw / 2
+                for t, faces in face_samples
+                if faces and start <= t < end
+                for fx, _, fw, _ in [max(faces, key=lambda f: f[2] * f[3])]
+            ]
+            x = clamp_even(int(np.median(centres) - crop_w / 2), 0, max_x) if centres else held_x
+        pieces.extend(tracked or [(start, end, float(x), float(x))])
+    logger.info(
+        "Single-speaker framing: face %d of %d chosen (lip scores %s)",
+        talker, len(clusters), [round(s, 2) for s in scores],
     )
     return (
         f"crop={crop_w}:{crop_h}:x='{build_crop_x_expression(pieces)}':y=0,"

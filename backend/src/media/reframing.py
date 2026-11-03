@@ -1139,12 +1139,18 @@ def build_diarized_speaker_chain(
     talk, which is far steadier than raw motion (an interviewer moving the mic
     is not speaking).
     """
-    from .speaker_framing import build_speaker_crop_chain
+    from .speaker_framing import build_single_speaker_crop_chain, build_speaker_crop_chain
 
     crop_w, crop_h = compute_vertical_crop_dims(width, height)
     try:
+        duration = ffprobe_duration(input_path)
+        if not speaker_turns:
+            # One voice for the whole clip: frame whoever's lips move.
+            return build_single_speaker_crop_chain(
+                input_path, width, height, crop_w, crop_h, duration, speaker_words
+            )
         return build_speaker_crop_chain(
-            input_path, width, height, crop_w, crop_h, ffprobe_duration(input_path),
+            input_path, width, height, crop_w, crop_h, duration,
             speaker_turns, speaker_words,
         )
     except Exception as exc:
@@ -1275,7 +1281,7 @@ def render_reframed_clip_ffmpeg(
         ]
         return run_ffmpeg_command(command).returncode == 0, out_w, out_h
 
-    if output_format == "vertical_pan" and speaker_turns and speaker_words:
+    if output_format == "vertical_pan" and speaker_words:
         speaker_chain = build_diarized_speaker_chain(
             input_path, width, height, speaker_turns, speaker_words
         )
@@ -1290,9 +1296,13 @@ def render_reframed_clip_ffmpeg(
             ]
             return run_ffmpeg_command(command).returncode == 0, 1080, 1920
 
+    # Raw-motion panning only helps when several people take turns; with a
+    # single voice it chases whoever moves (an interviewer handling the mic),
+    # so those clips fall through to the steady default framing instead.
+    single_voice = output_format == "vertical_pan" and speaker_words and not speaker_turns
     plan = (
         detect_speaker_reframe_plan(input_path, output_format)
-        if output_format in {"vertical_pan", "vertical_split"}
+        if output_format in {"vertical_pan", "vertical_split"} and not single_voice
         else None
     )
 

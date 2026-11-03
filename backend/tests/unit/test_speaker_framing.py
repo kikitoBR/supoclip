@@ -593,6 +593,86 @@ def test_follow_speaker_mode_cuts_on_diarized_turns(monkeypatch, tmp_path):
     assert vf.startswith("crop=606:1080:x='0'")
 
 
+def test_single_voice_clip_never_uses_the_raw_motion_pan(monkeypatch, tmp_path):
+    # Street interview: only the interviewee talks while the interviewer
+    # handles the mic. When the talking face is unclear, the steady default
+    # framing beats chasing whoever moves.
+    commands = []
+    monkeypatch.setattr(reframing, "ffprobe_video_size", lambda _: (1920, 1080))
+    monkeypatch.setattr(reframing, "ffprobe_has_audio", lambda _: False)
+    monkeypatch.setattr(reframing, "ffprobe_duration", lambda _: 10.0)
+    monkeypatch.setattr(reframing, "output_fps_for", lambda _: 30)
+    monkeypatch.setattr(reframing, "analyze_vertical_clip", lambda *_: (_face_track(), []))
+    monkeypatch.setattr(
+        speaker_framing, "build_single_speaker_crop_chain", lambda *a, **k: None
+    )
+
+    def no_motion_plan(*_args, **_kwargs):
+        raise AssertionError("raw-motion pan must not run for a single voice")
+
+    monkeypatch.setattr(reframing, "detect_speaker_reframe_plan", no_motion_plan)
+    monkeypatch.setattr(
+        reframing, "run_ffmpeg_command",
+        lambda command, **_: commands.append(command) or subprocess.CompletedProcess(command, 0),
+    )
+
+    ok, _, _ = reframing.render_reframed_clip_ffmpeg(
+        tmp_path / "clip.mp4", tmp_path / "out.mp4", "vertical_pan",
+        speaker_turns=[], speaker_words=[_word(0, 1, "B")],
+    )
+
+    assert ok and commands
+
+
+def test_single_voice_clip_frames_the_face_that_talks(monkeypatch, tmp_path):
+    commands = []
+    monkeypatch.setattr(reframing, "ffprobe_video_size", lambda _: (1920, 1080))
+    monkeypatch.setattr(reframing, "ffprobe_has_audio", lambda _: False)
+    monkeypatch.setattr(reframing, "ffprobe_duration", lambda _: 10.0)
+    monkeypatch.setattr(reframing, "output_fps_for", lambda _: 30)
+    monkeypatch.setattr(
+        speaker_framing, "build_single_speaker_crop_chain",
+        lambda *args, **kwargs: "crop=606:1080:x='1300':y=0,scale=1080:1920",
+    )
+    monkeypatch.setattr(
+        reframing, "run_ffmpeg_command",
+        lambda command, **_: commands.append(command) or subprocess.CompletedProcess(command, 0),
+    )
+
+    ok, _, _ = reframing.render_reframed_clip_ffmpeg(
+        tmp_path / "clip.mp4", tmp_path / "out.mp4", "vertical_pan",
+        speaker_turns=[], speaker_words=[_word(0, 1, "B")],
+    )
+
+    assert ok
+    assert commands[0][commands[0].index("-vf") + 1].startswith("crop=606:1080:x='1300'")
+
+
+def test_talking_face_needs_a_clear_lead():
+    # Lip scores measured on a real street interview: interviewee, background
+    # passer-by, interviewer holding the mic.
+    assert speaker_framing.pick_talking_face([0.87, 0.85, 1.48]) == 2
+    assert speaker_framing.pick_talking_face([1.0, 1.1]) is None
+    assert speaker_framing.pick_talking_face([0.0, 0.0]) is None
+    assert speaker_framing.pick_talking_face([1.5]) is None
+
+
+def test_follow_cx_tracks_the_chosen_face_not_the_largest():
+    # The large face on the left stays put; the chosen speaker on the right
+    # drifts with a handheld camera and must be the one followed.
+    samples = [
+        (t / 10, [(100, 200, 300, 300), (1300 + t * 8, 300, 150, 150)])
+        for t in range(0, 60, 3)
+    ]
+
+    pieces = speaker_framing.shot_trajectory_pieces(
+        samples, (0.0, 6.0), 1920, 1080, 606, follow_cx=1375.0
+    )
+
+    assert pieces
+    assert min(min(p[2], p[3]) for p in pieces) > 800
+
+
 def test_motion_fallback_ignores_brief_listener_motion():
     # Left speaker talks throughout (30 fps samples); the listener on the right
     # moves the mic for a second, twice. The frame must stay on the speaker.
