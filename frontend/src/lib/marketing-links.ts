@@ -27,7 +27,7 @@ export const marketingLinks: MarketingLink[] = [
     title: "Veja clipes reais criados pelo Kortes a partir de um vídeo longo",
     label: "Demonstração",
     description: "Assista ao resultado e pule para cada momento no vídeo de origem original.",
-    related: ["/ai-video-clipper", "/youtube-shorts-clipper", SELF_HOSTING_GUIDE_HREF],
+    related: ["/ai-video-clipper", "/youtube-shorts-clipper", OPUSCLIP_COMPARISON_HREF],
   },
   {
     href: "/ai-video-clipper",

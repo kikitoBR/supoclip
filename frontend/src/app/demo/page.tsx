@@ -1,15 +1,14 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight, Captions, ExternalLink, Github, Info, ScanFace, Sparkles, Type, Youtube } from "lucide-react";
+import { ArrowRight, Captions, ExternalLink, Info, ScanFace, Sparkles, Type, Youtube } from "lucide-react";
 
 import { RelatedGuides } from "@/components/marketing/related-guides";
 import { SiteFooter } from "@/components/marketing/site-footer";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { DEMO_CLIPS, DEMO_PUBLISHED_AT, DEMO_SOURCE, getDemoSourceMomentUrl } from "@/lib/demo";
-import { SELF_HOSTING_GUIDE_HREF } from "@/lib/marketing-links";
-import { GITHUB_URL, getSiteUrl } from "@/lib/site";
+import { getSiteUrl } from "@/lib/site";
 
 const title = "Demonstração do Kortes: Clipes Reais com IA a Partir de um Vídeo Longo";
 const description =
@@ -154,9 +153,8 @@ export default function DemoPage() {
             ))}
           </ol>
           <p className="mt-6 text-sm leading-7 text-muted-foreground">
-            As legendas são sincronizadas palavra por palavra, com destaque visual na palavra ativa. O mesmo processo é executado no aplicativo na nuvem
-            e em uma <Link href={SELF_HOSTING_GUIDE_HREF} className="font-medium text-foreground underline underline-offset-4">instalação auto-hospedada</Link>;
-            o <Link href="/ai-video-clipper" className="font-medium text-foreground underline underline-offset-4">guia do criador de clipes com IA</Link> explica cada fase detalhadamente.
+            As legendas são sincronizadas palavra por palavra, com destaque visual na palavra ativa. O
+            <Link href="/ai-video-clipper" className="font-medium text-foreground underline underline-offset-4">guia do criador de clipes com IA</Link> explica cada fase detalhadamente.
           </p>
         </section>
 
@@ -167,11 +165,6 @@ export default function DemoPage() {
           </p>
           <div className="mt-6 flex flex-wrap gap-3">
             <Link href="/sign-up"><Button variant="secondary">Começar a criar clipes <ArrowRight className="h-4 w-4" /></Button></Link>
-            <a href={GITHUB_URL} target="_blank" rel="noopener noreferrer">
-              <Button variant="outline" className="border-background/30 bg-transparent text-background hover:bg-background hover:text-foreground">
-                <Github className="h-4 w-4" /> Auto-hospedar via GitHub
-              </Button>
-            </a>
           </div>
         </section>
 
