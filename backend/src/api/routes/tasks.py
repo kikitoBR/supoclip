@@ -740,7 +740,13 @@ async def delete_task(
             )
 
         # Delete clips and task
-        await task_service.delete_task(task_id)
+        try:
+            await task_service.delete_task(task_id)
+        except ValueError:
+            # A concurrent delete (double click, second tab) removed the row
+            # while this request waited for its lock: the goal is already met.
+            if await task_service.task_repo.get_task_by_id(db, task_id):
+                raise
 
         return {"message": "Tarefa excluída"}
 

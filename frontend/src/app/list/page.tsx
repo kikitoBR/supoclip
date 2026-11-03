@@ -210,7 +210,9 @@ export default function ListPage() {
     );
 
     try {
-      if (fulfilled.length > 0) await refreshTasks();
+      // Refresh even when every request failed: a failure can mean another
+      // tab or click already applied the action, and the list must show that.
+      await refreshTasks();
 
       if (rejected.length === 0) {
         setBatchNotice({ tone: "success", message: labels.success(fulfilled.length) });
