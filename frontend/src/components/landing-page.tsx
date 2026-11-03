@@ -13,7 +13,6 @@ import {
   Scissors,
   Sparkles,
   Youtube,
-  Github,
   ArrowRight,
   Play,
   Target,
@@ -37,12 +36,11 @@ import { getPublicBillingPlans } from "@/lib/billing-plans";
 import { SiteFooter } from "@/components/marketing/site-footer";
 import {
   OPUSCLIP_COMPARISON_HREF,
-  SELF_HOSTING_GUIDE_HREF,
   getMarketingLink,
   type MarketingLink,
 } from "@/lib/marketing-links";
 import { DEMO_CLIPS, DEMO_SOURCE } from "@/lib/demo";
-import { GITHUB_URL, HOSTED_APP_URL } from "@/lib/site";
+import { HOSTED_APP_URL } from "@/lib/site";
 
 function ScrollReveal({
   children,
@@ -128,22 +126,6 @@ const FEATURES = [
 
 function getPlans() {
   return [
-    {
-      name: "Auto-hospedado",
-      price: "$0",
-      period: "para sempre",
-      description: "Execute no seu próprio computador. Sem assinatura e sem limite mensal de vídeos.",
-      features: [
-        "Enquadramento focado no rosto",
-        "Legendas sincronizadas palavra a palavra",
-        "Pontuação de viralidade",
-        "Todas as predefinições de exportação",
-        "Acesso total ao código-fonte",
-      ],
-      cta: "Ver no GitHub",
-      ctaHref: GITHUB_URL,
-      highlighted: false,
-    },
     ...getPublicBillingPlans().map((plan) => ({
       name: plan.name,
       price: `$${plan.priceMonthly}`,
@@ -162,7 +144,6 @@ function getPlans() {
         ),
       ],
       cta: plan.cta,
-      ctaHref: "",
       highlighted: plan.highlighted,
     })),
   ];
@@ -195,11 +176,8 @@ const STEPS = [
 // Featured on the landing page; the footer links every marketing page.
 const SEO_RESOURCES = [
   OPUSCLIP_COMPARISON_HREF,
-  SELF_HOSTING_GUIDE_HREF,
   "/ai-video-clipper",
   "/youtube-shorts-clipper",
-  "/open-source-video-clipper",
-  "/blog/supoclip-vs-supo-live",
 ].map((href) => getMarketingLink(href)).filter((link): link is MarketingLink => Boolean(link));
 
 export default function LandingPage() {
@@ -262,12 +240,6 @@ export default function LandingPage() {
               className="text-sm text-muted-foreground hover:text-foreground transition-colors"
             >
               Preços
-            </a>
-            <a
-              href="#open-source"
-              className="text-sm text-muted-foreground hover:text-foreground transition-colors"
-            >
-              Código Aberto
             </a>
             <Link
               href="/blog"
@@ -343,13 +315,6 @@ export default function LandingPage() {
               >
                 Preços
               </a>
-              <a
-                href="#open-source"
-                onClick={() => setMobileNavOpen(false)}
-                className="block rounded-lg px-3 py-2.5 text-sm text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors"
-              >
-                Código Aberto
-              </a>
               <Link
                 href="/blog"
                 onClick={() => setMobileNavOpen(false)}
@@ -414,7 +379,7 @@ export default function LandingPage() {
                 style={{ animation: "landing-fade-in-up 0.6s ease-out both" }}
               >
                 <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
-                Código Aberto & Auto-hospedável
+                Cortes com IA em minutos
               </Badge>
 
               <h1
@@ -462,16 +427,6 @@ export default function LandingPage() {
                     </Button>
                   </a>
                 )}
-                <a
-                  href={GITHUB_URL}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  <Button variant="outline" size="lg" className="px-8 h-12 text-sm">
-                    <Github className="w-4 h-4" />
-                    Ver Código-fonte
-                  </Button>
-                </a>
               </div>
 
               <div
@@ -632,12 +587,12 @@ export default function LandingPage() {
               Preços simples, sem surpresas
             </h2>
             <p className="text-sm text-muted-foreground max-w-md mx-auto">
-              Grátis para auto-hospedar. Planos na nuvem a partir de $10/mês, com
-              hospedagem e processamento inclusos. Altere ou cancele quando quiser.
+              Planos a partir de $10/mês, com hospedagem e processamento
+              inclusos. Altere ou cancele quando quiser.
             </p>
           </ScrollReveal>
 
-          <div className="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto items-start">
+          <div className="grid md:grid-cols-2 gap-6 max-w-3xl mx-auto items-start">
             {getPlans().map((plan, i) => (
               <ScrollReveal key={plan.name} delay={i * 0.12}>
                 <Card
@@ -716,29 +671,7 @@ export default function LandingPage() {
                       ))}
                     </ul>
 
-                    {plan.ctaHref ? (
-                      <div className="flex flex-col gap-3">
-                        <p className="text-xs leading-relaxed text-muted-foreground">
-                          Requer instalação técnica. Você utiliza seu hardware e os serviços de IA pagos que preferir.
-                        </p>
-                        <Link href={SELF_HOSTING_GUIDE_HREF}>
-                          <Button className="w-full h-11 text-sm" variant="outline" size="lg">
-                            Guia de auto-hospedagem
-                            <ArrowRight className="w-4 h-4" />
-                          </Button>
-                        </Link>
-                        <a
-                          href={plan.ctaHref}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="flex items-center justify-center gap-2 text-xs text-muted-foreground underline underline-offset-4 hover:text-foreground"
-                        >
-                          <Github className="w-3.5 h-3.5" />
-                          {plan.cta}
-                          <ExternalLink className="w-3.5 h-3.5 opacity-50" />
-                        </a>
-                      </div>
-                    ) : authEnabled ? (
+                    {authEnabled ? (
                       <Link href="/sign-up">
                         <Button
                           className={`w-full h-11 text-sm ${
@@ -779,102 +712,6 @@ export default function LandingPage() {
             ))}
           </div>
 
-          <ScrollReveal delay={0.3}>
-            <p className="text-center text-xs text-muted-foreground mt-10 max-w-md mx-auto">
-              Vai auto-hospedar? Todos os recursos são livres e ilimitados.{" "}
-              <Link
-                href={SELF_HOSTING_GUIDE_HREF}
-                className="underline underline-offset-2 hover:text-foreground transition-colors"
-              >
-                Veja o guia de auto-hospedagem
-              </Link>
-              .
-            </p>
-          </ScrollReveal>
-        </div>
-      </section>
-
-      <Separator />
-
-      {/* ─── OPEN SOURCE ─── */}
-      <section id="open-source" className="py-20 md:py-28 bg-muted/40">
-        <div className="max-w-3xl mx-auto px-6">
-          <ScrollReveal className="text-center mb-10">
-            <Badge variant="outline" className="mb-6 gap-1.5">
-              <Github className="w-3.5 h-3.5" />
-              Licença AGPL-3.0
-            </Badge>
-            <h2
-              className="text-3xl sm:text-4xl font-bold tracking-tight mb-4"
-              style={{ fontFamily: "var(--font-syne), system-ui" }}
-            >
-              Desenvolvido em código aberto
-            </h2>
-            <p className="text-sm text-muted-foreground max-w-lg mx-auto">
-              Totalmente aberto. Auto-hospede na sua própria infraestrutura, contribua
-              com novos recursos ou adapte o código às suas necessidades.
-            </p>
-          </ScrollReveal>
-
-          <ScrollReveal delay={0.1}>
-            <Card className="py-0 gap-0">
-              <CardContent className="p-6 md:p-8">
-                <p className="text-xs font-medium text-muted-foreground mb-3">
-                  Auto-hospede com Docker Compose:
-                </p>
-                <div className="bg-primary text-primary-foreground rounded-lg p-5 font-mono text-sm leading-loose overflow-x-auto">
-                  <div>
-                    <span className="opacity-50">$</span>{" "}
-                    git clone{" "}
-                    <span className="opacity-40">
-                      https://github.com/FujiwaraChoki/supoclip
-                    </span>
-                  </div>
-                  <div>
-                    <span className="opacity-50">$</span>{" "}
-                    cd supoclip && cp .env.example .env
-                  </div>
-                  <div className="opacity-40"># adicione um provedor de transcrição + LLM no .env</div>
-                  <div>
-                    <span className="opacity-50">$</span>{" "}
-                    docker compose up -d --build
-                  </div>
-                </div>
-
-                <div className="flex flex-wrap gap-3 mt-6">
-                  <a
-                    href="https://github.com/FujiwaraChoki/supoclip"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    <Button>
-                      <Github className="w-4 h-4" />
-                      Ver no GitHub
-                      <ExternalLink className="w-3.5 h-3.5 opacity-50" />
-                    </Button>
-                  </a>
-                  <Link href={SELF_HOSTING_GUIDE_HREF}>
-                    <Button variant="outline">Guia de auto-hospedagem</Button>
-                  </Link>
-                  {authEnabled ? (
-                    <Link href="/sign-up">
-                      <Button variant="outline">
-                        Testar versão na nuvem
-                        <ArrowRight className="w-4 h-4" />
-                      </Button>
-                    </Link>
-                  ) : (
-                    <a href={HOSTED_APP_URL} target="_blank" rel="noopener noreferrer">
-                      <Button variant="outline">
-                        Abrir versão na nuvem
-                        <ExternalLink className="w-4 h-4" />
-                      </Button>
-                    </a>
-                  )}
-                </div>
-              </CardContent>
-            </Card>
-          </ScrollReveal>
         </div>
       </section>
 
@@ -891,7 +728,7 @@ export default function LandingPage() {
               Aprenda todo o processo de criação de clipes
             </h2>
             <p className="mx-auto mt-4 max-w-2xl text-sm leading-7 text-muted-foreground">
-              Artigos práticos e detalhados para escolher sua ferramenta de clipes, auto-hospedar o Kortes
+              Artigos práticos e detalhados para escolher sua ferramenta de clipes
               e transformar gravações longas em conteúdo curto e viral.
             </p>
           </ScrollReveal>
@@ -929,8 +766,8 @@ export default function LandingPage() {
             Pronto para criar clipes?
           </h2>
           <p className="text-base text-muted-foreground mb-8">
-            Transforme seu próximo vídeo em clipes curtos envolventes. Use o aplicativo na nuvem
-            ou auto-hospede a versão de código aberto gratuitamente.
+            Transforme seu próximo vídeo em clipes curtos envolventes. Cole um link e receba
+            os cortes prontos para postar.
           </p>
           {authEnabled ? (
             <Link href="/sign-up">

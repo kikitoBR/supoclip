@@ -39,10 +39,10 @@ export function SiteFooter() {
             </span>
           </Link>
           <p className="mt-3 max-w-xs text-xs leading-6 text-muted-foreground">
-            Criador de clipes com IA de código aberto. Use a versão web ou execute na sua própria infraestrutura.
+            Criador de clipes com IA. Cole um link e receba cortes verticais legendados, prontos para postar.
           </p>
           <div className="mt-4 flex gap-4 text-xs text-muted-foreground">
-            <a href={GITHUB_URL} target="_blank" rel="noopener noreferrer" className={linkClassName}>GitHub</a>
+            <a href={GITHUB_URL} target="_blank" rel="noopener noreferrer" className={linkClassName}>Código-fonte</a>
             <span>&copy; {new Date().getFullYear()}</span>
           </div>
           <p className="mt-3 text-xs text-muted-foreground">

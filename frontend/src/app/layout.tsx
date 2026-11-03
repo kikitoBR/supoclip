@@ -36,7 +36,7 @@ export const metadata: Metadata = {
     template: "%s | Kortes",
   },
   description:
-    "Transforme vídeos longos em clipes curtos legendados com IA de código aberto, pontuação de viralidade e enquadramento vertical que acompanha o rosto.",
+    "Transforme vídeos longos em clipes curtos legendados com IA, pontuação de viralidade e enquadramento vertical que acompanha o rosto.",
   metadataBase: new URL(getSiteUrl()),
   applicationName: "Kortes",
   authors: [{ name: "Equipe Kortes", url: getSiteUrl() }],
@@ -49,7 +49,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Kortes – Cortes de vídeo com IA",
     description:
-      "Transforme vídeos longos em clipes curtos legendados com IA de código aberto.",
+      "Transforme vídeos longos em clipes curtos legendados com IA.",
     siteName: "Kortes",
     type: "website",
   },
@@ -57,7 +57,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Kortes – Cortes de vídeo com IA",
     description:
-      "Cortes com IA de código aberto, pontuação de viralidade, legendas e enquadramento vertical que acompanha o rosto.",
+      "Cortes com IA, pontuação de viralidade, legendas e enquadramento vertical que acompanha o rosto.",
   },
   robots: {
     index: true,
