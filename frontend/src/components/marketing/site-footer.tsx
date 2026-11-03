@@ -2,7 +2,6 @@ import Image from "next/image";
 import Link from "next/link";
 
 import { getMarketingLinks } from "@/lib/marketing-links";
-import { GITHUB_URL, UPSTREAM_GITHUB_URL } from "@/lib/site";
 
 const linkClassName = "hover:text-foreground transition-colors";
 
@@ -41,15 +40,7 @@ export function SiteFooter() {
           <p className="mt-3 max-w-xs text-xs leading-6 text-muted-foreground">
             Criador de clipes com IA. Cole um link e receba cortes verticais legendados, prontos para postar.
           </p>
-          <div className="mt-4 flex gap-4 text-xs text-muted-foreground">
-            <a href={GITHUB_URL} target="_blank" rel="noopener noreferrer" className={linkClassName}>Código-fonte</a>
-            <span>&copy; {new Date().getFullYear()}</span>
-          </div>
-          <p className="mt-3 text-xs text-muted-foreground">
-            Baseado no{" "}
-            <a href={UPSTREAM_GITHUB_URL} target="_blank" rel="noopener noreferrer" className={linkClassName}>SupoClip</a>
-            {" "}(AGPL-3.0).
-          </p>
+          <p className="mt-4 text-xs text-muted-foreground">&copy; {new Date().getFullYear()}</p>
         </div>
         {columns.map((column) => (
           <nav key={column.heading} aria-label={`Links de ${column.heading}`}>

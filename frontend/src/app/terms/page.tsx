@@ -4,6 +4,7 @@ import Link from "next/link";
 import { ExternalLink } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { HOSTED_APP_URL, getSiteUrl } from "@/lib/blog-posts";
+import { GITHUB_URL, UPSTREAM_GITHUB_URL } from "@/lib/site";
 
 const LAST_UPDATED = "2 de julho de 2026";
 const CONTACT_EMAIL = "kikitobroficial@gmail.com";
@@ -149,6 +150,11 @@ export default function TermsOfServicePage() {
               O Serviço, incluindo software, design e marca, é de propriedade do Kortes ou de seus licenciadores.
               Os componentes de código aberto são licenciados sob suas respectivas licenças. Estes Termos não concedem
               a você nenhum direito de utilizar nossas marcas registradas.
+            </p>
+            <p>
+              O Kortes é baseado no <a href={UPSTREAM_GITHUB_URL} className="underline underline-offset-4">SupoClip</a>,
+              licenciado sob a AGPL-3.0. O <a href={GITHUB_URL} className="underline underline-offset-4">código-fonte
+              correspondente</a> está disponível sob a mesma licença.
             </p>
           </Section>
 
