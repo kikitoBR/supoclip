@@ -173,6 +173,9 @@ const STEPS = [
   },
 ];
 
+// Pricing stays hidden while the hosted service is free.
+const SHOW_PRICING = false;
+
 // Featured on the landing page; the footer links every marketing page.
 const SEO_RESOURCES = [
   OPUSCLIP_COMPARISON_HREF,
@@ -235,12 +238,14 @@ export default function LandingPage() {
             >
               Recursos
             </a>
-            <a
-              href="#pricing"
-              className="text-sm text-muted-foreground hover:text-foreground transition-colors"
-            >
-              Preços
-            </a>
+            {SHOW_PRICING && (
+              <a
+                href="#pricing"
+                className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+              >
+                Preços
+              </a>
+            )}
             <Link
               href="/blog"
               className="text-sm text-muted-foreground hover:text-foreground transition-colors"
@@ -308,13 +313,15 @@ export default function LandingPage() {
               >
                 Recursos
               </a>
-              <a
-                href="#pricing"
-                onClick={() => setMobileNavOpen(false)}
-                className="block rounded-lg px-3 py-2.5 text-sm text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors"
-              >
-                Preços
-              </a>
+              {SHOW_PRICING && (
+                <a
+                  href="#pricing"
+                  onClick={() => setMobileNavOpen(false)}
+                  className="block rounded-lg px-3 py-2.5 text-sm text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors"
+                >
+                  Preços
+                </a>
+              )}
               <Link
                 href="/blog"
                 onClick={() => setMobileNavOpen(false)}
@@ -560,162 +567,166 @@ export default function LandingPage() {
 
       <Separator />
 
-      {/* ─── PRICING ─── */}
-      <section id="pricing" className="relative py-20 md:py-28 bg-muted/40 overflow-hidden">
-        {/* Decorative background grain */}
-        <div
-          className="absolute inset-0 opacity-[0.03] pointer-events-none"
-          style={{
-            backgroundImage:
-              "radial-gradient(circle at 2px 2px, currentColor 0.5px, transparent 0)",
-            backgroundSize: "24px 24px",
-          }}
-        />
-
-        <div className="relative max-w-5xl mx-auto px-6">
-          <ScrollReveal className="text-center mb-16">
-            <p className="text-xs font-semibold tracking-[0.2em] uppercase text-muted-foreground mb-3">
-              Preços
-            </p>
-            <h2
-              className="text-3xl sm:text-4xl font-bold tracking-tight mb-4"
+      {SHOW_PRICING && (
+        <>
+          {/* ─── PRICING ─── */}
+          <section id="pricing" className="relative py-20 md:py-28 bg-muted/40 overflow-hidden">
+            {/* Decorative background grain */}
+            <div
+              className="absolute inset-0 opacity-[0.03] pointer-events-none"
               style={{
-                fontFamily:
-                  "var(--font-syne), var(--font-geist-sans), system-ui",
+                backgroundImage:
+                  "radial-gradient(circle at 2px 2px, currentColor 0.5px, transparent 0)",
+                backgroundSize: "24px 24px",
               }}
-            >
-              Preços simples, sem surpresas
-            </h2>
-            <p className="text-sm text-muted-foreground max-w-md mx-auto">
-              Planos a partir de $10/mês, com hospedagem e processamento
-              inclusos. Altere ou cancele quando quiser.
-            </p>
-          </ScrollReveal>
+            />
 
-          <div className="grid md:grid-cols-2 gap-6 max-w-3xl mx-auto items-start">
-            {getPlans().map((plan, i) => (
-              <ScrollReveal key={plan.name} delay={i * 0.12}>
-                <Card
-                  className={`relative py-0 gap-0 transition-all duration-300 hover:shadow-lg ${
-                    plan.highlighted
-                      ? "bg-primary text-primary-foreground border-primary shadow-xl md:-mt-4 md:mb-4"
-                      : "hover:-translate-y-1"
-                  }`}
+            <div className="relative max-w-5xl mx-auto px-6">
+              <ScrollReveal className="text-center mb-16">
+                <p className="text-xs font-semibold tracking-[0.2em] uppercase text-muted-foreground mb-3">
+                  Preços
+                </p>
+                <h2
+                  className="text-3xl sm:text-4xl font-bold tracking-tight mb-4"
+                  style={{
+                    fontFamily:
+                      "var(--font-syne), var(--font-geist-sans), system-ui",
+                  }}
                 >
-                  {plan.highlighted && (
-                    <div className="absolute -top-3.5 left-1/2 -translate-x-1/2">
-                      <Badge className="bg-foreground text-background border-0 shadow-md gap-1.5 px-3 py-1">
-                        <Zap className="w-3 h-3" />
-                        Mais Popular
-                      </Badge>
-                    </div>
-                  )}
+                  Preços simples, sem surpresas
+                </h2>
+                <p className="text-sm text-muted-foreground max-w-md mx-auto">
+                  Planos a partir de $10/mês, com hospedagem e processamento
+                  inclusos. Altere ou cancele quando quiser.
+                </p>
+              </ScrollReveal>
 
-                  <CardContent className="p-8">
-                    <div className="mb-6">
-                      <h3
-                        className="text-lg font-semibold mb-1"
-                        style={{ fontFamily: "var(--font-syne), system-ui" }}
-                      >
-                        {plan.name}
-                      </h3>
-                      <p
-                        className={`text-sm ${
-                          plan.highlighted
-                            ? "text-primary-foreground/70"
-                            : "text-muted-foreground"
-                        }`}
-                      >
-                        {plan.description}
-                      </p>
-                    </div>
+              <div className="grid md:grid-cols-2 gap-6 max-w-3xl mx-auto items-start">
+                {getPlans().map((plan, i) => (
+                  <ScrollReveal key={plan.name} delay={i * 0.12}>
+                    <Card
+                      className={`relative py-0 gap-0 transition-all duration-300 hover:shadow-lg ${
+                        plan.highlighted
+                          ? "bg-primary text-primary-foreground border-primary shadow-xl md:-mt-4 md:mb-4"
+                          : "hover:-translate-y-1"
+                      }`}
+                    >
+                      {plan.highlighted && (
+                        <div className="absolute -top-3.5 left-1/2 -translate-x-1/2">
+                          <Badge className="bg-foreground text-background border-0 shadow-md gap-1.5 px-3 py-1">
+                            <Zap className="w-3 h-3" />
+                            Mais Popular
+                          </Badge>
+                        </div>
+                      )}
 
-                    <div className="flex items-baseline gap-1 mb-8">
-                      <span
-                        className="text-5xl font-extrabold tracking-tight"
-                        style={{ fontFamily: "var(--font-syne), system-ui" }}
-                      >
-                        {plan.price}
-                      </span>
-                      <span
-                        className={`text-sm ${
-                          plan.highlighted
-                            ? "text-primary-foreground/60"
-                            : "text-muted-foreground"
-                        }`}
-                      >
-                        {plan.period}
-                      </span>
-                    </div>
-
-                    <ul className="space-y-3 mb-8">
-                      {plan.features.map((feature) => (
-                        <li key={feature} className="flex items-start gap-3 text-sm">
-                          <Check
-                            className={`w-4 h-4 mt-0.5 shrink-0 ${
+                      <CardContent className="p-8">
+                        <div className="mb-6">
+                          <h3
+                            className="text-lg font-semibold mb-1"
+                            style={{ fontFamily: "var(--font-syne), system-ui" }}
+                          >
+                            {plan.name}
+                          </h3>
+                          <p
+                            className={`text-sm ${
                               plan.highlighted
-                                ? "text-primary-foreground/80"
+                                ? "text-primary-foreground/70"
                                 : "text-muted-foreground"
                             }`}
-                          />
-                          <span
-                            className={
-                              plan.highlighted
-                                ? "text-primary-foreground/90"
-                                : ""
-                            }
                           >
-                            {feature}
+                            {plan.description}
+                          </p>
+                        </div>
+
+                        <div className="flex items-baseline gap-1 mb-8">
+                          <span
+                            className="text-5xl font-extrabold tracking-tight"
+                            style={{ fontFamily: "var(--font-syne), system-ui" }}
+                          >
+                            {plan.price}
                           </span>
-                        </li>
-                      ))}
-                    </ul>
+                          <span
+                            className={`text-sm ${
+                              plan.highlighted
+                                ? "text-primary-foreground/60"
+                                : "text-muted-foreground"
+                            }`}
+                          >
+                            {plan.period}
+                          </span>
+                        </div>
 
-                    {authEnabled ? (
-                      <Link href="/sign-up">
-                        <Button
-                          className={`w-full h-11 text-sm ${
-                            plan.highlighted
-                              ? "bg-primary-foreground text-primary hover:bg-primary-foreground/90"
-                              : ""
-                          }`}
-                          variant={plan.highlighted ? "secondary" : "default"}
-                          size="lg"
-                        >
-                          {plan.cta}
-                          <ArrowRight className="w-4 h-4" />
-                        </Button>
-                      </Link>
-                    ) : (
-                      <a
-                        href={HOSTED_APP_URL}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        <Button
-                          className={`w-full h-11 text-sm ${
-                            plan.highlighted
-                              ? "bg-primary-foreground text-primary hover:bg-primary-foreground/90"
-                              : ""
-                          }`}
-                          variant={plan.highlighted ? "secondary" : "default"}
-                          size="lg"
-                        >
-                          Usar App na Nuvem
-                          <ExternalLink className="w-4 h-4" />
-                        </Button>
-                      </a>
-                    )}
-                  </CardContent>
-                </Card>
-              </ScrollReveal>
-            ))}
-          </div>
+                        <ul className="space-y-3 mb-8">
+                          {plan.features.map((feature) => (
+                            <li key={feature} className="flex items-start gap-3 text-sm">
+                              <Check
+                                className={`w-4 h-4 mt-0.5 shrink-0 ${
+                                  plan.highlighted
+                                    ? "text-primary-foreground/80"
+                                    : "text-muted-foreground"
+                                }`}
+                              />
+                              <span
+                                className={
+                                  plan.highlighted
+                                    ? "text-primary-foreground/90"
+                                    : ""
+                                }
+                              >
+                                {feature}
+                              </span>
+                            </li>
+                          ))}
+                        </ul>
 
-        </div>
-      </section>
+                        {authEnabled ? (
+                          <Link href="/sign-up">
+                            <Button
+                              className={`w-full h-11 text-sm ${
+                                plan.highlighted
+                                  ? "bg-primary-foreground text-primary hover:bg-primary-foreground/90"
+                                  : ""
+                              }`}
+                              variant={plan.highlighted ? "secondary" : "default"}
+                              size="lg"
+                            >
+                              {plan.cta}
+                              <ArrowRight className="w-4 h-4" />
+                            </Button>
+                          </Link>
+                        ) : (
+                          <a
+                            href={HOSTED_APP_URL}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
+                            <Button
+                              className={`w-full h-11 text-sm ${
+                                plan.highlighted
+                                  ? "bg-primary-foreground text-primary hover:bg-primary-foreground/90"
+                                  : ""
+                              }`}
+                              variant={plan.highlighted ? "secondary" : "default"}
+                              size="lg"
+                            >
+                              Usar App na Nuvem
+                              <ExternalLink className="w-4 h-4" />
+                            </Button>
+                          </a>
+                        )}
+                      </CardContent>
+                    </Card>
+                  </ScrollReveal>
+                ))}
+              </div>
 
-      <Separator />
+            </div>
+          </section>
+
+          <Separator />
+        </>
+      )}
 
       {/* ─── GUIDES ─── */}
       <section id="guides" className="py-20 md:py-28">

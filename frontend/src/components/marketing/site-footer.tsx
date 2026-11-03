@@ -18,7 +18,6 @@ export function SiteFooter() {
       links: [
         ...getMarketingLinks("product").map(({ href, label }) => ({ href, label })),
         { href: "/sign-up", label: "Começar a criar clipes" },
-        { href: "/#pricing", label: "Preços" },
         { href: "/affiliate", label: "Afiliados" },
         { href: "/status", label: "Status do serviço" },
         { href: "/privacy", label: "Privacidade" },

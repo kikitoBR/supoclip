@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 
 import { HomeRouter } from "@/components/home-router";
-import { getPublicBillingPlans } from "@/lib/billing-plans";
 import { getSiteUrl } from "@/lib/site";
 
 const siteUrl = getSiteUrl();
@@ -64,9 +63,9 @@ const structuredData = [
     ],
     offers: {
       "@type": "Offer",
-      price: getPublicBillingPlans()[0].priceMonthly,
+      price: "0",
       priceCurrency: "USD",
-      category: "Assinatura mensal",
+      category: "Gratuito",
     },
   },
   {
