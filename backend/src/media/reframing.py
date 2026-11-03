@@ -1211,10 +1211,11 @@ def build_vertical_filter_plan(
     # Decide the layout over time. All-face clips skip the compositor (cheaper).
     plan = build_layout_plan(track, scene_cuts, duration)
     fit_intervals = [(s["start"], s["end"]) for s in plan if s["kind"] == "fit"]
-    if not fit_intervals and speaker_turns and speaker_words:
-        # All-face clip with diarized speakers: cut to whoever is talking on
-        # multi-person wide shots. Clips with content shots keep the
-        # compositor below, so slides/tweets are never cropped.
+    if not fit_intervals and speaker_words:
+        # All-face clip with diarized speech: cut to whoever is talking on
+        # multi-person wide shots (a single voice holds the face that talks,
+        # not the biggest one). Clips with content shots keep the compositor
+        # below, so slides/tweets are never cropped.
         speaker_chain = build_diarized_speaker_chain(
             input_path, width, height, speaker_turns, speaker_words
         )

@@ -338,6 +338,22 @@ def test_vertical_plan_uses_speaker_chain_for_all_face_clips(monkeypatch, tmp_pa
     assert chain.startswith("crop=606:1080:x='0'")
 
 
+def test_vertical_plan_frames_the_talking_face_for_a_single_voice(monkeypatch, tmp_path):
+    monkeypatch.setattr(reframing, "ffprobe_duration", lambda _: 10.0)
+    monkeypatch.setattr(reframing, "analyze_vertical_clip", lambda *_: (_face_track(), []))
+    monkeypatch.setattr(
+        speaker_framing, "build_single_speaker_crop_chain",
+        lambda *args, **kwargs: "crop=606:1080:x='1300':y=0,scale=1080:1920",
+    )
+
+    chain, mode = reframing.build_vertical_filter_plan(
+        tmp_path / "clip.mp4", 1920, 1080, [], [_word(0, 1, "B")]
+    )
+
+    assert mode == "vf"
+    assert chain.startswith("crop=606:1080:x='1300'")
+
+
 def test_vertical_plan_falls_back_when_speaker_mapping_fails(monkeypatch, tmp_path):
     monkeypatch.setattr(reframing, "ffprobe_duration", lambda _: 10.0)
     monkeypatch.setattr(reframing, "analyze_vertical_clip", lambda *_: (_face_track(), []))
