@@ -50,7 +50,7 @@ const structuredData = [
     "@type": "SoftwareApplication",
     name: "Kortes",
     applicationCategory: "MultimediaApplication",
-    operatingSystem: "Web, iOS",
+    operatingSystem: "Web",
     url: siteUrl,
     description:
       "Cortador de vídeo com IA que encontra os melhores momentos, cria cortes verticais, adiciona legendas sincronizadas palavra a palavra e exporta vídeos curtos.",

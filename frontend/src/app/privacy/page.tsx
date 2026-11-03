@@ -79,12 +79,6 @@ export default function PrivacyPolicyPage() {
               coleta, utiliza, compartilha e protege informações quando você usa os aplicativos e o serviço hospedado
               Kortes (&ldquo;Serviço&rdquo;), que transformam vídeos longos em clipes curtos e legendados.
             </p>
-            <p>
-              O Kortes também está disponível como software de código aberto que você pode auto-hospedar. Se você
-              utilizar uma instância auto-hospedada operada por você ou por terceiros, esse operador &mdash; e não o
-              Kortes &mdash; será o responsável pelos dados processados por essa instância. Esta política descreve o
-              serviço hospedado operado diretamente pelo Kortes.
-            </p>
           </Section>
 
           <Section title="Informações que Coletamos">

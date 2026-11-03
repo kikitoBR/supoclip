@@ -2,13 +2,13 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowRight, CalendarDays, Check, ExternalLink, Github } from "lucide-react";
+import { ArrowRight, CalendarDays, Check } from "lucide-react";
 
 import { RelatedGuides } from "@/components/marketing/related-guides";
 import { SiteFooter } from "@/components/marketing/site-footer";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { GITHUB_URL, getSiteUrl } from "@/lib/site";
+import { getSiteUrl } from "@/lib/site";
 import { getSeoPage, seoPages } from "@/lib/seo-pages";
 
 interface SeoLandingPageProps {
@@ -113,7 +113,6 @@ export default async function SeoLandingPage({ params }: SeoLandingPageProps) {
           </Link>
           <nav className="flex items-center gap-2" aria-label="Navegação principal">
             <Link href="/blog"><Button variant="ghost" size="sm">Blog</Button></Link>
-            <Link href="/blog/self-host-supoclip-docker" className="hidden sm:block"><Button variant="ghost" size="sm">Auto-hospedar</Button></Link>
             <Link href="/sign-up"><Button size="sm">Começar a criar clipes</Button></Link>
           </nav>
         </div>
@@ -141,9 +140,6 @@ export default async function SeoLandingPage({ params }: SeoLandingPageProps) {
             </div>
             <div className="mt-9 flex flex-wrap gap-3">
               <Link href="/sign-up"><Button size="lg">Experimentar o Kortes <ArrowRight className="h-4 w-4" /></Button></Link>
-              <a href={GITHUB_URL} target="_blank" rel="noopener noreferrer">
-                <Button variant="outline" size="lg"><Github className="h-4 w-4" /> Ver código-fonte</Button>
-              </a>
             </div>
           </div>
         </section>
@@ -169,7 +165,7 @@ export default async function SeoLandingPage({ params }: SeoLandingPageProps) {
               </table>
             </div>
             <p className="mt-3 text-xs text-muted-foreground">
-              Dados do produto obtidos do repositório oficial e do aplicativo hospedado do Kortes, verificados em {updatedLabel}.
+              Dados do produto obtidos do aplicativo do Kortes, verificados em {updatedLabel}.
             </p>
           </section>
 
@@ -221,8 +217,8 @@ export default async function SeoLandingPage({ params }: SeoLandingPageProps) {
           <aside className="mt-14 rounded-lg bg-muted/45 p-6 text-sm text-muted-foreground">
             <p className="font-semibold text-foreground">Fontes e política de revisão</p>
             <p className="mt-2 leading-7">
-              Os recursos do produto são mantidos pela Equipe Kortes e verificados em relação ao repositório público.
-              Consulte o <a href={GITHUB_URL} className="font-medium text-foreground underline underline-offset-4">código-fonte <ExternalLink className="inline h-3.5 w-3.5" /></a> para obter detalhes da implementação. Esta página é atualizada sempre que o fluxo de trabalho ou as configurações suportadas sofrem alterações.
+              Os recursos do produto são mantidos pela Equipe Kortes e verificados no próprio app.
+              Esta página é atualizada sempre que o fluxo de trabalho ou as configurações suportadas sofrem alterações.
             </p>
           </aside>
         </div>

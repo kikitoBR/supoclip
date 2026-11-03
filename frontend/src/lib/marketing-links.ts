@@ -16,7 +16,6 @@ export interface MarketingLink {
   related: string[];
 }
 
-export const SELF_HOSTING_GUIDE_HREF = "/blog/self-host-supoclip-docker";
 export const OPUSCLIP_COMPARISON_HREF = "/blog/supoclip-vs-opusclip";
 
 export const marketingLinks: MarketingLink[] = [
@@ -48,49 +47,13 @@ export const marketingLinks: MarketingLink[] = [
     related: ["/demo", "/ai-video-clipper", OPUSCLIP_COMPARISON_HREF],
   },
   {
-    href: "/open-source-video-clipper",
-    group: "guide",
-    eyebrow: "Código Aberto",
-    title: "Criador de clipes de código aberto sob seu controle",
-    label: "Clipper de código aberto",
-    description: "O que a auto-hospedagem muda sobre controle, provedores de modelos e infraestrutura.",
-    related: [SELF_HOSTING_GUIDE_HREF, OPUSCLIP_COMPARISON_HREF, "/blog/supoclip-vs-supo-live"],
-  },
-  {
-    href: SELF_HOSTING_GUIDE_HREF,
-    group: "guide",
-    eyebrow: "Guia de Auto-hospedagem",
-    title: "Hospede o Kortes você mesmo com Docker Compose",
-    label: "Guia de auto-hospedagem",
-    description: "Requisitos, variáveis de ambiente, primeira execução, configuração local e verificações de produção.",
-    related: ["/open-source-video-clipper", OPUSCLIP_COMPARISON_HREF, "/youtube-shorts-clipper"],
-  },
-  {
     href: OPUSCLIP_COMPARISON_HREF,
     group: "comparison",
     eyebrow: "Comparativo",
     title: "Kortes vs OpusClip: uma comparação detalhada",
     label: "Kortes vs OpusClip",
-    description: "Modelo de preços, implantação, marcas d'água e fluxo de trabalho, com referências diretas.",
-    related: [SELF_HOSTING_GUIDE_HREF, "/blog/best-free-opusclip-alternative", "/ai-video-clipper"],
-  },
-  {
-    href: "/blog/best-free-opusclip-alternative",
-    group: "comparison",
-    eyebrow: "Comparativo",
-    title: "Melhor alternativa gratuita e auto-hospedada ao OpusClip",
-    label: "Alternativa auto-hospedada ao OpusClip",
-    description: "Quando um clipper de código aberto auto-hospedado é a melhor opção em vez de uma ferramenta por créditos.",
-    related: [OPUSCLIP_COMPARISON_HREF, SELF_HOSTING_GUIDE_HREF, "/open-source-video-clipper"],
-  },
-  {
-    href: "/blog/supoclip-vs-supo-live",
-    group: "comparison",
-    eyebrow: "Comparativo",
-    title: "Kortes vs supo.live: controle de código aberto",
-    label: "Kortes vs supo.live",
-    description: "Compare auto-hospedagem, cortes com IA e edição antes de escolher uma ferramenta de vídeo.",
-    related: ["/open-source-video-clipper", SELF_HOSTING_GUIDE_HREF, OPUSCLIP_COMPARISON_HREF],
+    description: "Preço, marca d'água, automação e fluxo de trabalho, com referências diretas.",
+    related: ["/demo", "/ai-video-clipper", "/youtube-shorts-clipper"],
   },
 ];
 

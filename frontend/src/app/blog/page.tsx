@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight, Clock, ExternalLink, Github, Sparkles } from "lucide-react";
+import { ArrowRight, Clock, ExternalLink, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { SiteFooter } from "@/components/marketing/site-footer";
@@ -111,10 +111,6 @@ export default function BlogIndexPage() {
                 Ler artigo
                 <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
               </span>
-              <span className="inline-flex items-center gap-2 text-sm text-muted-foreground">
-                <Github className="h-4 w-4" />
-                Código aberto
-              </span>
             </div>
           </article>
 
@@ -129,7 +125,7 @@ export default function BlogIndexPage() {
             />
           ) : (
             <div className="rounded-lg border bg-muted/45 p-5">
-              <p className="font-semibold">Criação de clipes em código aberto</p>
+              <p className="font-semibold">Cortes com IA, prontos para postar</p>
             </div>
           )}
         </Link>

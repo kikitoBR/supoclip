@@ -42,7 +42,7 @@ export const seoPages: SeoPage[] = [
     eyebrow: "Cortes com IA",
     heading: "Cortador de vídeo com IA para transformar vídeos longos em cortes melhores",
     summary:
-      "O Kortes reúne transcrição, detecção de destaques com IA, pontuação de viralidade, reenquadramento que acompanha o rosto, legendas sincronizadas palavra a palavra e predefinições de exportação em um único fluxo de código aberto.",
+      "O Kortes reúne transcrição, detecção de destaques com IA, pontuação de viralidade, reenquadramento que acompanha o rosto, legendas sincronizadas palavra a palavra e predefinições de exportação em um único fluxo, direto no navegador.",
     keywords: [
       "cortador de vídeo com IA",
       "gerador de clipes com IA",
@@ -78,22 +78,21 @@ export const seoPages: SeoPage[] = [
         heading: "Como funciona o fluxo do Kortes",
         paragraphs: [
           "Cole um link do YouTube ou envie um arquivo. O Kortes transcreve a gravação, sugere onde cada clipe começa e termina e apresenta os melhores candidatos para revisão. Os momentos escolhidos viram vídeos verticais e legendados para as plataformas de vídeos curtos.",
-          "Como o Kortes é de código aberto, as equipes podem inspecionar o processo, escolher modelos de linguagem hospedados ou locais e adaptar o processamento à própria infraestrutura. Também há uma versão hospedada para quem não quer cuidar da instalação.",
+          "Tudo roda na nuvem do Kortes: não há nada para instalar nem configurar. Você revisa os clipes sugeridos, ajusta início, fim e legendas, e baixa o resultado pronto para postar.",
         ],
         links: [
           { href: "/youtube-shorts-clipper", label: "Passo a passo: transforme um vídeo do YouTube em Shorts" },
-          { href: "/blog/self-host-supoclip-docker", label: "Rode o processo você mesmo com Docker" },
+          { href: "/demo", label: "Veja clipes reais gerados pelo Kortes" },
         ],
       },
       {
         heading: "Para quem foi feito",
         paragraphs: [
           "O fluxo atende podcasters, educadores, empreendedores, agências e equipes de vídeo que já produzem gravações longas e precisam de um jeito repetível de publicar mais vídeos curtos.",
-          "É especialmente útil quando a propriedade importa: quem hospeda o próprio Kortes mantém o controle da aplicação e pode modificar o código, em vez de depender totalmente de uma plataforma de edição fechada.",
+          "É especialmente útil para quem publica com frequência: em vez de revisar cada gravação do zero, você parte de cortes já enquadrados e legendados e gasta o tempo só nos ajustes finais.",
         ],
         links: [
           { href: "/blog/supoclip-vs-opusclip", label: "Como o Kortes se compara ao OpusClip" },
-          { href: "/open-source-video-clipper", label: "Por que equipes escolhem um cortador de código aberto" },
         ],
       },
     ],
@@ -109,87 +108,9 @@ export const seoPages: SeoPage[] = [
           "Sim. O Kortes aceita links do YouTube, identifica os momentos candidatos e gera clipes verticais e legendados, próprios para o YouTube Shorts.",
       },
       {
-        question: "O Kortes é de código aberto?",
+        question: "Preciso instalar alguma coisa?",
         answer:
-          "Sim. O código do Kortes está disponível sob a licença AGPL-3.0 e pode ser hospedado por você ou modificado.",
-      },
-    ],
-  },
-  {
-    slug: "open-source-video-clipper",
-    metaTitle: "Cortador de vídeo de código aberto para hospedar você mesmo",
-    metaDescription:
-      "O Kortes é um cortador de vídeo com IA de código aberto para detectar destaques, criar cortes verticais que acompanham o rosto, legendar e exportar vídeos curtos no seu próprio servidor.",
-    eyebrow: "Código aberto e auto-hospedado",
-    heading: "Cortador de vídeo de código aberto com controle total do fluxo",
-    summary:
-      "Rode os cortes com IA na sua própria infraestrutura, inspecione o código, escolha o provedor de modelos e personalize como os clipes são pontuados, legendados, enquadrados e exportados.",
-    keywords: [
-      "cortador de vídeo de código aberto",
-      "editor de vídeo com IA auto-hospedado",
-      "gerador de clipes com IA de código aberto",
-      "cortes de vídeo auto-hospedados",
-      "alternativa ao OpusClip de código aberto",
-    ],
-    publishedAt: "2026-07-27",
-    updatedAt: "2026-10-05",
-    tableCaption: "Ferramentas só hospedadas e fluxos de código aberto",
-    tableHeaders: ["Decisão", "Ferramenta só hospedada", "Kortes auto-hospedado"],
-    tableRows: [
-      ["Acesso ao código", "Indisponível", "Repositório completo sob AGPL-3.0"],
-      ["Infraestrutura", "Controlada pelo fornecedor", "Seu servidor ou ambiente local"],
-      ["Escolha do modelo", "Definida pelo fornecedor", "Provedores hospedados compatíveis ou Ollama"],
-      ["Personalização", "Configurações do produto", "Código da aplicação e do processamento"],
-    ],
-    sections: [
-      {
-        heading: "Por que hospedar o seu próprio processo de cortes",
-        paragraphs: [
-          "Hospedar por conta própria vale a pena quando a equipe precisa controlar a instalação, a escolha de provedores, os limites de processamento ou a personalização do produto. Em vez de depender de uma plataforma fechada para cada decisão, a aplicação roda junto com o restante da infraestrutura da equipe.",
-          "O Kortes inclui um frontend em Next.js, um backend em FastAPI, workers em segundo plano, PostgreSQL e Redis. O repositório traz uma configuração de Docker Compose para instalar a aplicação completa de uma vez.",
-        ],
-      },
-      {
-        heading: "O que continua sendo responsabilidade sua",
-        paragraphs: [
-          "Código aberto não significa que todas as dependências são gratuitas. Quem hospeda fornece a própria capacidade de processamento, armazenamento, serviço de transcrição e configuração de modelos de linguagem. A troca é assumir a operação em troca de controle sobre o código.",
-          "As equipes também devem ler a licença AGPL-3.0, proteger as variáveis de ambiente, manter as dependências atualizadas e monitorar o worker e o armazenamento em produção.",
-        ],
-        bullets: [
-          "Providenciar processamento e armazenamento persistente",
-          "Configurar os provedores de transcrição e de modelos",
-          "Proteger segredos e rotas autenticadas",
-          "Monitorar os trabalhos de processamento e as mídias geradas",
-        ],
-        links: [{ href: "/blog/self-host-supoclip-docker", label: "Checklist de produção no guia de auto-hospedagem" }],
-      },
-      {
-        heading: "Comece com Docker e personalize quando precisar",
-        paragraphs: [
-          "O jeito mais rápido é clonar o repositório, copiar o modelo de variáveis de ambiente, adicionar as credenciais dos provedores e subir tudo com Docker Compose. Depois, os desenvolvedores podem mudar a lógica de pontuação, as predefinições de legenda, a interface ou o modelo de instalação conforme o fluxo evolui.",
-          "Quem prefere não operar infraestrutura pode usar a versão hospedada do Kortes e manter o repositório de código aberto como caminho de migração.",
-        ],
-        links: [
-          { href: "/blog/self-host-supoclip-docker", label: "Hospede o Kortes com Docker Compose" },
-          { href: "/blog/supoclip-vs-opusclip", label: "Kortes auto-hospedado ou OpusClip hospedado" },
-        ],
-      },
-    ],
-    faqs: [
-      {
-        question: "É grátis hospedar o Kortes?",
-        answer:
-          "O código é gratuito sob a licença AGPL-3.0. Você continua responsável pela infraestrutura e por qualquer uso pago de transcrição ou de provedores de IA.",
-      },
-      {
-        question: "O Kortes funciona com um modelo de linguagem local?",
-        answer:
-          "Sim. O Kortes aceita o Ollama para escolher os clipes, e TRANSCRIPTION_PROVIDER=whisper faz a transcrição localmente, sem chamar o AssemblyAI.",
-      },
-      {
-        question: "O Kortes exige Docker?",
-        answer:
-          "O Docker Compose é o caminho documentado para a aplicação completa. Os desenvolvedores podem rodar o frontend em Next.js, a API em FastAPI, o worker, o PostgreSQL e o Redis separadamente quando o ambiente exigir.",
+          "Não. O Kortes funciona no navegador: crie uma conta, cole o link ou envie o arquivo e os clipes são processados na nuvem.",
       },
     ],
   },

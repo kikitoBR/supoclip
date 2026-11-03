@@ -22,7 +22,7 @@ export function formatBillingPlanName(plan: string | null | undefined): string {
     return "Scale";
   }
   if (plan === "self_host") {
-    return "Auto-hospedado";
+    return "Ilimitado";
   }
   return "Gratuito";
 }

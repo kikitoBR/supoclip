@@ -112,9 +112,9 @@ describe("normalizeLandingPath", () => {
   it.each([
     "/",
     "/demo",
-    "/blog/self-host-supoclip-docker",
+    "/blog/supoclip-vs-opusclip",
     "/blog/top-10-clipping-tips-2026",
-    "/open-source-video-clipper",
+    "/ai-video-clipper",
     "/tasks",
   ])("keeps marketing and static paths like %s", (path) => {
     expect(normalizeLandingPath(path)).toBe(path);

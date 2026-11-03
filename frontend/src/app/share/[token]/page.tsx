@@ -167,7 +167,7 @@ export default function SharedGenerationPage() {
           <div className="relative flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
             <div>
               <h2 className="font-display text-2xl font-bold tracking-tight">Transforme seus vídeos longos em clipes como estes.</h2>
-              <p className="mt-2 max-w-lg text-sm text-white/65">O Kortes encontra os melhores momentos, enquadra o orador e gera as legendas. Código aberto e gratuito para auto-hospedar.</p>
+              <p className="mt-2 max-w-lg text-sm text-white/65">O Kortes encontra os melhores momentos, enquadra o orador e gera as legendas, direto no navegador.</p>
             </div>
             <Button asChild size="lg" className="shrink-0 rounded-full bg-white text-stone-950 hover:bg-white/90">
               <Link href="/">Experimente o Kortes<ArrowRight className="size-4" /></Link>

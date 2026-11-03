@@ -1,11 +1,10 @@
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight, Github } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 
 import { RelatedGuides } from "@/components/marketing/related-guides";
 import { SiteFooter } from "@/components/marketing/site-footer";
 import { type BlogPost, getSiteUrl } from "@/lib/blog-posts";
-import { GITHUB_URL } from "@/lib/site";
 
 export interface ArticleFaq {
   question: string;
@@ -119,10 +118,9 @@ export function ArticleShell({
           ))}
           <section className="not-prose rounded-2xl border bg-muted/30 p-6 sm:p-8" aria-label="Comece com o Kortes">
             <h2 className="!pt-0 text-2xl font-bold">Teste com uma gravação que você conhece bem.</h2>
-            <p className="mt-2 text-muted-foreground">Use o app hospedado ou rode o mesmo código aberto na sua própria máquina.</p>
+            <p className="mt-2 text-muted-foreground">Cole um link e receba os cortes legendados, prontos para postar.</p>
             <div className="mt-5 flex flex-wrap gap-3">
               <Link href="/sign-up" className="inline-flex items-center gap-2 rounded-lg bg-foreground px-5 py-3 text-sm font-semibold !text-background !no-underline">Começar a cortar<ArrowRight className="h-4 w-4" /></Link>
-              <a href={GITHUB_URL} className="inline-flex items-center gap-2 rounded-lg border px-5 py-3 text-sm font-semibold !no-underline"><Github className="h-4 w-4" />Ver o código-fonte</a>
             </div>
           </section>
         </div>

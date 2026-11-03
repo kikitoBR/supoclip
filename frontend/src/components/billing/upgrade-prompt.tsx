@@ -1,8 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Link from "next/link";
-import { ArrowRight, Check, Loader2, Server, X } from "lucide-react";
+import { ArrowRight, Check, Loader2, X } from "lucide-react";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
@@ -106,7 +105,7 @@ function copyFor(reason: UpgradeReason, billing: UpgradeBilling | null | undefin
       return {
         eyebrow: "Pronto quando você estiver",
         title: "Transforme vídeos longos em clipes prontos para postar",
-        body: "Escolha um plano hospedado e nós cuidamos do processamento, ou execute a versão open-source no seu próprio computador gratuitamente.",
+        body: "Escolha um plano e nós cuidamos de todo o processamento na nuvem.",
       };
     case "limit":
       return {
@@ -207,26 +206,6 @@ export function UpgradeDialog({ open, onOpenChange, reason, billing, source }: U
                   onSelect={() => setSelected(plan.id)}
                 />
               ))}
-            </div>
-          )}
-
-          {!state?.isPaid && (
-            <div className="mt-3 rounded-lg border bg-muted/30 px-4 py-3">
-              <div className="flex items-center gap-3">
-                <Server className="size-4 shrink-0 text-muted-foreground" />
-                <p className="flex-1 text-sm font-semibold">Auto-hospedado</p>
-                <span className="text-sm font-semibold">Grátis</span>
-              </div>
-              <p className="mt-2 text-xs leading-relaxed text-muted-foreground">
-                Execute o Kortes no seu próprio computador ou servidor sem assinatura ou limite mensal de vídeos.
-                Requer configuração; você fornece a infraestrutura e os serviços de IA que desejar.
-              </p>
-              <Link
-                href="/blog/self-host-supoclip-docker"
-                className="mt-3 inline-flex items-center gap-1 text-sm font-medium underline underline-offset-4 hover:text-muted-foreground"
-              >
-                Guia de auto-hospedagem <ArrowRight className="size-3.5" />
-              </Link>
             </div>
           )}
 

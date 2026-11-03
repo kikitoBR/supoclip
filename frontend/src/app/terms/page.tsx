@@ -81,11 +81,6 @@ export default function TermsOfServicePage() {
               e legendados. Ao criar uma conta ou usar o Serviço, você concorda com estes Termos.
               Se você não concordar, não use o Serviço.
             </p>
-            <p>
-              O Kortes também está disponível como software de código aberto que você pode auto-hospedar.
-              Estes Termos se aplicam ao serviço hospedado operado pelo Kortes; instâncias auto-hospedadas
-              são regidas pela licença de código aberto aplicável e pelos termos do próprio operador.
-            </p>
           </Section>
 
           <Section title="Sua Conta">
